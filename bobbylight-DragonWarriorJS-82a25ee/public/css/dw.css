@@ -1,0 +1,48 @@
+@font-face {
+   font-family: 'Dragon Warrior 2';
+   src: url('../res/dw-font.ttf');
+}
+
+body {
+   background: black;
+   color: white;
+   font-family: 'Dragon Warrior 2';
+   font-size: 24px;
+   font-style: normal;
+   padding-left: 0 3em;
+}
+
+h1 {
+   text-align: center;
+}
+h1, h2, h3 {
+   font-weight: normal;
+}
+h3 {
+   color: yellow;
+}
+b {
+   font-weight:normal;
+   color: rgb(180, 180, 255);
+}
+ol {
+   margin-left: 1em;
+}
+
+canvas {
+   display: block;
+   margin: 0;
+   padding: 0;
+   width: 100vw;
+   height: 100vh;
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: 1;
+   image-rendering: -crisp-edges;
+   image-rendering: -moz-crisp-edges;          /* FF 6.0+ */
+   image-rendering: -webkit-optimize-contrast; /* Webkit */
+   image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+   image-rendering: optimize-contrast;         /* Possible future browsers. */
+   -ms-interpolation-mode: nearest-neighbor;   /* IE */
+}

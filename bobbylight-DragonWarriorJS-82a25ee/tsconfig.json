@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "declaration": false,
+    "forceConsistentCasingInFileNames": true,
+    "newLine": "lf",
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    //"noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    //"noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "strict": true,
+
+    "target": "es6",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+
+    "sourceMap": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  },
+
+  "exclude": [
+    "node_modules",
+    "**/*.tsx"
+  ]
+}

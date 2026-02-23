@@ -1,0 +1,664 @@
+        showEquipmentMenu() {
+            // TODO: Implement equipment menu bubble and logic
+            this.game.setStatusMessage('Equipment menu coming soon!');
+        }
+    private showMinimap: boolean = true;
+
+    override handleDefaultKeys() {
+        super.handleDefaultKeys();
+        const im = this.game.inputManager;
+        // Toggle minimap with 'M'
+        if (im.isKeyDown && im.isKeyDown('m', true)) {
+            this.showMinimap = !this.showMinimap;
+        }
+        // Open spell/attack menu with 'S'
+        if (im.isKeyDown && im.isKeyDown('s', true)) {
+            if (!this.spellBubble) {
+                // Open spell/attack menu (reuse spellBubble for now)
+                // You can expand this to a full action bar later
+                // @ts-ignore
+                this.spellBubble = new (require('./SpellBubble').SpellBubble)(this.game, 40, 40, 200, 300, this.game.hero.spells);
+            }
+        }
+        // Quick spell/skill slots 1-9,0
+        for (let i = 1; i <= 10; i++) {
+            const key = i % 10 === 0 ? '0' : String(i);
+            if (im.isKeyDown && im.isKeyDown(key, true)) {
+                // Cast/use spell/skill in slot i (if available)
+                const spell = this.game.hero.spells?.[i - 1];
+                if (spell) {
+                    // @ts-ignore
+                    spell.cast(this.game.hero, undefined);
+                    this.game.audio.playSound('castSpell');
+                    // Show feedback (could use a bubble or message)
+                    this.game.setStatusMessage(`Used ${spell.name}`);
+                }
+            }
+        }
+    }
+import { Delay, InputManager, Keys, TiledLayerData } from 'gtp';
+import { BaseState } from './BaseState';
+import { DwGame } from './DwGame';
+import { CommandBubble } from './CommandBubble';
+import { StatBubble } from './StatBubble';
+import { TextBubble } from './TextBubble';
+import { Conversation } from './Conversation';
+import { StatusBubble } from './StatusBubble';
+import { ItemBubble } from './ItemBubble';
+import { Item } from './Item';
+import { Npc } from './Npc';
+import { Hero } from './Hero';
+import { MapLogic } from './mapLogic/MapLogic';
+import { CheatOption, Cheats, WarpLocation } from './Cheats';
+import { ChoiceBubble } from './ChoiceBubble';
+import { Door } from './Door';
+import { DwMap } from './DwMap';
+import { Chest } from './Chest';
+import { toRowAndColumn } from './LocationString';
+import { getChestConversation } from './ChestConversations';
+import { getSearchConversation } from './SearchConversations';
+import { SpellBubble } from '@/app/dw/SpellBubble';
+import { Spell } from '@/app/dw/Spell';
+
+type RoamingSubState = 'ROAMING' | 'MENU' | 'TALKING' | 'OVERNIGHT' | 'WARP_SELECTION' | 'CHEAT_SELECTION';
+
+type UpdateFunction = (delta: number) => void;
+
+export class RoamingState extends BaseState {
+
+    private readonly commandBubble: CommandBubble;
+    private readonly statBubble: StatBubble;
+    private statusBubble?: StatusBubble;
+    private itemBubble?: ItemBubble;
+    private spellBubble?: SpellBubble;
+    private warpBubble?: ChoiceBubble<WarpLocation>;
+    private cheatBubble?: ChoiceBubble<CheatOption>;
+    private readonly stationaryTimer: Delay;
+    private overnightDelay?: Delay;
+    private readonly updateMethods: Map<RoamingSubState, UpdateFunction>;
+    private readonly textBubble: TextBubble;
+    private showTextBubble: boolean;
+    private substate: RoamingSubState;
+    private showStats: boolean;
+
+    private static readonly OVERNIGHT_DARK_TIME: number = 2500;
+
+    private static readonly OVERNIGHT_FADE_TIME: number = 500;
+
+    private static totalTime = 0;
+
+    constructor(game: DwGame) {
+
+        super(game);
+
+        this.commandBubble = new CommandBubble(game);
+        this.statBubble = new StatBubble(this.game);
+        this.stationaryTimer = new Delay({ millis: 1000 });
+
+        this.updateMethods = new Map<RoamingSubState, UpdateFunction>();
+        this.updateMethods.set('ROAMING', this.updateRoaming.bind(this));
+        this.updateMethods.set('MENU', this.updateMenu.bind(this));
+        this.updateMethods.set('TALKING', this.updateTalking.bind(this));
+        this.updateMethods.set('OVERNIGHT', this.updateOvernight.bind(this));
+        this.updateMethods.set('WARP_SELECTION', this.updateWarpSelection.bind(this));
+           (window as any).dwRoamingState = this;
+           (window as any).dwGame = game;
+
+        this.textBubble = new TextBubble(this.game);
+        this.showTextBubble = false;
+        this.substate = 'ROAMING'; // Can't call setState to appease tsc
+        this.showStats = false;
+    }
+
+    search() {
+        this.showTextBubble = true;
+        this.textBubble.setConversation(getSearchConversation(this));
+        this.setSubstate('TALKING');
+    }
+
+    take() {
+        this.showTextBubble = true;
+        this.textBubble.setConversation(getChestConversation(this));
+        this.setSubstate('TALKING');
+    }
+
+    takeStairs() {
+        if (this.game.hero.possiblyHandleIntersectedObject()) {
+            this.setSubstate('ROAMING');
+        } else {
+            this.showOneLineConversation(true, 'There are no stairs here.');
+        }
+    }
+
+    override update(delta: number) {
+
+        const game: DwGame = this.game;
+
+        this.handleDefaultKeys();
+        if (game.inputManager.isKeyDown(Keys.KEY_R, true)) {
+            game.startRandomEncounter();
+            return;
+        } else if (game.inputManager.isKeyDown(Keys.KEY_O, true)) {
+            this.setSubstate('OVERNIGHT');
+        }
+
+        game.hero.update(delta);
+
+        RoamingState.totalTime += delta;
+        if (RoamingState.totalTime >= 1000) {
+            RoamingState.totalTime = 0;
+        }
+
+      this.updateMethods.get(this.substate)!.call(this, delta);
+    }
+
+    private updateCheatSelection(delta: number) {
+
+        // Do check here to appease tsc of cheatBubble being defined
+        this.cheatBubble ??= Cheats.createCheatBubble(this.game);
+
+        this.cheatBubble.update(delta);
+        if (this.cheatBubble.handleInput()) {
+            const cheat: CheatOption | undefined = this.cheatBubble.getSelectedItem();
+            this.cheatBubble = undefined;
+            if (cheat) {
+                switch (cheat) {
+                    case '9999 Gold':
+                        this.game.party.addGold(9999);
+                        this.game.audio.playSound('openChest');
+                        this.setSubstate('ROAMING');
+                        break;
+                    case 'Level Up':
+                        this.game.audio.playSound('bump');
+                        break;
+                    case 'Weapon Change':
+                        this.game.cycleWeapon();
+                        this.setSubstate('ROAMING');
+                        break;
+                    case 'Armor Change':
+                        this.game.cycleArmor();
+                        this.setSubstate('ROAMING');
+                        break;
+                    case 'Shield Change':
+                        this.game.cycleShield();
+                        this.setSubstate('ROAMING');
+                        break;
+                    case 'Max HP/MP':
+                        this.game.setHeroStats(255, 255, 255, 255);
+                        this.game.audio.playSound('castSpell');
+                        this.setSubstate('ROAMING');
+                        break;
+                    case 'Min HP/MP':
+                        this.game.setHeroStats(1, 1, 1, 1);
+                        this.game.audio.playSound('castSpell');
+                        this.setSubstate('ROAMING');
+                        break;
+                    default:
+                        this.game.audio.playSound('bump');
+                        break;
+                }
+            } else {
+                this.setSubstate('MENU');
+            }
+            delete this.cheatBubble;
+        }
+    }
+
+    private updateMenu(delta: number) {
+
+        if (this.statBubble) {
+            this.statBubble.update(delta);
+        }
+
+        if (this.statusBubble) {
+            this.statusBubble.update(delta);
+            if (this.game.anyKeyDown()) {
+                delete this.statusBubble;
+                return;
+            }
+        }
+
+        let done: boolean;
+        if (this.spellBubble) {
+            this.spellBubble.update(delta);
+            done = this.spellBubble.handleInput();
+            if (done) {
+                const selectedSpell: Spell | undefined = this.spellBubble.getSelectedItem();
+
+                if (selectedSpell) {
+                    const conversation = new Conversation(this.game, false);
+
+                    if (selectedSpell.cost <= this.game.hero.mp) {
+                        conversation.setSegments([
+                            {
+                                text: `\\w{hero.name} chanted the spell of ${selectedSpell.name}.`,
+                                afterSound: 'castSpell',
+                                afterAutoAdvanceDelay: 900,
+                                afterAction: () => {
+                                    // Stats are updated after the sound effect
+                                    this.game.hero.mp -= selectedSpell.cost;
+                                    const result = selectedSpell.cast(this.game.hero, undefined);
+                                    return result.conversationSegments;
+                                },
+                            },
+                        ]);
+                        this.textBubble.setConversation(conversation);
+                    } else {
+                        conversation.addSegment('Thy MP is too low.');
+                    }
+
+                    this.showConversation(conversation);
+                }
+
+                delete this.spellBubble;
+            }
+            return;
+        } else if (this.itemBubble) {
+            this.itemBubble.update(delta);
+            done = this.itemBubble.handleInput();
+            if (done) {
+                let success = false;
+                const selected = this.itemBubble.getSelectedItem();
+                if (selected) {
+                    // Use new equip/use logic
+                    if (typeof (this.itemBubble as any).handleEquipOrUse === 'function') {
+                        success = (this.itemBubble as any).handleEquipOrUse(selected, this);
+                        // Remove from inventory if equipped or used
+                        if (success && ('name' in selected)) {
+                            this.game.getParty().getInventory().remove(selected.name);
+                        }
+                    } else if ('use' in selected && typeof selected.use === 'function') {
+                        success = selected.use(this);
+                        if (success && 'name' in selected) {
+                            this.game.getParty().getInventory().remove(selected.name);
+                        }
+                    }
+                } else {
+                    success = false;
+                }
+                if (success) {
+                    if (this.substate === 'MENU') {
+                        this.setSubstate('ROAMING');
+                    }
+                }
+                delete this.itemBubble;
+            }
+            return;
+        }
+
+        this.commandBubble.update(delta);
+        done = this.commandBubble.handleInput();
+        if (done) {
+            this.commandBubble.handleCommandChosen(this);
+            return;
+        }
+    }
+
+    private updateRoaming(delta: number) {
+
+        if (this.showStats) {
+            this.statBubble.update(delta);
+        }
+
+        const hero: Hero = this.game.hero;
+        const im: InputManager = this.game.inputManager;
+
+        if (this.game.actionKeyPressed()) {
+            this.game.setNpcsPaused(true);
+            this.commandBubble.reset();
+            this.game.audio.playSound('menu');
+            this.setSubstate('MENU');
+            this.showStats = true;
+            return;
+        }
+
+        // Make sure we're not in BattleTransitionState
+        if (!hero.isMoving() && this.game.state === this) {
+
+            if (im.up()) {
+                hero.tryToMoveUp();
+                this.stationaryTimer.reset();
+                this.statBubble.init();
+            //this.yOffs = Math.max(this.yOffs-inc, 0);
+            } else if (im.down()) {
+                hero.tryToMoveDown();
+                this.stationaryTimer.reset();
+                this.statBubble.init();
+            //this.yOffs = Math.min(this.yOffs+inc, maxY);
+            } else if (im.left()) {
+                hero.tryToMoveLeft();
+                this.stationaryTimer.reset();
+                this.statBubble.init();
+            //this.xOffs = Math.max(this.xOffs-inc, 0);
+            } else if (im.right()) {
+                hero.tryToMoveRight();
+                this.stationaryTimer.reset();
+                this.statBubble.init();
+            //this.xOffs = Math.min(this.xOffs+inc, maxX);
+            }
+
+        }
+
+        this.showStats = this.stationaryTimer.update(delta);
+
+        if (im.isKeyDown(Keys.KEY_SHIFT)) {
+            if (im.isKeyDown(Keys.KEY_C, true)) {
+                this.game.toggleShowCollisionLayer();
+            }
+            if (im.isKeyDown(Keys.KEY_T, true)) {
+                this.game.toggleShowTerritoryLayer();
+            }
+        }
+
+        this.game.getMap().npcs.forEach((npc: Npc) => {
+            npc.update(delta);
+        });
+
+    }
+
+    private updateTalking(delta: number) {
+
+        const done: boolean = this.textBubble.handleInput();
+        if (/*this._textBubble.currentTextDone() && */this.textBubble.isOvernight()) {
+            this.setSubstate('OVERNIGHT');
+            this.textBubble.clearOvernight();
+        } else if (this.showTextBubble) {
+            this.textBubble.update(delta);
+        }
+
+        if (done) {
+            this.startRoaming();
+            return;
+        }
+    }
+
+    private updateOvernight(delta: number) {
+
+        if (this.overnightDelay) {
+            this.overnightDelay.update(delta);
+        } else {
+            this.game.audio.playMusic('overnight', false);
+            this.overnightDelay = new Delay({
+                millis: [ RoamingState.OVERNIGHT_DARK_TIME ],
+                callback: this.overnightOver.bind(this),
+            });
+        }
+    }
+
+    private updateWarpSelection(delta: number) {
+
+        // Do check here to appease tsc of warpBubble being defined
+        this.warpBubble ??= Cheats.createWarpBubble(this.game);
+
+        this.warpBubble.update(delta);
+        if (this.warpBubble.handleInput()) {
+            const warpTo: WarpLocation | undefined = this.warpBubble.getSelectedItem();
+            this.warpBubble = undefined;
+            if (warpTo) {
+                this.warpTo(warpTo); // TODO: Make me cleaner
+                this.setSubstate('ROAMING');
+            } else {
+                this.setSubstate('MENU');
+            }
+            this.warpBubble = undefined;
+        }
+    }
+
+    private overnightOver() {
+        this.game.audio.playMusic('MUSIC_TOWN');
+        delete this.overnightDelay;
+        this.setSubstate('TALKING');
+        //         this._textBubble.nudgeConversation(); // User doesn't have to press a key
+    }
+
+    openDoor(): boolean {
+
+        const door: Door | undefined = this.game.getDoorHeroIsFacing();
+
+        if (door) {
+
+            const game: DwGame = this.game;
+            if (!game.party.getInventory().remove('Magic Key')) {
+                this.showOneLineConversation(false, 'You do not have a key!'); // TODO: Verify text
+                return false;
+            }
+
+            this.game.audio.playSound('door');
+            const map: DwMap = this.game.getMap();
+            map.getLayer('tileLayer').setData(door.row, door.col, door.replacementTileIndex);
+            const index: number = map.doors.indexOf(door);
+            if (index > -1) {
+                map.doors.splice(index, 1);
+                map.getLayer('collisionLayer').setData(door.row, door.col, 0);
+            } else { // Should never happen
+                console.error(`Door not found in map.doors! - ${door.toString()}`);
+            }
+            this.setSubstate('ROAMING');
+            return true;
+        }
+
+        this.showOneLineConversation(false, 'There is no door here.');
+        return false;
+    }
+
+    private possiblyRenderNpc(npc: Npc, ctx: CanvasRenderingContext2D) {
+
+        const row: number = npc.mapRow;
+        const col: number = npc.mapCol;
+        const underRoof: boolean = this.game.hasRoofTile(row, col);
+        if (underRoof && this.game.inside || !underRoof && !this.game.inside) {
+            npc.render(ctx);
+        }
+    }
+
+    override render(ctx: CanvasRenderingContext2D) {
+
+        if (this.game.getMap().propertiesByName.get('requiresTorch')) {
+            this.game.clearScreen('#000000');
+            ctx.save();
+            const clipRadius: number = this.game.getUsingTorch() ? this.game.getTileSize() * 3 / 2 :
+                this.game.getTileSize() / 2;
+            const x0: number = this.game.getWidth() / 2 - clipRadius;
+            const y0: number = this.game.getHeight() / 2 - clipRadius;
+            ctx.beginPath();
+            ctx.rect(x0, y0, 2 * clipRadius, 2 * clipRadius);
+            ctx.clip();
+        } else if (this.game.inside) {
+            this.game.clearScreen('#000000');
+        }
+
+        this.game.drawMap(ctx);
+
+        // TODO: Be more efficient here
+        this.game.getMap().chests.forEach((chest: Chest) => {
+
+            const { row, col } = toRowAndColumn(chest.location);
+
+            let x: number = col * this.game.getTileSize();
+            x -= this.game.getMapXOffs();
+            let y: number = row * this.game.getTileSize();
+            y -= this.game.getMapYOffs();
+            this.game.getMap().drawTile(ctx, x, y, 5, {} as TiledLayerData);
+        });
+
+        this.game.hero.render(ctx);
+
+        // Draw minimap in top-left corner
+        if (this.showMinimap) {
+            this.renderMinimap(ctx);
+        }
+    // Simple minimap: shows map layout and hero position
+    private renderMinimap(ctx: CanvasRenderingContext2D) {
+        const map = this.game.getMap();
+        const tileSize = this.game.getTileSize();
+        const miniTile = 3; // Minimap tile size in px
+        const rows = map.height;
+        const cols = map.width;
+        const x0 = 10;
+        const y0 = 10;
+        // Draw map tiles (just as blocks)
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const tile = map.getTile(c, r, 0);
+                ctx.fillStyle = tile ? '#444' : '#222';
+                ctx.fillRect(x0 + c * miniTile, y0 + r * miniTile, miniTile, miniTile);
+            }
+        }
+        // Draw hero
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(x0 + this.game.hero.mapCol * miniTile, y0 + this.game.hero.mapRow * miniTile, miniTile, miniTile);
+        // Optionally: draw NPCs, chests, etc.
+    }
+
+        this.game.getMap().npcs.forEach((npc: Npc) => {
+            this.possiblyRenderNpc(npc, ctx);
+        });
+
+        if (this.game.getMap().propertiesByName.get('requiresTorch')) {
+            ctx.restore();
+        }
+
+        if (this.substate !== 'ROAMING') {
+            this.commandBubble.paint(ctx);
+        }
+
+        if (this.showTextBubble) {
+            this.textBubble.paint(ctx);
+        }
+
+        if (this.substate !== 'ROAMING' || this.showStats) {
+            this.statBubble.paint(ctx);
+        }
+        if (this.statusBubble) {
+            this.statusBubble.paint(ctx);
+        }
+        if (this.spellBubble) {
+            this.spellBubble.paint(ctx);
+        }
+        if (this.itemBubble) {
+            this.itemBubble.paint(ctx);
+        }
+        if (this.warpBubble) {
+            this.warpBubble.paint(ctx);
+        }
+        if (this.cheatBubble) {
+            this.cheatBubble.paint(ctx);
+        }
+
+        if (this.overnightDelay) {
+            ctx.save();
+            const overnightRemaining: number = this.overnightDelay.getRemaining();
+            let alpha: number;
+            const fadeInTime: number = RoamingState.OVERNIGHT_FADE_TIME;
+            if (overnightRemaining > RoamingState.OVERNIGHT_DARK_TIME - fadeInTime) {
+                alpha = (RoamingState.OVERNIGHT_DARK_TIME - overnightRemaining) / fadeInTime;
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+            } else if (overnightRemaining < fadeInTime) {
+                alpha = overnightRemaining / fadeInTime;
+                ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+            } else {
+                ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+            }
+            ctx.fillRect(0, 0, this.game.getWidth(), this.game.getHeight());
+            ctx.restore();
+        }
+    }
+
+    private setSubstate(substate: RoamingSubState) {
+        const prevSubstate: RoamingSubState = this.substate;
+        this.substate = substate;
+        if (substate === 'MENU' && prevSubstate === 'ROAMING') {
+            this.commandBubble.init();
+        } else if (substate === 'TALKING' && prevSubstate !== 'OVERNIGHT') {
+            this.textBubble.init();
+        }
+    }
+
+    showCheatBubble() {
+        this.setSubstate('CHEAT_SELECTION');
+    }
+
+    showInventory() {
+        this.itemBubble = new ItemBubble(this.game);
+    }
+
+    private showNoSpellsMessage() {
+        this.showOneLineConversation(false, 'You have not learned any spells yet!');
+    }
+
+    /**
+     * Displays one or more static lines of text in the conversation bubble.
+     *
+     * @param voice Whether to play the "talking" sound effect.
+     * @param text The text to display.
+     */
+    showOneLineConversation(voice: boolean, ...text: string[]) {
+        const conversation: Conversation = new Conversation(this.game, voice);
+        text.forEach((line) => {
+            conversation.addSegment(line);
+        });
+        this.showConversation(conversation);
+    }
+
+    showConversation(conversation: Conversation) {
+        this.showTextBubble = true;
+        this.textBubble.setConversation(conversation);
+        this.setSubstate('TALKING');
+    }
+
+    showSpellList() {
+
+        const hero: Hero = this.game.hero;
+
+        if (!hero.spells.length) {
+            this.showNoSpellsMessage();
+            return;
+        }
+
+        this.spellBubble = new SpellBubble(this.game);
+    }
+
+    showStatus() {
+        this.statusBubble = new StatusBubble(this.game);
+    }
+
+    showWarpBubble() {
+        this.setSubstate('WARP_SELECTION');
+    }
+
+    startRoaming() {
+        this.game.setNpcsPaused(false);
+        this.showTextBubble = false;
+        this.setSubstate('ROAMING');
+    }
+
+    talkToNpc() {
+
+        const logic: MapLogic | undefined = this.game.getMapLogic();
+        if (!logic) {
+            console.log('Error: No map logic found for this map!  Cannot talk to NPCs!');
+            return;
+        }
+
+        const npc: Npc | undefined = this.game.getNpcHeroIsFacing();
+        const conversation: Conversation = new Conversation(this.game, true);
+
+        if (npc) {
+            const hero: Hero = this.game.hero;
+            //var newNpcDir = this.getHero().direction.opposite();
+            const newNpcDir: number = (hero.direction + 2) % 4;
+            npc.direction = newNpcDir;
+            conversation.setSegments(logic.npcText(npc, this.game));
+        } else {
+            conversation.addSegment('There is no one there.');
+        }
+        this.showTextBubble = true;
+        this.textBubble.setConversation(conversation);
+        this.setSubstate('TALKING');
+    }
+
+    warpTo(location: WarpLocation) {
+        this.setSubstate('ROAMING');
+        Cheats.warp(this.game, location);
+    }
+}
