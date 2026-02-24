@@ -29,7 +29,7 @@ export class GameStudioAdvertState extends BaseState {
 
         // Only render if font asset is loaded
         try {
-            const logo = 'RolePlayGme JS Engine';
+            const logo = 'RolePlayGame JS Engine';
             const devs = 'by: ArkansasIo';
             const presents = 'Presents';
             const xLogo = (w - game.stringWidth(logo)) / 2;

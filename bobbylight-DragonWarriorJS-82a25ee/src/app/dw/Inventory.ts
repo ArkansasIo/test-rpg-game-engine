@@ -1,61 +1,62 @@
 import { Item, getItemByName } from './Item';
 import { Party } from '@/app/dw/Party';
 
-export class Inventory {
-    // Add custom procedural asset item
-    pushCustomAsset(assetKey: string, assetData: any) {
-        // Create a minimal Item with custom sprite
-        const item = new Item(assetKey, {
-            baseCost: 0,
-            use: () => true
-        });
-        item.proceduralSprite = assetData.pngUrl;
-        this.items.push(item);
-    }
+export interface InventoryEntry {
+    item: Item;
+    count: number;
+}
 
-    private readonly items: Item[];
+export class Inventory {
+    private readonly items: InventoryEntry[];
 
     constructor() {
         this.items = [];
     }
 
-    getItems(): Item[] {
+    pushCustomAsset(assetKey: string, assetData: any) {
+        const item = new Item(assetKey, {
+            baseCost: 0,
+            use: () => true
+        });
+        item.proceduralSprite = assetData.pngUrl;
+        this.addItem(item, 1);
+    }
+
+    getItems(): InventoryEntry[] {
         return this.items.slice();
     }
 
-    /**
-     * Returns the number of items in the inventory.
-     */
     getSize(): number {
-        return this.items.length;
+        return this.items.reduce((sum, entry) => sum + entry.count, 0);
     }
 
     clear() {
         this.items.length = 0;
     }
 
-    push(item: Item) {
-        if (this.items.length < Party.INVENTORY_MAX_SIZE) {
-            this.items.push(item);
+    addItem(item: Item, count = 1) {
+        let entry = this.items.find(e => e.item.name === item.name);
+        if (entry) {
+            entry.count += count;
+        } else if (this.items.length < Party.INVENTORY_MAX_SIZE) {
+            this.items.push({ item, count });
         }
     }
 
-    remove(itemName: string): boolean {
-
-        const item: Item | undefined = getItemByName(itemName);
-        if (!item) {
-            return false;
-        }
-
-        const index = this.items.indexOf(item);
-        if (index > -1) {
-            this.items.splice(index, 1);
+    remove(itemName: string, count = 1): boolean {
+        const entry = this.items.find(e => e.item.name === itemName);
+        if (!entry) return false;
+        if (entry.count > count) {
+            entry.count -= count;
+            return true;
+        } else if (entry.count === count) {
+            this.items.splice(this.items.indexOf(entry), 1);
             return true;
         }
         return false;
     }
 
     toString(): string {
-        return `[Inventory: size=${this.items.length}]`;
+        return `[Inventory: size=${this.getSize()}]`;
     }
 }

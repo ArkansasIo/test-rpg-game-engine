@@ -132,10 +132,40 @@ export class PartyMember extends RoamingEntity {
         };
     }
 
+    /**
+     * Gain experience and handle level up, rewards, and notifications.
+     */
     gainExp(amount: number) {
         this.exp += amount;
+        let leveledUp = false;
         while (this.level < this.maxLevel && this.exp >= this.levelProgression[this.level - 1].expRequired) {
             this.levelUp();
+            leveledUp = true;
+        }
+        if (leveledUp) {
+            this.onLevelUp();
+        }
+    }
+
+    /**
+     * Called after a level up for rewards, new skills, etc.
+     */
+    onLevelUp() {
+        // Example: grant new skill or spell every 5 levels
+        if (this.level % 5 === 0) {
+            // this.learnSkillOrSpell();
+            this.game.setStatusMessage(`${this.name} learned a new skill!`);
+        }
+        // TODO: Add more hooks for rewards, UI, etc.
+    }
+
+    /**
+     * Share experience with the whole party (call from battle/quest logic).
+     */
+    static shareExp(party: PartyMember[], amount: number) {
+        const share = Math.floor(amount / party.length);
+        for (const member of party) {
+            member.gainExp(share);
         }
     }
 

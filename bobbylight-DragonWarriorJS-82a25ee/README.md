@@ -1,3 +1,63 @@
+# Save/Load System
+
+The game supports saving and loading full adventure state, including:
+
+- Hero stats, equipment, and position
+- Party members, gold, and inventory
+- Map, zone, and quest progress
+- All data is serialized to an adventure log and can be restored at any time
+
+## Key Methods (see `src/app/dw/DwGame.ts`)
+
+- `saveAdventureLog()` — Saves the current game state
+- `loadAdventureLog(id?)` — Loads a saved game state (optionally by ID)
+- Adventure log includes hero, party, inventory, map, and quest data
+
+This enables robust save/load functionality for persistent RPG progress.
+# Map, Zone, and Encounter System
+
+The game world is organized into:
+
+- **Maps**: Tiled maps loaded dynamically (see `src/app/dw/DwGame.ts`, `DwMap.ts`)
+- **Zones**: Data-driven regions/biomes (see `src/app/dw/zones.ts`)
+- **Encounters**: Random battles triggered by map/zone and territory (see `DwGame.ts`)
+
+## Key Features
+
+- Seamless map loading and warping (doors, warps, stairs)
+- Zone/biome data for 70+ regions, extensible via `zones.ts`
+- Random encounters based on enemy territory layers in maps
+- Each territory has its own enemy pool (see `enemyTerritories.json`)
+- Map logic extensible via `mapLogic/` scripts
+
+## Key Methods
+
+- `loadMap(mapName, row, col, dir?)` — Warp to a new map/zone
+- `startRandomEncounter()` — Triggers a random battle if in enemy territory
+- `toggleRandomEncounters()` — Enable/disable encounters
+- `getMap()`, `getMapLogic()` — Access current map and logic
+
+See `DwGame.ts` for the main implementation and hooks for map/zone/encounter logic.
+# Party Management System
+
+The party system supports:
+
+- Adding/removing party members (by name)
+- Swapping and reordering members
+- Setting the party leader (moves to front)
+- Querying the current party formation
+- All party members are tracked as `PartyMember` objects
+
+## Key Methods (see `src/app/dw/Party.ts`)
+
+- `addMember(member: PartyMember)` — Add a new member if not present
+- `removeMember(name: string)` — Remove a member by name
+- `swapMembers(idx1, idx2)` — Swap two members by index
+- `setLeader(idx)` — Move member at index to front (leader)
+- `reorder(newOrder: number[])` — Reorder party by array of indices
+- `getFormation()` — Get current party order as array of names
+
+These features enable dynamic party composition, leader switching, and formation management for battles and exploration.
 
 
 Like it says on the tin.  This reproduction will try to be as authentic as

@@ -1,3 +1,25 @@
+// Hero class, subclass, and race enums/types for character creation
+export type HeroClass =
+    'Warrior' | 'Mage' | 'Rogue' | 'Cleric' | 'Paladin' | 'Ranger' | 'Monk' | 'Bard' | 'Necromancer';
+export type HeroSubClass =
+    'Knight' | 'Samurai' | 'Barbarian' | 'Sorcerer' | 'Wizard' | 'Warlock' | 'Ninja' | 'Corsair' | 'Outlaw' |
+    'Oracle' | 'Templar' | 'Exorcist' | 'Oathkeeper' | 'Dawnblade' | 'Justicar' | 'Hunter' | 'Falconer' | 'Stalker' |
+    'Ascetic' | 'Drunken Master' | 'Windwalker' | 'Skald' | 'Minstrel' | 'Virtuoso' | 'Lich' | 'Gravecaller' | 'Deathbinder';
+export type HeroRace =
+    'Human' | 'Elf' | 'Dwarf' | 'Orc' | 'Halfling' | 'Dragonkin' | 'Undead' | 'Beastfolk' | 'Construct';
+
+// List of available hero classes and subclasses for character creation
+export const HERO_CLASSES: HeroClass[] = [
+    'Warrior', 'Mage', 'Rogue', 'Cleric', 'Paladin', 'Ranger', 'Monk', 'Bard', 'Necromancer',
+];
+export const HERO_SUBCLASSES: HeroSubClass[] = [
+    'Knight', 'Samurai', 'Barbarian', 'Sorcerer', 'Wizard', 'Warlock', 'Ninja', 'Corsair', 'Outlaw',
+    'Oracle', 'Templar', 'Exorcist', 'Oathkeeper', 'Dawnblade', 'Justicar', 'Hunter', 'Falconer', 'Stalker',
+    'Ascetic', 'Drunken Master', 'Windwalker', 'Skald', 'Minstrel', 'Virtuoso', 'Lich', 'Gravecaller', 'Deathbinder',
+];
+export const HERO_RACES: HeroRace[] = [
+    'Human', 'Elf', 'Dwarf', 'Orc', 'Halfling', 'Dragonkin', 'Undead', 'Beastfolk', 'Construct',
+];
 import { getProperty, TiledObject } from 'gtp';
 import { PartyMember } from './PartyMember';
 import { Direction } from './Direction';
@@ -56,26 +78,26 @@ export class Hero extends PartyMember {
 
     // --- Attributes ---
     attributes: {
-            class: string;
-            subClass: string;
-            race: string;
-            gender: string;
-            origin: string;
-            alignment: string;
-            background: string;
-            title: string;
-            faction: string;
-        } = {
-            class: 'Warrior',
-            subClass: 'Knight',
-            race: 'Human',
-            gender: 'Male',
-            origin: 'Limgrave',
-            alignment: 'Neutral',
-            background: '',
-            title: '',
-            faction: '',
-        };
+        class: HeroClass;
+        subClass: HeroSubClass;
+        race: HeroRace;
+        gender: string;
+        origin: string;
+        alignment: string;
+        background: string;
+        title: string;
+        faction: string;
+    } = {
+        class: 'Warrior',
+        subClass: 'Knight',
+        race: 'Human',
+        gender: 'Male',
+        origin: 'Limgrave',
+        alignment: 'Neutral',
+        background: '',
+        title: '',
+        faction: '',
+    };
 
     // --- Buffs and Debuffs ---
     buffs: { name: string; effect: string; duration: number }[] = [];

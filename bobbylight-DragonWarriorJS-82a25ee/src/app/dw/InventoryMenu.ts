@@ -2,22 +2,23 @@
 import { drawNesPanel, nesTheme } from '../../gfx/Theme';
 import { Game } from './DwGame';
 import { Item } from './Item';
+import { Inventory, InventoryEntry } from './Inventory';
+import { PartyMember } from './PartyMember';
 
-export class InventoryMenu {
     private readonly game: Game;
-    private readonly items: Item[];
+    private readonly inventory: Inventory;
+    private readonly party: PartyMember[];
     private selectedIndex = 0;
-    // NES-style font and UI elements
-    // NES-style font and UI elements (removed, not used)
+    private mode: 'view' | 'use' | 'equip' | 'discard' = 'view';
 
-    constructor(game: Game, items: Item[]) {
+    constructor(game: Game, inventory: Inventory, party: PartyMember[]) {
         this.game = game;
-        this.items = items;
+        this.inventory = inventory;
+        this.party = party;
     }
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        // NES-style panel
         const panelX = 36;
         const panelY = 54;
         const panelW = this.game.getWidth() - 72;
@@ -49,27 +50,28 @@ export class InventoryMenu {
         ctx.fillStyle = nesTheme.text;
         ctx.fillText('Details', panelX + Math.floor(panelW * 0.52) + 26, panelY + 80);
         // Item list
+        const entries = this.inventory.getItems();
         let y = panelY + 100;
-        for (let i = 0; i < this.items.length; i++) {
-            const item = this.items[i];
+        for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
             ctx.fillStyle = i === this.selectedIndex ? nesTheme.panelAccent : nesTheme.text;
-            ctx.fillText(`${item.displayName} x1`, panelX + 16, y);
+            ctx.fillText(`${entry.item.displayName} x${entry.count}`, panelX + 16, y);
             y += 22;
         }
-        if (!this.items.length) {
+        if (!entries.length) {
             ctx.fillStyle = nesTheme.danger;
             ctx.fillText('No items in satchel.', panelX + 24, y);
         } else {
-            const selected = this.items[this.selectedIndex];
+            const selected = entries[this.selectedIndex];
             const rightX = panelX + Math.floor(panelW * 0.52) + 32;
             ctx.fillStyle = nesTheme.panelAccent;
-            ctx.fillText(selected?.displayName ?? '', rightX, panelY + 120);
+            ctx.fillText(selected?.item.displayName ?? '', rightX, panelY + 120);
             ctx.fillStyle = nesTheme.text;
-            ctx.fillText('Count: 1', rightX, panelY + 144);
+            ctx.fillText(`Count: ${selected?.count ?? 1}`, rightX, panelY + 144);
             ctx.fillStyle = nesTheme.warning;
             ctx.fillText('Type: Inventory Item', rightX, panelY + 168);
             ctx.fillStyle = nesTheme.panelAccent;
-            ctx.fillText('Click item to focus.', rightX, panelY + panelH - 32);
+            ctx.fillText('A: Use  B: Equip  X: Discard', rightX, panelY + panelH - 32);
         }
         ctx.restore();
     }
@@ -77,16 +79,40 @@ export class InventoryMenu {
     handleClick(x: number, y: number): void {
         const panelX = 36;
         const panelY = 54;
+        const entries = this.inventory.getItems();
         const itemStartY = panelY + 100;
-        const itemEndY = itemStartY + this.items.length * 22;
+        const itemEndY = itemStartY + entries.length * 22;
         if (x < panelX + 8 || x > panelX + Math.floor((this.game.getWidth() - 72) * 0.52) || y < itemStartY || y > itemEndY) {
             return;
         }
         const idx = Math.floor((y - itemStartY) / 22);
-        if (idx >= 0 && idx < this.items.length) {
+        if (idx >= 0 && idx < entries.length) {
             this.selectedIndex = idx;
-            const selected = this.items[this.selectedIndex];
-            this.game.setStatusMessage(`Selected item: ${selected?.displayName ?? ''}`);
+            const selected = entries[this.selectedIndex];
+            this.game.setStatusMessage(`Selected item: ${selected?.item.displayName ?? ''}`);
+        }
+    }
+
+    handleAction(action: 'use' | 'equip' | 'discard', target?: PartyMember) {
+        const entries = this.inventory.getItems();
+        const selected = entries[this.selectedIndex];
+        if (!selected) return;
+        if (action === 'use') {
+            // Use item (assume consumable)
+            if (selected.item.use && typeof selected.item.use === 'function') {
+                // For now, just call use with no state
+                selected.item.use(undefined as any);
+                this.inventory.remove(selected.item.name, 1);
+                this.game.setStatusMessage(`Used ${selected.item.displayName}`);
+            }
+        } else if (action === 'equip' && target) {
+            // Equip item (if weapon/armor/shield)
+            // Example: if (selected.item instanceof Weapon) target.equipWeapon(selected.item as any);
+            // ...implement equip logic as needed
+            this.game.setStatusMessage(`Equipped ${selected.item.displayName} to ${target.name}`);
+        } else if (action === 'discard') {
+            this.inventory.remove(selected.item.name, 1);
+            this.game.setStatusMessage(`Discarded ${selected.item.displayName}`);
         }
     }
 }
