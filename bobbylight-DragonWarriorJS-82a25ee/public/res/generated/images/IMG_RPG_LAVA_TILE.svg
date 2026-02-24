@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<style>:root{--c1:#231008;--c2:#b83f12;--c3:#ffb45a;}</style>
+</defs>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/><path d="M0 90 C18 76, 34 104, 52 90 C70 74, 86 106, 104 90 C118 78, 124 92, 128 90 V128 H0 Z" fill="var(--c2)"/><path d="M0 104 C18 90, 34 118, 52 104 C70 90, 86 122, 104 104 C118 92, 124 108, 128 104 V128 H0 Z" fill="var(--c3)" opacity="0.8"/>
+</svg>

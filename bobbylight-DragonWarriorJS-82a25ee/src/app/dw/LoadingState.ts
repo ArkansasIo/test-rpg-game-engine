@@ -6,6 +6,7 @@ import { Shield,ShieldData } from './Shield';
 import { DwGame } from './DwGame';
 import { GameStudioAdvertState } from './GameStudioAdvertState';
 import { EquipmentMap } from './dw';
+import { registerGeneratedRpgAudioAssets, registerGeneratedRpgImageAssets } from './ProceduralRpgAssetSystem';
 
 export interface EquipmentData {
     weapons: Record<string, WeaponData>;
@@ -152,22 +153,8 @@ export class LoadingState extends BaseState {
             void game.assets.addSound('dead', 'res/sound/20 Dragon Quest 1 - Thou Hast Died (22khz mono).ogg');
             void game.assets.addSound('overnight', 'res/sound/21 Dragon Quest 1 - Special Item (22khz mono).ogg');
             void game.assets.addSound('victory', 'res/sound/25 Dragon Quest 1 - Victory (22khz mono).ogg', 0, false);
-            void game.assets.addSound('stairs', 'res/sound/29 Dragon Quest 1 - Stairs Up (22khz mono).wav');
-            void game.assets.addSound('run', 'res/sound/30 Dragon Quest 1 - Stairs Down (22khz mono).wav');
-            void game.assets.addSound('menu', 'res/sound/32 Dragon Quest 1 - Menu Button (22khz mono).wav');
-            void game.assets.addSound('confirmation', 'res/sound/33 Dragon Quest 1 - Confirmation (22khz mono).wav');
-            void game.assets.addSound('hit', 'res/sound/34 Dragon Quest 1 - Hit (22khz mono).wav');
-            void game.assets.addSound('excellentMove', 'res/sound/35 Dragon Quest 1 - Excellent Move (22khz mono).wav');
-            void game.assets.addSound('attack', 'res/sound/36 Dragon Quest 1 - Attack (22khz mono).ogg');
-            void game.assets.addSound('receiveDamage', 'res/sound/37 Dragon Quest 1 - Receive Damage (22khz mono).wav');
-            void game.assets.addSound('prepareToAttack', 'res/sound/39 Dragon Quest 1 - Prepare to Attack (22khz mono).wav');
-            void game.assets.addSound('missed1', 'res/sound/40 Dragon Quest 1 - Missed! (22khz mono).wav');
-            void game.assets.addSound('missed2', 'res/sound/41 Dragon Quest 1 - Missed! (2) (22khz mono).wav');
-            void game.assets.addSound('bump', 'res/sound/42 Dragon Quest 1 - Bumping into Walls (22khz mono).wav');
-            void game.assets.addSound('castSpell', 'res/sound/43 Dragon Quest 1 - Cast A Spell (22khz mono).ogg');
-            void game.assets.addSound('openChest', 'res/sound/44 Dragon Quest 1 - Open Treasure (22khz mono).ogg');
-            void game.assets.addSound('door', 'res/sound/45 Dragon Quest 1 - Open Door (22khz mono).ogg');
-            void game.assets.addSound('talk', 'res/sound/Elders of the Ashen Realm [Dragon Quest] SFX (1).wav');
+            registerGeneratedRpgAudioAssets(game);
+            registerGeneratedRpgImageAssets(game);
             game.assets.onLoad(() => {
 
                 // TODO: This could be done much, much more cleanly

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<style>:root{--c1:#1c1b1a;--c2:#555148;--c3:#c5bca8;}</style>
+</defs>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/>
+<rect x="12" y="12" width="104" height="104" fill="var(--c2)"/><path d="M12 40 H116 M12 68 H116 M12 96 H116 M40 12 V116 M68 12 V116 M96 12 V116" stroke="var(--c3)" stroke-width="3" opacity="0.55"/>
+</svg>

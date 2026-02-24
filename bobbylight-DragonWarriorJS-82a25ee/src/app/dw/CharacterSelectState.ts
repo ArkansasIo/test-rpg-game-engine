@@ -3,6 +3,7 @@ import { DwGame } from './DwGame';
 import { getAdventureLogSummaries } from './AdventureLog';
 import { ChoiceBubble } from './ChoiceBubble';
 import { InitialMenuState } from './InitialMenuState';
+import { BaseState } from './BaseState';
 
 /**
  * Character loading/select screen, inspired by WoW.
@@ -56,11 +57,45 @@ export class CharacterSelectState extends BaseState {
 
     override render(ctx: CanvasRenderingContext2D) {
         const game = this.game;
-        game.clearScreen();
-        ctx.font = '28px monospace';
+        // Modern styled background
+        ctx.save();
+        ctx.fillStyle = 'rgba(30, 30, 60, 0.95)';
+        ctx.fillRect(0, 0, game.getWidth(), game.getHeight());
+        ctx.restore();
+        // Border
+        ctx.save();
+        ctx.strokeStyle = '#aaf';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10, 10, game.getWidth() - 20, game.getHeight() - 20);
+        ctx.restore();
+        // Title
+        ctx.font = 'bold 28px monospace';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#FFD700';
         ctx.fillText('Character Select', game.getWidth() / 2, 60);
+        // Paint select bubble
         this.selectBubble.paint(ctx);
+        // Tooltip for selected log
+        const idx = this.selectBubble.getSelectedIndex();
+        if (idx >= 0 && this.summaries[idx]) {
+            ctx.font = 'italic 16px monospace';
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffe066';
+            const summary = this.summaries[idx];
+            const tooltip = `Last played: ${new Date(summary.modifiedAt).toLocaleString()}\nHero: ${summary.heroName} (Lv ${summary.level})`;
+            const lines = tooltip.split('\n');
+            let y = game.getHeight() - 80;
+            for (const line of lines) {
+                ctx.fillText(line, 30, y);
+                y += 20;
+            }
+        }
+        // Navigation button
+        ctx.fillStyle = '#aaf';
+        ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+        ctx.font = 'bold 16px monospace';
+        ctx.fillStyle = '#222';
+        ctx.textAlign = 'center';
+        ctx.fillText('Back', game.getWidth() - 75, game.getHeight() - 35);
     }
 }

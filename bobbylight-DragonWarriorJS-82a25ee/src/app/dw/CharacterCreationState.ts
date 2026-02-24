@@ -118,25 +118,36 @@ export class CharacterCreationState extends BaseState {
 
     override render(ctx: CanvasRenderingContext2D) {
         const game = this.game;
-        game.clearScreen();
+        // Draw modern styled background
+        ctx.save();
+        ctx.fillStyle = 'rgba(30, 30, 60, 0.95)';
+        ctx.fillRect(0, 0, game.getWidth(), game.getHeight());
+        ctx.restore();
+        // Draw border
+        ctx.save();
+        ctx.strokeStyle = '#aaf';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(10, 10, game.getWidth() - 20, game.getHeight() - 20);
+        ctx.restore();
         let y = 30;
-        ctx.font = '18px monospace';
-        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 22px monospace';
+        ctx.fillStyle = '#ffe066';
         ctx.textAlign = 'left';
-        ctx.fillText('Character Creation', 20, y);
+        ctx.fillText('Character Creation', 30, y);
         y += 32;
-        ctx.font = '14px monospace';
+        ctx.font = '16px monospace';
         const infoFields = [
-            `Name: ${this.selectedName.length > 0 ? this.selectedName : '[Not set]'}`,
-            `Race: ${this.selectedRace?.name ?? '[Not set]'}`,
-            `Class: ${this.selectedClass?.name ?? '[Not set]'}`,
-            `Type: ${this.selectedType ?? '[Not set]'}`,
-            `Subclass: ${this.selectedSubClass ?? '[Not set]'}`,
-            `Subtype: ${this.selectedSubType ?? '[Not set]'}`
+            { label: 'Name', value: this.selectedName.length > 0 ? this.selectedName : '[Not set]', color: '#fff' },
+            { label: 'Race', value: this.selectedRace?.name ?? '[Not set]', color: '#aaf' },
+            { label: 'Class', value: this.selectedClass?.name ?? '[Not set]', color: '#fa7' },
+            { label: 'Type', value: this.selectedType ?? '[Not set]', color: '#7fa' },
+            { label: 'Subclass', value: this.selectedSubClass ?? '[Not set]', color: '#ff7' },
+            { label: 'Subtype', value: this.selectedSubType ?? '[Not set]', color: '#7ff' }
         ];
         for (const field of infoFields) {
-            ctx.fillText(field, 20, y);
-            y += 18;
+            ctx.fillStyle = field.color;
+            ctx.fillText(`${field.label}: ${field.value}`, 30, y);
+            y += 20;
         }
         y += 18;
         ctx.font = '15px monospace';
@@ -162,33 +173,97 @@ export class CharacterCreationState extends BaseState {
         const maxWidth = game.getWidth() - 40;
         switch (this.step) {
             case 0:
-                y = wrapText('Step 1: Enter your character name.', 20, y, maxWidth, 16);
-                y = wrapText('Type your desired name and press Enter.', 20, y, maxWidth, 16);
+                y = wrapText('Step 1: Enter your character name.', 30, y, maxWidth, 16);
+                y = wrapText('Type your desired name and press Enter.', 30, y, maxWidth, 16);
+                // Draw navigation button
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 1:
-                y = wrapText('Step 2: Select your race.', 20, y, maxWidth, 16);
+                y = wrapText('Step 2: Select your race.', 30, y, maxWidth, 16);
                 this.raceBubble.paint(ctx);
+                // Tooltip for race
+                if (this.selectedRace) {
+                    ctx.font = 'italic 14px monospace';
+                    ctx.fillStyle = '#ffe066';
+                    wrapText(this.selectedRace.description, 30, game.getHeight() - 80, maxWidth, 16);
+                }
+                // Navigation buttons
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 220, game.getHeight() - 60, 90, 40);
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Back', game.getWidth() - 200, game.getHeight() - 35);
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 2:
-                y = wrapText('Step 3: Select your class.', 20, y, maxWidth, 16);
+                y = wrapText('Step 3: Select your class.', 30, y, maxWidth, 16);
                 this.classBubble.paint(ctx);
+                // Tooltip for class
+                if (this.selectedClass) {
+                    ctx.font = 'italic 14px monospace';
+                    ctx.fillStyle = '#ffe066';
+                    wrapText('Choose a class to define your abilities.', 30, game.getHeight() - 80, maxWidth, 16);
+                }
+                // Navigation buttons
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 220, game.getHeight() - 60, 90, 40);
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Back', game.getWidth() - 200, game.getHeight() - 35);
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 3:
-                y = wrapText('Step 4: Select your type.', 20, y, maxWidth, 16);
+                y = wrapText('Step 4: Select your type.', 30, y, maxWidth, 16);
                 this.typeBubble.paint(ctx);
+                // Navigation buttons
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 220, game.getHeight() - 60, 90, 40);
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Back', game.getWidth() - 200, game.getHeight() - 35);
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 4:
-                y = wrapText('Step 5: Select your subclass.', 20, y, maxWidth, 16);
+                y = wrapText('Step 5: Select your subclass.', 30, y, maxWidth, 16);
                 this.subClassBubble.paint(ctx);
+                // Navigation buttons
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 220, game.getHeight() - 60, 90, 40);
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Back', game.getWidth() - 200, game.getHeight() - 35);
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 5:
-                y = wrapText('Step 6: Select your subtype.', 20, y, maxWidth, 16);
+                y = wrapText('Step 6: Select your subtype.', 30, y, maxWidth, 16);
                 this.subTypeBubble.paint(ctx);
+                // Navigation buttons
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 220, game.getHeight() - 60, 90, 40);
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Back', game.getWidth() - 200, game.getHeight() - 35);
+                ctx.fillText('Next', game.getWidth() - 100, game.getHeight() - 35);
                 break;
             case 6:
-                y = wrapText('Step 7: Confirm your character!', 20, y, maxWidth, 16);
-                y = wrapText('Review all details above.', 20, y, maxWidth, 16);
-                y = wrapText('Press Enter to start your adventure.', 20, y, maxWidth, 16);
+                y = wrapText('Step 7: Confirm your character!', 30, y, maxWidth, 16);
+                y = wrapText('Review all details above.', 30, y, maxWidth, 16);
+                y = wrapText('Press Enter to start your adventure.', 30, y, maxWidth, 16);
+                // Navigation button
+                ctx.fillStyle = '#aaf';
+                ctx.fillRect(game.getWidth() - 120, game.getHeight() - 60, 90, 40);
+                ctx.font = 'bold 16px monospace';
+                ctx.fillStyle = '#222';
+                ctx.fillText('Start', game.getWidth() - 100, game.getHeight() - 35);
                 break;
         }
     }

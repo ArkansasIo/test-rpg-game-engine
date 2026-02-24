@@ -96,13 +96,8 @@ export class InitialMenuState extends BaseState {
                             break;
                         case 3: { // Exit
                             this.game.audio.playSound('menu');
-                            try {
-                                // Attempt to close the window gracefully
-                                window.close();
-                            } catch (e) {
-                                // Fall back to reload
-                                window.location.reload();
-                            }
+                            // Instead of closing the window, reload the page
+                            window.location.reload();
                             break;
                         }
                         default:

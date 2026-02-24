@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<style>:root{--c1:#160d08;--c2:#a84b22;--c3:#f7cf9e;}</style>
+</defs>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/>
+<polygon points="64,14 98,36 98,78 64,114 30,78 30,36" fill="var(--c2)" stroke="var(--c3)" stroke-width="4"/><path d="M64 14 V114 M30 36 L98 78 M98 36 L30 78" stroke="var(--c3)" stroke-width="3" opacity="0.7"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<style>:root{--c1:#140707;--c2:#ac2020;--c3:#ffd0a0;}</style>
+</defs>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/>
+<path d="M64 10 L78 48 L118 48 L86 72 L98 114 L64 88 L30 114 L42 72 L10 48 L50 48 Z" fill="var(--c2)" stroke="var(--c3)" stroke-width="4"/>
+</svg>

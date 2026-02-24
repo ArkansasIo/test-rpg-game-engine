@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+<defs>
+<style>:root{--c1:#071316;--c2:#2a8b9f;--c3:#8ef0ff;}</style>
+</defs>
+<rect x="0" y="0" width="128" height="128" fill="var(--c1)"/>
+<ellipse cx="64" cy="64" rx="38" ry="50" fill="none" stroke="var(--c2)" stroke-width="8"/><ellipse cx="64" cy="64" rx="22" ry="34" fill="none" stroke="var(--c3)" stroke-width="6"/>
+</svg>
