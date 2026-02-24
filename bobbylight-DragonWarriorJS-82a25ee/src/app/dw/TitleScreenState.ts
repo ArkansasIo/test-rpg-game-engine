@@ -14,7 +14,7 @@ export class TitleScreenState extends BaseState {
         this.blink = true;
     }
 
-    override enter() {
+    enter() {
         super.enter();
         this.game.canvas.addEventListener('touchstart', this.handleStart.bind(this), false);
         this.delay = new Delay({ millis: [ 600, 400 ] });
@@ -22,7 +22,7 @@ export class TitleScreenState extends BaseState {
         this.game.audio.playMusic('MUSIC_TITLE_SCREEN');
     }
 
-    override leaving() {
+    leaving() {
         this.game.canvas.removeEventListener('touchstart', this.handleStart.bind(this), false);
     }
 
@@ -31,7 +31,7 @@ export class TitleScreenState extends BaseState {
         this.loadNextState();
     }
 
-    override update(delta: number) {
+    update(delta: number) {
         this.handleDefaultKeys();
         if (this.delay?.update(delta)) {
             this.delay.reset();
@@ -43,14 +43,58 @@ export class TitleScreenState extends BaseState {
         }
     }
 
-    override render(ctx: CanvasRenderingContext2D) {
+    render(ctx: CanvasRenderingContext2D) {
         const game: DwGame = this.game;
         game.clearScreen();
         const w: number = game.getWidth();
-        const img: Image = game.assets.get('title');
-        let x: number = (w - img.width) / 2;
-        let y = 30;
-        img.draw(ctx, x, y);
+        let x: number = 0;
+        let y: number = 0;
+        // Check if font asset is loaded before rendering
+        let fontLoaded = true;
+        try {
+            game.assets.get('font');
+        } catch (e) {
+            fontLoaded = false;
+        }
+        if (!fontLoaded) {
+            // Skip rendering if font asset is not loaded
+            return;
+        }
+        let img: Image | undefined;
+        try {
+            img = game.assets.get('title');
+        } catch (e) {
+            img = undefined;
+        }
+        if (img && img.width && img.height) {
+            x = (w - img.width) / 2;
+            y = 30;
+            img.draw(ctx, x, y);
+        } else {
+            // Fallback: draw game title text if image missing or not loaded
+            const title = 'Mystic Legends: Quest for Glory';
+            try {
+                x = (w - game.stringWidth(title)) / 2;
+                y = 60;
+                game.drawString(title, x, y);
+            } catch (e) {
+                // Asset not loaded, skip rendering
+            }
+        }
+
+        // Developer credits
+        const devNames = [
+            'BY: Stephen',
+            'ArkansasIo',
+            'Additional Contributors:'
+        ];
+        y = 120;
+        for (const name of devNames) {
+            x = (w - game.stringWidth(name)) / 2;
+            game.drawString(name, x, y);
+            y += 24;
+        }
+
         if (!game.audio.isInitialized()) {
             let text = 'Sound is disabled as your';
             x = (w - game.stringWidth(text)) / 2;
@@ -63,13 +107,12 @@ export class TitleScreenState extends BaseState {
             text = 'web audio';
             x = (w - game.stringWidth(text)) / 2;
             y += 26;
-            game.drawString(text, x, y);
-        }
-        if (this.blink) {
-            const prompt = 'Press Enter';
-            x = (w - game.stringWidth(prompt)) / 2;
-            y = 240;
-            game.drawString(prompt, x, y);
+            if (this.blink) {
+                const prompt = 'Press Enter';
+                x = (w - game.stringWidth(prompt)) / 2;
+                y = 240;
+                game.drawString(prompt, x, y);
+            }
         }
     }
 

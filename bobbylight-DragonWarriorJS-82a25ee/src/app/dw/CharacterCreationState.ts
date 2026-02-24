@@ -1,6 +1,10 @@
+import { InputManager } from 'gtp';
 import { BaseState } from './BaseState';
 import { DwGame } from './DwGame';
 import { CHARACTER_CLASSES, CHARACTER_RACES, CharacterClassOption, CharacterRaceOption } from './characterCreationData';
+import { CharacterType } from './characterCreationData';
+import { createNewAdventureLog, saveAdventureLog } from './AdventureLog';
+import { ChoiceBubble } from './ChoiceBubble';
 
 export class CharacterCreationState extends BaseState {
     private selectedName: string = '';
@@ -10,9 +14,19 @@ export class CharacterCreationState extends BaseState {
     private selectedSubClass: string | null = null;
     private selectedSubType: string | null = null;
     private step: number = 0; // 0: name, 1: race, 2: class, 3: type, 4: subclass, 5: subtype, 6: confirm
+    private raceBubble: ChoiceBubble<CharacterRaceOption>;
+    private classBubble: ChoiceBubble<CharacterClassOption>;
+    private typeBubble: ChoiceBubble<CharacterType>;
+    private subClassBubble: ChoiceBubble<string>;
+    private subTypeBubble: ChoiceBubble<string>;
 
     constructor(game: DwGame) {
         super(game);
+        this.raceBubble = new ChoiceBubble(game, 120, 120, 400, 180, CHARACTER_RACES, (race: CharacterRaceOption) => race.name);
+        this.classBubble = new ChoiceBubble(game, 120, 120, 400, 180, CHARACTER_CLASSES, (cls: CharacterClassOption) => cls.name);
+        this.typeBubble = new ChoiceBubble(game, 120, 120, 400, 180, [], (type: CharacterType) => type.name);
+        this.subClassBubble = new ChoiceBubble(game, 120, 120, 400, 180, [], (sub: string) => sub);
+        this.subTypeBubble = new ChoiceBubble(game, 120, 120, 400, 180, [], (sub: string) => sub);
     }
 
     override enter() {
@@ -27,29 +41,78 @@ export class CharacterCreationState extends BaseState {
     }
 
     override update(delta: number) {
-        // Handle input for each step (pseudo-code, UI integration needed)
-        // For now, just cycle steps for demonstration
-        // Replace with actual input handling and UI logic
-        if (this.step < 6) {
-            this.step++;
-        } else if (this.step === 6) {
-            // On confirmation, create and save a new AdventureLog, then start the game
-            // (In real code, check for Enter key or confirmation input)
-            const { createNewAdventureLog, saveAdventureLog } = require('./AdventureLog');
-            const log = createNewAdventureLog();
-            // Patch log with selected character options
-            log.hero.name = this.selectedName || 'Hero';
-            log.hero.race = this.selectedRace?.name || 'Human';
-            log.hero.class = this.selectedClass?.name || 'Warrior';
-            log.hero.type = this.selectedType || '';
-            log.hero.subClass = this.selectedSubClass || '';
-            log.hero.subType = this.selectedSubType || '';
-            saveAdventureLog(log);
-            // Set log and start game
-            this.game.adventureLog = log;
-            // Use the same transition as startNewGame
-            // @ts-ignore
-            this.game['transitionToGame']();
+        const im: InputManager = this.game.inputManager;
+        switch (this.step) {
+            case 0: // Name input
+                for (let i = 65; i <= 90; i++) { // A-Z
+                    if (im.isKeyDown && im.isKeyDown(i, true)) {
+                        this.selectedName += String.fromCharCode(i);
+                    }
+                }
+                if (im.isKeyDown && im.isKeyDown(8, true)) {
+                    this.selectedName = this.selectedName.slice(0, -1);
+                }
+                if (im.enter(true) && this.selectedName.length > 0) {
+                    this.step = 1;
+                }
+                break;
+            case 1: // Race selection
+                this.raceBubble.update(delta);
+                if (this.raceBubble.handleInput()) {
+                    this.selectedRace = this.raceBubble.getSelectedItem()!;
+                    this.step = 2;
+                }
+                break;
+            case 2: // Class selection
+                this.classBubble.update(delta);
+                if (this.classBubble.handleInput()) {
+                    this.selectedClass = this.classBubble.getSelectedItem()!;
+                    this.step = 3;
+                }
+                break;
+            case 3: // Type selection
+                if (this.selectedClass) {
+                    this.typeBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, this.selectedClass.types, (type: CharacterType) => type.name);
+                    this.typeBubble.update(delta);
+                    if (this.typeBubble.handleInput()) {
+                        this.selectedType = this.typeBubble.getSelectedItem()?.name || null;
+                        this.step = 4;
+                    }
+                }
+                break;
+            case 4: // Subclass selection
+                if (this.selectedClass) {
+                    this.subClassBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, this.selectedClass.subClasses, (sub) => sub);
+                    this.subClassBubble.update(delta);
+                    if (this.subClassBubble.handleInput()) {
+                        this.selectedSubClass = this.subClassBubble.getSelectedItem() || null;
+                        this.step = 5;
+                    }
+                }
+                break;
+            case 5: // Subtype selection
+                if (this.selectedClass && this.selectedType) {
+                    const typeObj = this.selectedClass.types.find(t => t.name === this.selectedType);
+                    if (typeObj) {
+                        this.subTypeBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, typeObj.subTypes, (sub) => sub);
+                        this.subTypeBubble.update(delta);
+                        if (this.subTypeBubble.handleInput()) {
+                            this.selectedSubType = this.subTypeBubble.getSelectedItem() || null;
+                            this.step = 6;
+                        }
+                    }
+                }
+                break;
+            case 6: // Confirm and start game
+                if (im.enter(true)) {
+                    const log = createNewAdventureLog();
+                    log.hero.name = this.selectedName || 'Hero';
+                    saveAdventureLog(log);
+                    if (typeof this.game.continueGame === 'function') {
+                        this.game.continueGame(log.id);
+                    }
+                }
+                break;
         }
     }
 
@@ -61,7 +124,6 @@ export class CharacterCreationState extends BaseState {
         ctx.fillStyle = '#fff';
         ctx.fillText('Character Creation', 40, y);
         y += 40;
-        // Show current selections at the top for context
         ctx.font = '16px monospace';
         ctx.fillText(`Name: ${this.selectedName || '[Not set]'}`, 40, y); y += 22;
         ctx.fillText(`Race: ${this.selectedRace?.name || '[Not set]'}`, 40, y); y += 22;
@@ -74,51 +136,26 @@ export class CharacterCreationState extends BaseState {
             case 0:
                 ctx.fillText('Step 1: Enter your character name.', 40, y);
                 ctx.fillText('Type your desired name and press Enter.', 40, y + 30);
-                // Draw name input UI here
                 break;
             case 1:
                 ctx.fillText('Step 2: Select your race.', 40, y);
-                ctx.fillText('Use arrow keys and Enter to choose:', 40, y + 30);
-                CHARACTER_RACES.forEach((race, i) => {
-                    ctx.fillText(`${i + 1}. ${race.name} - ${race.description}`, 60, y + 60 + i * 24);
-                });
+                this.raceBubble.paint(ctx);
                 break;
             case 2:
                 ctx.fillText('Step 3: Select your class.', 40, y);
-                ctx.fillText('Use arrow keys and Enter to choose:', 40, y + 30);
-                CHARACTER_CLASSES.forEach((cls, i) => {
-                    ctx.fillText(`${i + 1}. ${cls.name}`, 60, y + 60 + i * 24);
-                });
+                this.classBubble.paint(ctx);
                 break;
             case 3:
                 ctx.fillText('Step 4: Select your type.', 40, y);
-                ctx.fillText('Use arrow keys and Enter to choose:', 40, y + 30);
-                if (this.selectedClass) {
-                    this.selectedClass.types.forEach((type, i) => {
-                        ctx.fillText(`${i + 1}. ${type.name}`, 60, y + 60 + i * 24);
-                    });
-                }
+                this.typeBubble.paint(ctx);
                 break;
             case 4:
                 ctx.fillText('Step 5: Select your subclass.', 40, y);
-                ctx.fillText('Use arrow keys and Enter to choose:', 40, y + 30);
-                if (this.selectedClass) {
-                    this.selectedClass.subClasses.forEach((sub, i) => {
-                        ctx.fillText(`${i + 1}. ${sub}`, 60, y + 60 + i * 24);
-                    });
-                }
+                this.subClassBubble.paint(ctx);
                 break;
             case 5:
                 ctx.fillText('Step 6: Select your subtype.', 40, y);
-                ctx.fillText('Use arrow keys and Enter to choose:', 40, y + 30);
-                if (this.selectedClass && this.selectedType) {
-                    const typeObj = this.selectedClass.types.find(t => t.name === this.selectedType);
-                    if (typeObj) {
-                        typeObj.subTypes.forEach((sub, i) => {
-                            ctx.fillText(`${i + 1}. ${sub}`, 60, y + 60 + i * 24);
-                        });
-                    }
-                }
+                this.subTypeBubble.paint(ctx);
                 break;
             case 6:
                 ctx.fillText('Step 7: Confirm your character!', 40, y);

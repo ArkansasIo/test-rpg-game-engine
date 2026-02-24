@@ -2,6 +2,8 @@ import { BaseState } from './BaseState';
 import { DwGame } from './DwGame';
 import { ChoiceBubble } from './ChoiceBubble';
 import { getAdventureLogSummaries } from './AdventureLog';
+import { CharacterCreationState } from './CharacterCreationState';
+import { CharacterSelectState } from './CharacterSelectState';
 
 /**
  * The internal substates this menu can be in.  We break out the main menu
@@ -43,10 +45,11 @@ export class InitialMenuState extends BaseState {
         const y: number = (game.getHeight() - h) / 2;
 
         const choices: string[] = [
-            'NEW GAME',
-            'LOAD GAME',
-            'OPTIONS',
-            'EXIT',
+            'START NEW ADVENTURE',
+            'CONTINUE JOURNEY',
+            'SETTINGS',
+            'CREDITS',
+            'EXIT GAME',
         ];
 
         return new ChoiceBubble(this.game, x, y, w, h, choices);
@@ -59,75 +62,11 @@ export class InitialMenuState extends BaseState {
      * modified timestamp.  If there are no saved games then a single entry
      * invites the player to return.
      */
-    private createSaveSelectBubble(): ChoiceBubble<{ id: string; label: string }> {
-        // If the bubble already exists we reuse it to preserve selection state.
-        if (this.saveSelectBubble) {
-            this.saveSelectBubble.reset();
-            return this.saveSelectBubble as unknown as ChoiceBubble<{ id: string; label: string }>;
-        }
-
-        const game: DwGame = this.game;
-        const tileSize: number = game.getTileSize();
-        const w: number = game.getWidth() - 4 * tileSize;
-        // Height will grow with the number of saves but never exceed half the screen.
-        const maxHeight: number = Math.floor(game.getHeight() / 2);
-        let y: number;
-        let h: number;
-
-        const summaries = getAdventureLogSummaries();
-        let choices: { id: string; label: string }[];
-
-        if (summaries.length > 0) {
-            // Build a list of choices from each summary.  Format the date to a
-            // human readable local string.  We rely on the browser’s locale
-            // (Canada/Toronto) implicitly here.
-            choices = summaries.map((summary, index) => {
-                const modifiedDate = new Date(summary.modifiedAt);
-                const dateStr = modifiedDate.toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                });
-                const label = `LOG ${index + 1}: ${summary.heroName} (Lv ${summary.level}) - ${dateStr}`;
-                return { id: summary.id, label };
-            });
-        } else {
-            // No saved games exist; present a dummy entry that simply returns to
-            // the main menu.  Using id === '' signals that the user cannot
-            // actually continue any game.
-            choices = [ { id: '', label: 'NO SAVES AVAILABLE' } ];
-        }
-
-        // Height is based on the number of saves, each row is 1.5 tiles tall.
-        h = Math.min(Math.ceil((choices.length + 1) * tileSize * 1.5), maxHeight);
-        // Position the bubble centrally with a small horizontal offset for
-        // symmetry – similar to the original game’s design.
-        const x: number = (game.getWidth() - w) / 2 + tileSize;
-        y = (game.getHeight() - h) / 2;
-
-        // Provide a custom stringifier to display our objects.  Choices are
-        // cancellable so the user can press the cancel key to return to the
-        // main menu.
-        const bubble = new ChoiceBubble<{ id: string; label: string }>(
-            this.game,
-            x,
-            y,
-            w,
-            h,
-            choices,
-            (choice) => choice.label,
-            true,
-            'Select Save'
-        );
-        this.saveSelectBubble = bubble as unknown as ChoiceBubble<string>;
-        return bubble;
-    }
 
     override enter() {
         super.enter();
         this.substate = 'mainMenu';
+        this.menuBubble.setActive(true);
         this.game.audio.playMusic('MUSIC_TOWN');
     }
 
@@ -144,21 +83,11 @@ export class InitialMenuState extends BaseState {
                     switch (selection) {
                         case 0: // New game
                             this.game.audio.playSound('menu');
-                            // Go to character creation state instead of starting game immediately
-                            // @ts-ignore
-                            const { CharacterCreationState } = require('./CharacterCreationState');
                             this.game.setState(new CharacterCreationState(this.game));
                             break;
                         case 1: { // Load game
                             this.game.audio.playSound('menu');
-                            const summaries = getAdventureLogSummaries();
-                            if (summaries.length === 0) {
-                                this.game.audio.playSound('missed1');
-                            } else {
-                                this.substate = 'saveSelect';
-                                this.menuBubble.setActive(false);
-                                this.saveSelectBubble = this.createSaveSelectBubble();
-                            }
+                            this.game.setState(new CharacterSelectState(this.game));
                             break;
                         }
                         case 2: // Options

@@ -1,4 +1,4 @@
-import { BitmapFont, FadeOutInState, Game, Image, ImageAtlas, ImageAtlasInfo, ImageMap, Utils } from 'gtp';
+import { BitmapFont, FadeOutInState, Game, Image, ImageAtlas, ImageAtlasInfo, ImageMap, SpriteSheet, Utils } from 'gtp';
 import { BaseState } from './BaseState';
 import { Weapon,WeaponData } from './Weapon';
 import { Armor,ArmorData } from './Armor';
@@ -117,10 +117,11 @@ export class LoadingState extends BaseState {
         this.handleDefaultKeys();
 
         if (!this.assetsLoaded) {
+            console.log('LoadingState: assets not loaded, initializing asset loading...');
 
             this.assetsLoaded = true;
             const game: DwGame = this.game;
-
+            console.log('LoadingState: adding assets...');
             game.assets.addImage('title', 'res/title.png');
             game.assets.addSpriteSheet('hero', 'res/hero.png', 16, 16, 1, 1, true);
             game.assets.addSpriteSheet('npcs', 'res/npcs.png', 16, 16, 1, 1, true);
@@ -218,20 +219,47 @@ export class LoadingState extends BaseState {
     override render(ctx: CanvasRenderingContext2D) {
 
         const game: Game = this.game;
-        game.clearScreen('rgb(0,0,255)');
+        game.clearScreen('rgb(30, 30, 60)');
 
-        const str = 'Loading...';
-        ctx.font = 'bold 30px Sans Serif';
+        // RPG loading flavor
+        const loadingTexts = [
+            'Preparing your adventure...',
+            'Sharpening swords and polishing armor...',
+            'Gathering heroes at the tavern...',
+            'Rolling dice for luck...',
+            'Enchanting spells and potions...',
+            'Loading epic quests...'
+        ];
+        // Animate loading dots
+        const time = Date.now();
+        const dots = '.'.repeat(((Math.floor(time / 400) % 4) + 1));
+        const textIndex = Math.floor(time / 2000) % loadingTexts.length;
+        const str = loadingTexts[textIndex] + dots;
+        ctx.font = 'bold 28px Serif';
 
-        if (!this.textX || !this.textY) { // appease tsc
+        if (!this.textX || !this.textY) {
             const textMetrics: TextMetrics = ctx.measureText(str);
             this.textX = (game.getWidth() - textMetrics.width) / 2;
-            const fontDescentGuess = 4;
+            const fontDescentGuess = 8;
             this.textY = (game.getHeight() - fontDescentGuess) / 2;
         }
 
-        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.fillStyle = 'rgb(255, 255, 210)';
         ctx.fillText(str, this.textX, this.textY);
+
+        // Optionally, show a pixel-art hero sprite if available
+            const heroSheet = game.assets.get && game.assets.get('hero') as SpriteSheet;
+            if (heroSheet) {
+                const x = (game.getWidth() - 48) / 2;
+                const y = this.textY + 40;
+                // Draw the hero sprite (row 0, col 0)
+                heroSheet.drawSprite(ctx, x, y, 0, 0);
+            }
+
+        // Add RPG border or frame (simple decorative corners)
+        ctx.strokeStyle = 'gold';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(32, 32, game.getWidth() - 64, game.getHeight() - 64);
 
     }
 }

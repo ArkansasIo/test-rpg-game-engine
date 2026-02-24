@@ -27,15 +27,23 @@ export class GameStudioAdvertState extends BaseState {
         game.clearScreen();
         const w: number = game.getWidth();
 
-        //         var img = game.assets.get('gameStudioLogo');
-        //         var x = (w - img.width) / 2;
-        //         var y = 30;
-        //         img.draw(ctx, x, y);
-
-        const prompt = 'OutOnBail Games Presents';
-        const x: number = (w - game.stringWidth(prompt)) / 2;
-        const y: number = (game.getHeight() - game.stringHeight()) / 2;
-        game.drawString(prompt, x, y);
+        // Only render if font asset is loaded
+        try {
+            const logo = 'RolePlayGme JS Engine';
+            const devs = 'by: ArkansasIo';
+            const presents = 'Presents';
+            const xLogo = (w - game.stringWidth(logo)) / 2;
+            const yLogo = 120;
+            game.drawString(logo, xLogo, yLogo);
+            const xDevs = (w - game.stringWidth(devs)) / 2;
+            const yDevs = yLogo + 40;
+            game.drawString(devs, xDevs, yDevs);
+            const xPres = (w - game.stringWidth(presents)) / 2;
+            const yPres = yDevs + 40;
+            game.drawString(presents, xPres, yPres);
+        } catch (e) {
+            // Asset not loaded, skip rendering
+        }
     }
 
     private startGame() {

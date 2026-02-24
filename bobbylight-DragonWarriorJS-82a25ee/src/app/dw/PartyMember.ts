@@ -7,7 +7,7 @@ import { Weapon } from './Weapon';
 import { Armor } from './Armor';
 import { Enemy } from './Enemy';
 import { DwGame } from './DwGame';
-import { healSpell, hurtSpell, Spell } from '@/app/dw/Spell';
+import { Spell } from '@/app/dw/Spell';
 
 export interface PartyMemberArgs extends RoamingEntityArgs {
     hp?: number;
@@ -86,18 +86,18 @@ export class PartyMember extends RoamingEntity {
         // Could trigger UI refresh, recalculate derived stats, etc.
     }
 
-    hp: number;
-    maxHp: number;
-    mp: number;
-    maxMp: number;
-    level: number;
-    exp: number;
-    strength: number;
-    agility: number;
+    hp: number = 0;
+    maxHp: number = 0;
+    mp: number = 0;
+    maxMp: number = 0;
+    level: number = 1;
+    exp: number = 0;
+    strength: number = 0;
+    agility: number = 0;
     weapon?: Weapon;
     armor?: Armor;
     shield?: Shield;
-    readonly spells: Spell[];
+    readonly spells: Spell[] = [];
 
     // --- Talent Tree and Level System ---
     talentPoints: number = 0;
@@ -120,7 +120,7 @@ export class PartyMember extends RoamingEntity {
                 hp: 5 + Math.floor(i/2),
                 mp: i % 2 === 0 ? 2 : 1,
                 strength: 1 + Math.floor(i/5),
-                agility: 1 + Math.floor(i/7),
+                agility: 1 + Math.floor(i/7)
             }
         }));
 
@@ -130,7 +130,7 @@ export class PartyMember extends RoamingEntity {
             name: 'Default Talent Tree',
             nodes: {}
         };
-
+    }
 
     gainExp(amount: number) {
         this.exp += amount;
@@ -152,13 +152,14 @@ export class PartyMember extends RoamingEntity {
         this.talentPoints++;
 
         // Show level-up notification if in RoamingState
-        if (typeof window !== 'undefined' && window["dwRoamingState"] && typeof window["dwRoamingState"].showConversation === 'function') {
+        if (typeof window !== 'undefined' && (window as any).dwRoamingState && typeof (window as any).dwRoamingState.showConversation === 'function') {
             const heroName = this.name || 'Hero';
             const msg = `${heroName} reached level ${this.level}!`;
-            const Conversation = require('./Conversation').Conversation;
-            const conv = new Conversation(window["dwGame"] || this.game, false);
-            conv.addSegment(msg);
-            window["dwRoamingState"].showConversation(conv);
+            import('./Conversation').then(({ Conversation }) => {
+                const conv = new Conversation((window as any).dwGame || this.game, false);
+                conv.addSegment(msg);
+                (window as any).dwRoamingState.showConversation(conv);
+            });
         }
     }
 
@@ -174,22 +175,6 @@ export class PartyMember extends RoamingEntity {
         this.talentPoints--;
         // TODO: Apply talent effects
         return true;
-    }
-        this.strength = 4;
-        //this.defense = 10;
-        this.agility = 4;
-
-        this.hp = args.hp ?? args.maxHp ?? 1234;
-        this.maxHp = this.hp;
-        this.mp = args.mp ?? args.maxMp ?? 0;
-        this.maxMp = this.mp;
-
-        this.spells = [ healSpell, hurtSpell ];
-
-        //BattleEntity.call(this, args); // TODO: Better way to do a mixin?
-        //Utils.mixin(RoamingEntityMixin.prototype, this);
-        //BattleEntityMixin.call(this);
-
     }
 
     computePhysicalAttackDamage(enemy: Enemy) {

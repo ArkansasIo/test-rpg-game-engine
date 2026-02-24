@@ -1,7 +1,38 @@
-        showEquipmentMenu() {
-            // TODO: Implement equipment menu bubble and logic
-            this.game.setStatusMessage('Equipment menu coming soon!');
-        }
+import { Delay, InputManager, Keys, TiledLayerData } from 'gtp';
+import { BaseState } from './BaseState';
+import { DwGame } from './DwGame';
+import { CommandBubble } from './CommandBubble';
+import { StatBubble } from './StatBubble';
+import { TextBubble } from './TextBubble';
+import { Conversation } from './Conversation';
+import { StatusBubble } from './StatusBubble';
+import { ItemBubble } from './ItemBubble';
+import { Item } from './Item';
+import { Npc } from './Npc';
+import { Hero } from './Hero';
+import { MapLogic } from './mapLogic/MapLogic';
+import { CheatOption, Cheats, WarpLocation } from './Cheats';
+import { ChoiceBubble } from './ChoiceBubble';
+import { Door } from './Door';
+import { DwMap } from './DwMap';
+import { Chest } from './Chest';
+import { toRowAndColumn } from './LocationString';
+import { getChestConversation } from './ChestConversations';
+import { getSearchConversation } from './SearchConversations';
+import { SpellBubble } from '@/app/dw/SpellBubble';
+import { Spell } from '@/app/dw/Spell';
+
+type RoamingSubState = 'ROAMING' | 'MENU' | 'TALKING' | 'OVERNIGHT' | 'WARP_SELECTION' | 'CHEAT_SELECTION';
+type UpdateFunction = (delta: number) => void;
+
+export class RoamingState extends BaseState {
+    // ...existing fields...
+
+    showEquipmentMenu() {
+        // TODO: Implement equipment menu bubble and logic
+        this.game.setStatusMessage('Equipment menu coming soon!');
+    }
+
     private showMinimap: boolean = true;
 
     override handleDefaultKeys() {
@@ -36,35 +67,6 @@
             }
         }
     }
-import { Delay, InputManager, Keys, TiledLayerData } from 'gtp';
-import { BaseState } from './BaseState';
-import { DwGame } from './DwGame';
-import { CommandBubble } from './CommandBubble';
-import { StatBubble } from './StatBubble';
-import { TextBubble } from './TextBubble';
-import { Conversation } from './Conversation';
-import { StatusBubble } from './StatusBubble';
-import { ItemBubble } from './ItemBubble';
-import { Item } from './Item';
-import { Npc } from './Npc';
-import { Hero } from './Hero';
-import { MapLogic } from './mapLogic/MapLogic';
-import { CheatOption, Cheats, WarpLocation } from './Cheats';
-import { ChoiceBubble } from './ChoiceBubble';
-import { Door } from './Door';
-import { DwMap } from './DwMap';
-import { Chest } from './Chest';
-import { toRowAndColumn } from './LocationString';
-import { getChestConversation } from './ChestConversations';
-import { getSearchConversation } from './SearchConversations';
-import { SpellBubble } from '@/app/dw/SpellBubble';
-import { Spell } from '@/app/dw/Spell';
-
-type RoamingSubState = 'ROAMING' | 'MENU' | 'TALKING' | 'OVERNIGHT' | 'WARP_SELECTION' | 'CHEAT_SELECTION';
-
-type UpdateFunction = (delta: number) => void;
-
-export class RoamingState extends BaseState {
 
     private readonly commandBubble: CommandBubble;
     private readonly statBubble: StatBubble;
@@ -487,29 +489,6 @@ export class RoamingState extends BaseState {
         if (this.showMinimap) {
             this.renderMinimap(ctx);
         }
-    // Simple minimap: shows map layout and hero position
-    private renderMinimap(ctx: CanvasRenderingContext2D) {
-        const map = this.game.getMap();
-        const tileSize = this.game.getTileSize();
-        const miniTile = 3; // Minimap tile size in px
-        const rows = map.height;
-        const cols = map.width;
-        const x0 = 10;
-        const y0 = 10;
-        // Draw map tiles (just as blocks)
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                const tile = map.getTile(c, r, 0);
-                ctx.fillStyle = tile ? '#444' : '#222';
-                ctx.fillRect(x0 + c * miniTile, y0 + r * miniTile, miniTile, miniTile);
-            }
-        }
-        // Draw hero
-        ctx.fillStyle = 'yellow';
-        ctx.fillRect(x0 + this.game.hero.mapCol * miniTile, y0 + this.game.hero.mapRow * miniTile, miniTile, miniTile);
-        // Optionally: draw NPCs, chests, etc.
-    }
-
         this.game.getMap().npcs.forEach((npc: Npc) => {
             this.possiblyRenderNpc(npc, ctx);
         });
@@ -562,6 +541,28 @@ export class RoamingState extends BaseState {
             ctx.fillRect(0, 0, this.game.getWidth(), this.game.getHeight());
             ctx.restore();
         }
+    }
+    // Simple minimap: shows map layout and hero position
+    private renderMinimap(ctx: CanvasRenderingContext2D) {
+        const map = this.game.getMap();
+        const tileSize = this.game.getTileSize();
+        const miniTile = 3; // Minimap tile size in px
+        const rows = map.height;
+        const cols = map.width;
+        const x0 = 10;
+        const y0 = 10;
+        // Draw map tiles (just as blocks)
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const tile = map.getTile(c, r, 0);
+                ctx.fillStyle = tile ? '#444' : '#222';
+                ctx.fillRect(x0 + c * miniTile, y0 + r * miniTile, miniTile, miniTile);
+            }
+        }
+        // Draw hero
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(x0 + this.game.hero.mapCol * miniTile, y0 + this.game.hero.mapRow * miniTile, miniTile, miniTile);
+        // Optionally: draw NPCs, chests, etc.
     }
 
     private setSubstate(substate: RoamingSubState) {

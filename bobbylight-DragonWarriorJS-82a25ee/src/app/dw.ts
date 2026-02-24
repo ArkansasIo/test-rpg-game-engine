@@ -3,6 +3,7 @@
  */
 import { DwGame } from './dw/DwGame';
 import { LoadingState } from './dw/LoadingState';
+import { GameStudioAdvertState } from './dw/GameStudioAdvertState';
 
 
 function getScaleAndSize() {
@@ -24,7 +25,7 @@ function getScaleAndSize() {
 function startGame() {
     const { scale, width, height } = getScaleAndSize();
     const game = new DwGame({ parent: 'parent', scale, width, height, keyRefreshMillis: 300, targetFps: 60 });
-    game.setState(new LoadingState(game));
+    game.setState(new GameStudioAdvertState(game));
     game.start();
     window.addEventListener('resize', () => {
         const { scale, width, height } = getScaleAndSize();

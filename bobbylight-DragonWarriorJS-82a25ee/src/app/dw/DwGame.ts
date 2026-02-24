@@ -1,3 +1,4 @@
+
 import {
     BitmapFont,
     FadeOutInState,
@@ -12,11 +13,15 @@ import {
     TiledObject,
     Utils,
 } from 'gtp';
+import { createNewAdventureLog } from './AdventureLog';
+import { loadAdventureLog } from './AdventureLog';
 import { Hero } from './Hero';
 import { Shield } from './Shield';
 import { Npc } from './Npc';
 import { Armor } from './Armor';
 import { Weapon } from './Weapon';
+import { HERB } from './Item';
+import { getItemByName } from './Item';
 import { Direction } from './Direction';
 import { NpcType, getNpcType } from './NpcType';
 import { Door } from './Door';
@@ -26,33 +31,25 @@ import { RoamingState } from './RoamingState';
 import { DwMap } from './DwMap';
 import { BattleState } from './BattleState';
 import { BattleTransitionState } from './BattleTransitionState';
-
 import { Brecconary } from './mapLogic/brecconary';
 import { ErdricksCave1 } from './mapLogic/erdricksCave1';
 import { ErdricksCave2 } from './mapLogic/erdricksCave2';
 import { Garinham } from './mapLogic/garinham';
 import { Overworld } from './mapLogic/overworld';
 import { TantegelCastle } from './mapLogic/tantegelCastle';
-import { MapLogic } from './mapLogic/MapLogic';
-import { EquipmentMap } from './dw';
-import {
-    AdventureLog,
-    createNewAdventureLog,
-    loadAdventureLog,
-    saveAdventureLog,
-} from './AdventureLog';
-import { Chest, ChestContentType } from './Chest';
-import { toLocationString, LocationString } from './LocationString';
-import { BaseState } from './BaseState';
-import { EnemyData } from './Enemy';
-import { RoamingEntityRange } from './RoamingEntity';
-import { HERB, Item, getItemByName } from '@/app/dw/Item';
-import { HiddenItem, HiddenItemType } from '@/app/dw/HiddenItem';
-
+import { toLocationString } from './LocationString';
 
 export type TiledMapMap = Record<string, DwMap>;
 
 export class DwGame extends Game {
+    // ...existing fields...
+
+    /**
+     * Public setter for adventure log (for use by CharacterCreationState)
+     */
+    setAdventureLog(log: AdventureLog) {
+        this.adventureLog = log;
+    }
 
     private map?: DwMap;
     readonly maps: TiledMapMap = {};
@@ -97,7 +94,7 @@ export class DwGame extends Game {
     }
 
     actionKeyPressed() {
-        return this.inputManager.isKeyDown(Keys.KEY_Z, true);
+        return this.inputManager.isKeyDown(Keys.KEY_Z, true) || this.inputManager.enter(true);
     }
 
     anyKeyDown(clear = true) {
