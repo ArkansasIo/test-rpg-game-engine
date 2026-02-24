@@ -10,6 +10,7 @@
     "build:dev": "vite build --mode development",
     "serve": "vite preview",
     "gen:rpg-assets": "node scripts/generate-rpg-assets.mjs",
+    "gen:character-portraits": "node scripts/generate-character-portraits.mjs",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "test": "vitest --coverage src/",

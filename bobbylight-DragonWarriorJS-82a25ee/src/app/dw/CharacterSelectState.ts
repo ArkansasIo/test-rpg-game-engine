@@ -3,7 +3,6 @@ import { DwGame } from './DwGame';
 import { getAdventureLogSummaries } from './AdventureLog';
 import { ChoiceBubble } from './ChoiceBubble';
 import { InitialMenuState } from './InitialMenuState';
-import { BaseState } from './BaseState';
 
 /**
  * Character loading/select screen, inspired by WoW.

@@ -9,6 +9,7 @@ export const RPG_KEYBOARD_LAYOUT = [
     { key: 'z', label: 'Action/Confirm' },
     { key: 'x', label: 'Cancel/Back' },
     { key: 'm', label: 'Toggle Minimap' },
+    { key: 'g', label: 'Toggle World Map' },
     { key: 'i', label: 'Inventory' },
     { key: 'e', label: 'Equipment' },
     { key: 's', label: 'Spells/Skills' },

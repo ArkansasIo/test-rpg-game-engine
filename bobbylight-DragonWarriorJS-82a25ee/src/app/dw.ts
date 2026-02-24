@@ -3,6 +3,12 @@
  */
 import { DwGame } from './dw/DwGame';
 import { LoadingState } from './dw/LoadingState';
+import { addArchetypeGalleryButton } from './dw/ProceduralRpgAssetSystem';
+// Register static image assets before game start
+function registerStaticAssets(game: DwGame) {
+    game.assets.addImage('title', 'res/title.png');
+}
+import { addArchetypeGalleryButton } from './dw/ProceduralRpgAssetSystem';
 
 
 function getScaleAndSize() {
@@ -21,9 +27,12 @@ function getScaleAndSize() {
     };
 }
 
+
+
 function startGame() {
     const { scale, width, height } = getScaleAndSize();
     const game = new DwGame({ parent: 'parent', scale, width, height, keyRefreshMillis: 300, targetFps: 60 });
+    registerStaticAssets(game);
     game.setState(new LoadingState(game));
     game.start();
     window.addEventListener('resize', () => {
@@ -32,6 +41,8 @@ function startGame() {
         game.canvas.height = height;
         game.render();
     });
+    // Enable the archetype asset gallery button
+    addArchetypeGalleryButton();
 }
 
 startGame();

@@ -6,6 +6,8 @@ import { Direction } from './Direction';
  * The hero is the main party member.
  */
 export class Hero extends PartyMember {
+        // Procedural asset sprite (PNG data URL)
+        proceduralSprite?: string;
     questStep: number = 0;
     skills: any[] = [];
 
@@ -107,6 +109,12 @@ export class Hero extends PartyMember {
     // }
 
     static stepInc = 0;
+
+    // Set procedural asset as hero sprite
+    setProceduralSprite(pngUrl: string) {
+        this.proceduralSprite = pngUrl;
+        // Optionally trigger redraw or update
+    }
 
     /**
      * Overridden to check for warps and other interesting things we can

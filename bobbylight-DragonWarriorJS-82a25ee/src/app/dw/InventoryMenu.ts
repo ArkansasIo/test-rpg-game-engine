@@ -1,6 +1,7 @@
 // InventoryMenu.ts
 // RPG Inventory menu system
 import { Game } from './DwGame';
+import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
 
 export class InventoryMenu {
     private game: Game;
@@ -13,15 +14,15 @@ export class InventoryMenu {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.font = '15px monospace';
-        ctx.fillStyle = '#333';
-        ctx.fillRect(40, 40, this.game.getWidth() - 80, this.game.getHeight() - 80);
-        ctx.fillStyle = '#fff';
-        ctx.fillText('Inventory', 60, 70);
-        let y = 100;
+        const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Inventory');
+        ctx.font = '15px Georgia';
+        let y = panel.bodyY + 10;
         for (const item of this.items) {
-            ctx.fillText(`${item.name} x${item.count}`, 60, y);
-            y += 24;
+            drawFantasyLine(ctx, `${item.name} x${item.count}`, panel.bodyX, y);
+            y += 22;
+        }
+        if (!this.items.length) {
+            drawFantasyLine(ctx, 'No items in satchel.', panel.bodyX, y, false, 'muted');
         }
         ctx.restore();
     }

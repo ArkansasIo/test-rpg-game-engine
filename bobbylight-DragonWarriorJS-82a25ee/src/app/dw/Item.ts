@@ -10,6 +10,8 @@ interface ItemArgs {
 }
 
 export class Item implements Sellable {
+    // Optional procedural sprite
+    proceduralSprite?: string;
 
     name: string;
     displayName: string;

@@ -53,6 +53,8 @@ import { SettingsMenu } from './SettingsMenu';
 import { RuneKeyItem } from './RuneQuestLogic';
 import { Talisman } from './TalismanEffects';
 import { Boss } from './BossFightLogic';
+import { drawFantasyBackdrop } from './FantasyOverlayUI';
+import { resolveSoundCandidates } from './Sounds';
 
 export type TiledMapMap = Record<string, DwMap>;
 
@@ -92,6 +94,14 @@ export class DwGame extends Game {
     npcsPaused = false;
     private cameraDx = 0;
     private cameraDy = 0;
+    private audioRoutingInstalled = false;
+    private readonly sfxLastPlayedAt = new Map<string, number>();
+    private readonly sfxThrottleMs = new Map<string, number>([
+        [ 'talk', 55 ],
+        [ 'menu', 70 ],
+        [ 'bump', 120 ],
+        [ 'stairs', 160 ],
+    ]);
 
     constructor(args?: GameArgs) {
         super(args);
@@ -155,6 +165,7 @@ export class DwGame extends Game {
 
     override start() {
         super.start();
+        this.installAudioRouting();
         this.npcs = [];
         this.bumpSoundDelay = 0;
         this.setCameraOffset(0, 0);
@@ -180,6 +191,75 @@ export class DwGame extends Game {
             // Example: this.openMap = function() { ... }
             // Example: this.openSettings = function() { ... }
             // Example: this.closeMenu = function() { ... }
+    }
+
+    private installAudioRouting() {
+        if (this.audioRoutingInstalled) {
+            return;
+        }
+        this.audioRoutingInstalled = true;
+
+        const audioObj = this.audio as unknown as {
+            playSound: (id: string, ...args: unknown[]) => unknown;
+            playMusic: (id: string | null, ...args: unknown[]) => unknown;
+            fadeOutMusic: (id: string | null, ...args: unknown[]) => unknown;
+        };
+
+        const rawPlaySound = audioObj.playSound.bind(this.audio);
+        const rawPlayMusic = audioObj.playMusic.bind(this.audio);
+        const rawFadeOutMusic = audioObj.fadeOutMusic.bind(this.audio);
+
+        audioObj.playSound = ((requestedId: string, ...args: unknown[]) => {
+            const candidates = resolveSoundCandidates(requestedId);
+            const canonical = candidates[0] ?? requestedId;
+            const now = Date.now();
+            const throttleMs = this.sfxThrottleMs.get(canonical) ?? 0;
+            const lastPlayed = this.sfxLastPlayedAt.get(canonical) ?? 0;
+            if (throttleMs > 0 && now - lastPlayed < throttleMs) {
+                return;
+            }
+
+            for (const candidate of candidates) {
+                try {
+                    const result = rawPlaySound(candidate, ...args);
+                    this.sfxLastPlayedAt.set(canonical, now);
+                    return result;
+                } catch (err) {
+                    // Try next candidate fallback.
+                }
+            }
+            return undefined;
+        }) as typeof audioObj.playSound;
+
+        audioObj.playMusic = ((requestedId: string | null, ...args: unknown[]) => {
+            if (!requestedId) {
+                return rawPlayMusic(requestedId, ...args);
+            }
+            const candidates = resolveSoundCandidates(requestedId);
+            for (const candidate of candidates) {
+                try {
+                    return rawPlayMusic(candidate, ...args);
+                } catch (err) {
+                    // Try next candidate fallback.
+                }
+            }
+            return rawPlayMusic(requestedId, ...args);
+        }) as typeof audioObj.playMusic;
+
+        audioObj.fadeOutMusic = ((requestedId: string | null, ...args: unknown[]) => {
+            if (!requestedId) {
+                return rawFadeOutMusic(requestedId, ...args);
+            }
+            const candidates = resolveSoundCandidates(requestedId);
+            for (const candidate of candidates) {
+                try {
+                    return rawFadeOutMusic(candidate, ...args);
+                } catch (err) {
+                    // Try next candidate fallback.
+                }
+            }
+            return rawFadeOutMusic(requestedId, ...args);
+        }) as typeof audioObj.fadeOutMusic;
     }
 
     actionKeyPressed() {
@@ -778,14 +858,22 @@ export class DwGame extends Game {
     override renderStatusMessageImpl(ctx: CanvasRenderingContext2D, message: string, color: string) {
         const x = 6;
         const y = this.canvas.height - 24;
-        // Draw menu bar at top
+        const menuOpen = this.activeMenu !== null;
+
+        if (menuOpen) {
+            drawFantasyBackdrop(ctx, this.canvas.width, this.canvas.height);
+        }
+
         this.menuBar.render(ctx);
-        // Slightly larger rectangle for the background, just to look a little nicer
+
         const font = this.getFont();
-        const w = font.stringWidth(message) + 4;
-        const h = font.cellH + 4;
-        ctx.fillStyle = 'black';
-        ctx.fillRect(x - 2, y - 2, w, h);
+        const w = font.stringWidth(message) + 8;
+        const h = font.cellH + 8;
+        ctx.fillStyle = 'rgba(7, 10, 16, 0.85)';
+        ctx.fillRect(x - 4, y - 5, w, h);
+        ctx.strokeStyle = '#b7934f';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x - 4, y - 5, w, h);
         this.drawString(message, x, y);
         // Render active menu if open
         if (this.activeMenu === 'inventory' && this.inventoryMenu) {

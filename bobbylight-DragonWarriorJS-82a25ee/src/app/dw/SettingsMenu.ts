@@ -1,6 +1,7 @@
 // SettingsMenu.ts
 // RPG Settings menu system
 import { Game } from './DwGame';
+import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
 
 export class SettingsMenu {
     private game: Game;
@@ -11,14 +12,16 @@ export class SettingsMenu {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.font = '15px monospace';
-        ctx.fillStyle = '#333';
-        ctx.fillRect(40, 40, this.game.getWidth() - 80, this.game.getHeight() - 80);
-        ctx.fillStyle = '#fff';
-        ctx.fillText('Settings', 60, 70);
-        ctx.fillText('Audio: [On/Off]', 60, 100);
-        ctx.fillText('Controls: [Customize]', 60, 124);
-        ctx.fillText('Graphics: [Low/Med/High]', 60, 148);
+        const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Settings');
+        ctx.font = '15px Georgia';
+        let y = panel.bodyY + 10;
+        drawFantasyLine(ctx, 'Audio: [On/Off]', panel.bodyX, y);
+        y += 22;
+        drawFantasyLine(ctx, 'Controls: [Customize]', panel.bodyX, y);
+        y += 22;
+        drawFantasyLine(ctx, 'Graphics: [Low/Med/High]', panel.bodyX, y);
+        y += 22;
+        drawFantasyLine(ctx, 'Theme: Elden/WoW Overlay Active', panel.bodyX, y, false, 'accent');
         ctx.restore();
     }
 

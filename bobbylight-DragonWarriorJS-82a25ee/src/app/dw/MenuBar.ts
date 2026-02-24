@@ -1,12 +1,21 @@
 // MenuBar.ts
 // WoW-style menu bar for RPG game
-import { Game } from './DwGame';
+import { DwGame } from './DwGame';
+import { drawMenuChrome } from './FantasyOverlayUI';
 
 export class MenuBar {
-    private game: Game;
+    private game: DwGame;
     private menus: { label: string; action: () => void }[];
+    private readonly activeLabelByMenu: Record<string, string> = {
+        inventory: 'Inventory',
+        equipment: 'Equipment',
+        skills: 'Skills',
+        quests: 'Quests',
+        map: 'Map',
+        settings: 'Settings',
+    };
 
-    constructor(game: Game) {
+    constructor(game: DwGame) {
         this.game = game;
         this.menus = [
             { label: 'Inventory', action: () => this.game.openInventory() },
@@ -20,15 +29,8 @@ export class MenuBar {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.font = '16px monospace';
-        ctx.fillStyle = '#222';
-        ctx.fillRect(0, 0, this.game.getWidth(), 32);
-        ctx.fillStyle = '#fff';
-        let x = 10;
-        for (const menu of this.menus) {
-            ctx.fillText(menu.label, x, 22);
-            x += ctx.measureText(menu.label).width + 30;
-        }
+        const activeLabel = this.game.activeMenu ? this.activeLabelByMenu[this.game.activeMenu] ?? null : null;
+        drawMenuChrome(ctx, this.menus.map((menu) => menu.label), activeLabel, this.game.getWidth());
         ctx.restore();
     }
 

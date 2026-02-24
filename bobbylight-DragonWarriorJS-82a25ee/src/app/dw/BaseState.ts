@@ -6,6 +6,20 @@ import { DwGame } from './DwGame';
  */
 export class BaseState extends State<DwGame> {
 
+    // Show procedural asset generator UI from any state
+    showAssetGeneratorUI() {
+        // Import function from ProceduralRpgAssetSystem
+        // @ts-ignore
+        if (window.showProceduralAssetGeneratorUI) {
+            window.showProceduralAssetGeneratorUI();
+        } else {
+            // Dynamically import if not present
+            import('./ProceduralRpgAssetSystem').then(mod => {
+                mod.showProceduralAssetGeneratorUI();
+            });
+        }
+    }
+
     createScreenshot() {
         const canvas: HTMLCanvasElement = ImageUtils.createCanvas(this.game.getWidth(), this.game.getHeight());
         const ctx = canvas.getContext('2d');

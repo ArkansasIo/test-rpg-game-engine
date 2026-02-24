@@ -1,6 +1,7 @@
 // QuestsMenu.ts
 // RPG Quests menu system
 import { Game } from './DwGame';
+import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
 
 export class QuestsMenu {
     private game: Game;
@@ -15,16 +16,13 @@ export class QuestsMenu {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.font = '15px monospace';
-        ctx.fillStyle = '#333';
-        ctx.fillRect(40, 40, this.game.getWidth() - 80, this.game.getHeight() - 80);
-        ctx.fillStyle = '#fff';
-        ctx.fillText('Quests', 60, 70);
-        let y = 100;
+        const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Quests');
+        ctx.font = '15px Georgia';
+        let y = panel.bodyY + 10;
         for (let i = 0; i < this.quests.length; i++) {
             const quest = this.quests[i];
-            ctx.fillText(`${quest.name} - ${quest.status}`, 60, y);
-            y += 24;
+            drawFantasyLine(ctx, `${quest.name} - ${quest.status}`, panel.bodyX, y, false, quest.status === 'Complete' ? 'accent' : 'normal');
+            y += 22;
         }
         ctx.restore();
     }

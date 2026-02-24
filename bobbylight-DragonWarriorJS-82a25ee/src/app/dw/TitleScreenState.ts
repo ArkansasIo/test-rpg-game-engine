@@ -72,7 +72,7 @@ export class TitleScreenState extends BaseState {
             img.draw(ctx, x, y);
         } else {
             // Fallback: draw game title text if image missing or not loaded
-            const title = 'Mystic Legends: Quest for Glory';
+            const title = 'Elders of the Ashen Realm';
             try {
                 x = (w - game.stringWidth(title)) / 2;
                 y = 60;

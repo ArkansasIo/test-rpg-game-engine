@@ -20,6 +20,11 @@ import { getChestConversation } from './ChestConversations';
 import { getSearchConversation } from './SearchConversations';
 import { SpellBubble } from '@/app/dw/SpellBubble';
 import { Spell } from '@/app/dw/Spell';
+import {
+    createGeneratedWorldMap,
+    GeneratedWorldMap,
+    renderGeneratedWorldMapOverlay,
+} from './GeneratedWorldMapSystem';
 
 type RoamingSubState = 'ROAMING' | 'MENU' | 'TALKING' | 'OVERNIGHT' | 'WARP_SELECTION' | 'CHEAT_SELECTION';
 type UpdateFunction = (delta: number) => void;
@@ -33,6 +38,10 @@ export class RoamingState extends BaseState {
     }
 
     private showMinimap = true;
+    private showWorldMap = false;
+    private readonly generatedWorldMap: GeneratedWorldMap;
+    private lastOverworldRow = 0;
+    private lastOverworldCol = 0;
 
     override handleDefaultKeys() {
         super.handleDefaultKeys();
@@ -41,8 +50,12 @@ export class RoamingState extends BaseState {
         if (im.isKeyDown(Keys.KEY_M, true)) {
             this.showMinimap = !this.showMinimap;
         }
+        // Toggle generated world map with 'G'
+        if (im.isKeyDown(Keys.KEY_G, true)) {
+            this.showWorldMap = !this.showWorldMap;
+        }
         // Open spell/attack menu with 'S'
-        if (im.isKeyDown(Keys.KEY_S, true) && !this.spellBubble) {
+        if (!this.showWorldMap && im.isKeyDown(Keys.KEY_S, true) && !this.spellBubble) {
             this.showSpellList();
         }
     }
@@ -88,6 +101,7 @@ export class RoamingState extends BaseState {
         this.showTextBubble = false;
         this.substate = 'ROAMING'; // Can't call setState to appease tsc
         this.showStats = false;
+        this.generatedWorldMap = createGeneratedWorldMap('elden-nine-kingdoms-earth-scale');
     }
 
     search() {
@@ -271,8 +285,20 @@ export class RoamingState extends BaseState {
             this.statBubble.update(delta);
         }
 
+        if (this.game.getMap().name === 'overworld') {
+            this.lastOverworldRow = this.game.hero.mapRow;
+            this.lastOverworldCol = this.game.hero.mapCol;
+        }
+
         const hero: Hero = this.game.hero;
         const im: InputManager = this.game.inputManager;
+
+        if (this.showWorldMap) {
+            if (this.game.cancelKeyPressed() || this.game.actionKeyPressed()) {
+                this.showWorldMap = false;
+            }
+            return;
+        }
 
         if (this.game.actionKeyPressed()) {
             this.game.setNpcsPaused(true);
@@ -458,6 +484,9 @@ export class RoamingState extends BaseState {
         if (this.showMinimap) {
             this.renderMinimap(ctx);
         }
+        if (this.showWorldMap) {
+            this.renderGeneratedWorldMap(ctx);
+        }
         this.game.getMap().npcs.forEach((npc: Npc) => {
             this.possiblyRenderNpc(npc, ctx);
         });
@@ -510,6 +539,22 @@ export class RoamingState extends BaseState {
             ctx.fillRect(0, 0, this.game.getWidth(), this.game.getHeight());
             ctx.restore();
         }
+    }
+
+    private renderGeneratedWorldMap(ctx: CanvasRenderingContext2D) {
+        const overworld = this.game.maps['overworld.json'];
+        const rows = overworld?.height ?? 1;
+        const cols = overworld?.width ?? 1;
+        const heroWorldRow = this.lastOverworldRow / Math.max(1, rows - 1);
+        const heroWorldCol = this.lastOverworldCol / Math.max(1, cols - 1);
+
+        renderGeneratedWorldMapOverlay(
+            ctx,
+            this.generatedWorldMap,
+            Math.max(0, Math.min(1, heroWorldCol)) * (this.generatedWorldMap.cols - 1),
+            Math.max(0, Math.min(1, heroWorldRow)) * (this.generatedWorldMap.rows - 1),
+            this.game.getMap().name,
+        );
     }
     // Simple minimap: shows map layout and hero position
     private renderMinimap(ctx: CanvasRenderingContext2D) {

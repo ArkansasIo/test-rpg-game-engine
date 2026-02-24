@@ -7,6 +7,7 @@ import { DwGame } from './DwGame';
 import { GameStudioAdvertState } from './GameStudioAdvertState';
 import { EquipmentMap } from './dw';
 import { registerGeneratedRpgAudioAssets, registerGeneratedRpgImageAssets } from './ProceduralRpgAssetSystem';
+import { registerCoreAudioAssets } from './Sounds';
 
 export interface EquipmentData {
     weapons: Record<string, WeaponData>;
@@ -143,16 +144,7 @@ export class LoadingState extends BaseState {
             void game.assets.addJson('erdricksCave1.json', 'res/maps/erdricksCave1.json');
             void game.assets.addJson('erdricksCave2.json', 'res/maps/erdricksCave2.json');
             void game.assets.addJson('garinham.json', 'res/maps/garinham.json');
-            void game.assets.addSound('MUSIC_TITLE_SCREEN', 'res/sound/01 Dragon Quest 1 - Intro ~ Overture (22khz mono).ogg');
-            void game.assets.addSound('MUSIC_TANTEGEL', 'res/sound/02 Dragon Quest 1 - Tantegel Castle (22khz mono).ogg');
-            void game.assets.addSound('MUSIC_TANTEGEL_LOWER', 'res/sound/03 Dragon Quest 1 - Tantegel Castle (Lower) (22khz mono).ogg');
-            void game.assets.addSound('MUSIC_TOWN', 'res/sound/04 Dragon Quest 1 - Peaceful Village (22khz mono).ogg');
-            void game.assets.addSound('MUSIC_OVERWORLD', 'res/sound/05 Dragon Quest 1 - Kingdom of Alefgard (22khz mono).ogg');
-            void game.assets.addSound('MUSIC_BATTLE', 'res/sound/14 Dragon Quest 1 - A Monster Draws Near (16khz mono).ogg', 2.32);
-            void game.assets.addSound('MUSIC_DUNGEON_FLOOR_1', 'res/sound/06 Dragon Quest 1 - Dark Dungeon - Floor 1 (22khz mono).ogg');
-            void game.assets.addSound('dead', 'res/sound/20 Dragon Quest 1 - Thou Hast Died (22khz mono).ogg');
-            void game.assets.addSound('overnight', 'res/sound/21 Dragon Quest 1 - Special Item (22khz mono).ogg');
-            void game.assets.addSound('victory', 'res/sound/25 Dragon Quest 1 - Victory (22khz mono).ogg', 0, false);
+            registerCoreAudioAssets(game);
             registerGeneratedRpgAudioAssets(game);
             registerGeneratedRpgImageAssets(game);
             game.assets.onLoad(() => {

@@ -2,6 +2,16 @@ import { Item, getItemByName } from './Item';
 import { Party } from '@/app/dw/Party';
 
 export class Inventory {
+    // Add custom procedural asset item
+    pushCustomAsset(assetKey: string, assetData: any) {
+        // Create a minimal Item with custom sprite
+        const item = new Item(assetKey, {
+            baseCost: 0,
+            use: () => true
+        });
+        item.proceduralSprite = assetData.pngUrl;
+        this.items.push(item);
+    }
 
     private readonly items: Item[];
 

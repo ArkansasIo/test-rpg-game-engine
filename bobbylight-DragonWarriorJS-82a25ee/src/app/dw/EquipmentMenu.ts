@@ -1,6 +1,7 @@
 // EquipmentMenu.ts
 // RPG Equipment menu system
 import { Game } from './DwGame';
+import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
 
 export class EquipmentMenu {
     private game: Game;
@@ -13,15 +14,12 @@ export class EquipmentMenu {
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        ctx.font = '15px monospace';
-        ctx.fillStyle = '#333';
-        ctx.fillRect(40, 40, this.game.getWidth() - 80, this.game.getHeight() - 80);
-        ctx.fillStyle = '#fff';
-        ctx.fillText('Equipment', 60, 70);
-        let y = 100;
+        const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Equipment');
+        ctx.font = '15px Georgia';
+        let y = panel.bodyY + 10;
         for (const slot in this.equipment) {
-            ctx.fillText(`${slot}: ${this.equipment[slot]?.name ?? '[Empty]'}`, 60, y);
-            y += 24;
+            drawFantasyLine(ctx, `${slot}: ${this.equipment[slot]?.name ?? '[Empty]'}`, panel.bodyX, y);
+            y += 22;
         }
         ctx.restore();
     }
