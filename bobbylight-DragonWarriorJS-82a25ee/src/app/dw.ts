@@ -3,7 +3,6 @@
  */
 import { DwGame } from './dw/DwGame';
 import { LoadingState } from './dw/LoadingState';
-import { addArchetypeGalleryButton } from './dw/ProceduralRpgAssetSystem';
 // Register static image assets before game start
 function registerStaticAssets(game: DwGame) {
     game.assets.addImage('title', 'res/title.png');
@@ -40,8 +39,8 @@ function startGame() {
         game.canvas.height = height;
         game.render();
     });
-    // Enable the archetype asset gallery button
-    addArchetypeGalleryButton();
+    // Archetype asset gallery button disabled
+    // addArchetypeGalleryButton();
 }
 
 startGame();

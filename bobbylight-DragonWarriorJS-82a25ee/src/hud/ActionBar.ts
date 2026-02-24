@@ -1,6 +1,6 @@
 import type { InputSnapshot } from '../core/Input';
 import type { BitmapFont } from '../gfx/BitmapFont';
-import { NesTheme } from '../gfx/Theme';
+import { nesTheme } from '../gfx/Theme';
 import { Panel } from '../ui/Panel';
 
 export class ActionBar extends Panel {
@@ -34,9 +34,9 @@ export class ActionBar extends Panel {
 
         for (let i = 0; i < this.slotCount; i++) {
             const x = startX + i * (slotW + gap);
-            ctx.fillStyle = '#001040';
+            ctx.fillStyle = nesTheme.panelFill;
             ctx.fillRect(x, y, slotW, slotH);
-            ctx.strokeStyle = NesTheme.panelBorder;
+            ctx.strokeStyle = nesTheme.panelBorder;
             ctx.strokeRect(x + 0.5, y + 0.5, slotW - 1, slotH - 1);
             this.font.drawText(ctx, `${(i + 1) % 10}`, x + 3, y + 3);
         }
@@ -44,9 +44,9 @@ export class ActionBar extends Panel {
         // Cast bar above the action bar.
         ctx.fillStyle = '#000000';
         ctx.fillRect(this.castRect.x, this.castRect.y, this.castRect.w, this.castRect.h);
-        ctx.strokeStyle = NesTheme.panelBorder;
+        ctx.strokeStyle = nesTheme.panelBorder;
         ctx.strokeRect(this.castRect.x + 0.5, this.castRect.y + 0.5, this.castRect.w - 1, this.castRect.h - 1);
-        ctx.fillStyle = NesTheme.CYAN ?? '#00B8F8';
+        ctx.fillStyle = nesTheme.panelAccent;
         ctx.fillRect(this.castRect.x + 1, this.castRect.y + 1, Math.floor((this.castRect.w - 2) * this.castProgress), this.castRect.h - 2);
         this.font.drawText(ctx, 'CAST', this.castRect.x + 2, this.castRect.y - 8);
     }

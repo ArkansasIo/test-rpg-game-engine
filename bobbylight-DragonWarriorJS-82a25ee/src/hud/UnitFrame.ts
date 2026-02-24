@@ -1,4 +1,4 @@
-import { NesTheme } from '../gfx/Theme';
+import { nesTheme } from '../gfx/Theme';
 import type { BitmapFont } from '../gfx/BitmapFont';
 import { Panel } from '../ui/Panel';
 import { ProgressBar } from '../ui/ProgressBar';
@@ -17,8 +17,8 @@ export class UnitFrame extends Panel {
         private readonly name: string,
     ) {
         super(rect, true);
-        this.hpBar = this.add(new ProgressBar({ x: rect.x + 2, y: rect.y + 11, w: rect.w - 4, h: 5 }, NesTheme.hp));
-        this.mpBar = this.add(new ProgressBar({ x: rect.x + 2, y: rect.y + 18, w: rect.w - 4, h: 5 }, NesTheme.mp));
+        this.hpBar = this.add(new ProgressBar({ x: rect.x + 2, y: rect.y + 11, w: rect.w - 4, h: 5 }, nesTheme.hp));
+        this.mpBar = this.add(new ProgressBar({ x: rect.x + 2, y: rect.y + 18, w: rect.w - 4, h: 5 }, nesTheme.mp));
     }
 
     override update(dt: number, input: import('../core/Input').InputSnapshot): void {

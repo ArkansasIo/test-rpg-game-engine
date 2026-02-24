@@ -4,8 +4,8 @@ import { DwGame } from './DwGame';
 import { drawMenuChrome } from './FantasyOverlayUI';
 
 export class MenuBar {
-    private game: DwGame;
-    private menus: { label: string; action: () => void }[];
+    private readonly game: DwGame;
+    private readonly menus: { label: string; action: () => void }[];
     private readonly activeLabelByMenu: Record<string, string> = {
         inventory: 'Inventory',
         equipment: 'Equipment',
@@ -18,12 +18,24 @@ export class MenuBar {
     constructor(game: DwGame) {
         this.game = game;
         this.menus = [
-            { label: 'Inventory', action: () => this.game.openInventory() },
-            { label: 'Equipment', action: () => this.game.openEquipment() },
-            { label: 'Skills', action: () => this.game.openSkills() },
-            { label: 'Quests', action: () => this.game.openQuests() },
-            { label: 'Map', action: () => this.game.openMap() },
-            { label: 'Settings', action: () => this.game.openSettings() }
+            { label: 'Inventory', action: () => {
+                this.game.openInventory();
+            } },
+            { label: 'Equipment', action: () => {
+                this.game.openEquipment();
+            } },
+            { label: 'Skills', action: () => {
+                this.game.openSkills();
+            } },
+            { label: 'Quests', action: () => {
+                this.game.openQuests();
+            } },
+            { label: 'Map', action: () => {
+                this.game.openMap();
+            } },
+            { label: 'Settings', action: () => {
+                this.game.openSettings();
+            } },
         ];
     }
 

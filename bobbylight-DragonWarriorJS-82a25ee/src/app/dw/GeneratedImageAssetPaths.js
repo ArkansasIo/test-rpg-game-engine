@@ -1,0 +1,19 @@
+export const GENERATED_IMAGE_ASSET_PATHS = new Map([
+    ['IMG_ELDEN_SIGIL', 'res/generated/images/IMG_ELDEN_SIGIL.svg'],
+    ['IMG_ELDEN_BOSS_EMBLEM', 'res/generated/images/IMG_ELDEN_BOSS_EMBLEM.svg'],
+    ['IMG_ELDEN_RUNE_ICON', 'res/generated/images/IMG_ELDEN_RUNE_ICON.svg'],
+    ['IMG_ELDEN_LEGACY_TILE', 'res/generated/images/IMG_ELDEN_LEGACY_TILE.svg'],
+    ['IMG_DND_D20_ICON', 'res/generated/images/IMG_DND_D20_ICON.svg'],
+    ['IMG_DND_SHIELD_ICON', 'res/generated/images/IMG_DND_SHIELD_ICON.svg'],
+    ['IMG_DND_SWORD_ICON', 'res/generated/images/IMG_DND_SWORD_ICON.svg'],
+    ['IMG_DND_SPELLBOOK_ICON', 'res/generated/images/IMG_DND_SPELLBOOK_ICON.svg'],
+    ['IMG_FANTASY_PORTAL_ICON', 'res/generated/images/IMG_FANTASY_PORTAL_ICON.svg'],
+    ['IMG_FANTASY_HEAL_ICON', 'res/generated/images/IMG_FANTASY_HEAL_ICON.svg'],
+    ['IMG_FANTASY_BOSS_MARK', 'res/generated/images/IMG_FANTASY_BOSS_MARK.svg'],
+    ['IMG_RPG_UI_PANEL', 'res/generated/images/IMG_RPG_UI_PANEL.svg'],
+    ['IMG_RPG_FOREST_TILE', 'res/generated/images/IMG_RPG_FOREST_TILE.svg'],
+    ['IMG_RPG_DUNGEON_TILE', 'res/generated/images/IMG_RPG_DUNGEON_TILE.svg'],
+    ['IMG_RPG_LAVA_TILE', 'res/generated/images/IMG_RPG_LAVA_TILE.svg'],
+    ['IMG_RPG_ICE_TILE', 'res/generated/images/IMG_RPG_ICE_TILE.svg'],
+]);
+//# sourceMappingURL=GeneratedImageAssetPaths.js.map

@@ -84,8 +84,8 @@ export class TitleScreenState extends BaseState {
 
         // Developer credits
         const devNames = [
-            'BY: Stephen',
-            'ArkansasIo',
+            'BY: Stephen,  github.com/ArkansasIo',
+
             'Additional Contributors:',
         ];
         y = 120;

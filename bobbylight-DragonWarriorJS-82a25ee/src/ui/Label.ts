@@ -1,5 +1,5 @@
 import type { BitmapFont } from '../gfx/BitmapFont';
-import { NesTheme } from '../gfx/Theme';
+import { nesTheme } from '../gfx/Theme';
 import { Widget } from './Widget';
 
 export class Label extends Widget {
@@ -7,7 +7,7 @@ export class Label extends Widget {
         rect: { x: number; y: number; w: number; h: number },
         private readonly font: BitmapFont,
         public text: string,
-        public color: string = NesTheme.text,
+        public color: string = nesTheme.text,
     ) {
         super(rect);
     }

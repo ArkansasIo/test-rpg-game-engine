@@ -4,6 +4,9 @@ import { ChoiceBubble } from './ChoiceBubble';
 import { InventoryMenu } from './InventoryMenu';
 import { EquipmentMenu } from './EquipmentMenu';
 import { StatusBubble } from './StatusBubble';
+import { SkillsMenu } from './SkillsMenu';
+import { QuestsMenu } from './QuestsMenu';
+import { MapMenu } from './MapMenu';
 
 /**
  * OG-style in-game menu state (vertical panel, classic RPG style)
@@ -15,6 +18,10 @@ export class GameMenuState extends BaseState {
         'ITEMS',
         'SPELLS',
         'EQUIP',
+        'INVENTORY',
+        'SKILLS',
+        'QUESTS',
+        'MAP',
         'STATUS',
         'CLOSE',
     ];
@@ -43,19 +50,31 @@ export class GameMenuState extends BaseState {
             const idx = this.menuBubble.getSelectedIndex();
             switch (idx) {
                 case 0: // ITEMS
-                    this.game.setState(new InventoryMenu(this.game));
+                    this.game.setState(new InventoryMenu(this.game, this.game.getParty().getInventory().items));
                     break;
                 case 1: // SPELLS
                     // TODO: Implement SpellsMenu
                     this.game.audio.playSound('missed1');
                     break;
                 case 2: // EQUIP
-                    this.game.setState(new EquipmentMenu(this.game));
+                    this.game.setState(new EquipmentMenu(this.game, this.game.getParty().equipment));
                     break;
-                case 3: // STATUS
+                case 3: // INVENTORY
+                    this.game.setState(new InventoryMenu(this.game, this.game.getParty().getInventory().items));
+                    break;
+                case 4: // SKILLS
+                    this.game.setState(new SkillsMenu(this.game, this.game.getParty().skills));
+                    break;
+                case 5: // QUESTS
+                    this.game.setState(new QuestsMenu(this.game, this.game.getParty().quests));
+                    break;
+                case 6: // MAP
+                    this.game.setState(new MapMenu(this.game, this.game.getParty().mapData));
+                    break;
+                case 7: // STATUS
                     this.game.setState(new StatusBubble(this.game));
                     break;
-                case 4: // CLOSE
+                case 8: // CLOSE
                 default:
                     this.game.popState();
                     break;

@@ -1,4 +1,4 @@
-import { NesTheme } from '../gfx/Theme';
+import { nesTheme } from '../gfx/Theme';
 import { Widget } from './Widget';
 
 export class ProgressBar extends Widget {
@@ -12,9 +12,9 @@ export class ProgressBar extends Widget {
 
     override draw(ctx: CanvasRenderingContext2D): void {
         const { x, y, w, h } = this.rect;
-        ctx.fillStyle = NesTheme.BLACK ?? '#000000';
+        ctx.fillStyle = '#000000';
         ctx.fillRect(x, y, w, h);
-        ctx.strokeStyle = NesTheme.panelBorder;
+        ctx.strokeStyle = nesTheme.panelBorder;
         ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
 
         const innerW = Math.max(0, w - 2);

@@ -1,56 +1,92 @@
 // InventoryMenu.ts
-// RPG Inventory menu system
+import { drawNesPanel, nesTheme } from '../../gfx/Theme';
 import { Game } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
+import { Item } from './Item';
 
 export class InventoryMenu {
-    private game: Game;
-    private items: any[];
+    private readonly game: Game;
+    private readonly items: Item[];
     private selectedIndex = 0;
+    // NES-style font and UI elements
+    // NES-style font and UI elements (removed, not used)
 
-    constructor(game: Game, items: any[]) {
+    constructor(game: Game, items: Item[]) {
         this.game = game;
         this.items = items;
     }
 
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
-        const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Inventory');
-        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'Bag', 'Consumables', 'Quest' ], 0);
-        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.52), panel.bodyHeight - 30, 'Items');
-        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.52) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.48) - 10, panel.bodyHeight - 30, 'Details');
-        ctx.font = '15px Georgia';
-        let y = panel.bodyY + 46;
+        // NES-style panel
+        const panelX = 36;
+        const panelY = 54;
+        const panelW = this.game.getWidth() - 72;
+        const panelH = this.game.getHeight() - 104;
+        ctx.globalAlpha = 1;
+        drawNesPanel(ctx, panelX, panelY, panelW, panelH, true);
+        ctx.font = '16px monospace';
+        ctx.fillStyle = nesTheme.text;
+        ctx.fillText('Inventory', panelX + 12, panelY + 24);
+        // Tab strip
+        ctx.fillStyle = nesTheme.panelAccent;
+        ctx.fillRect(panelX + 8, panelY + 32, 80, 18);
+        ctx.fillStyle = nesTheme.text;
+        ctx.fillText('Bag', panelX + 16, panelY + 46);
+        ctx.fillText('Consumables', panelX + 48, panelY + 46);
+        ctx.fillText('Quest', panelX + 140, panelY + 46);
+        // Items pane
+        ctx.fillStyle = nesTheme.panelFill;
+        ctx.fillRect(panelX + 8, panelY + 60, Math.floor(panelW * 0.52), panelH - 70);
+        ctx.strokeStyle = nesTheme.panelBorder;
+        ctx.strokeRect(panelX + 8, panelY + 60, Math.floor(panelW * 0.52), panelH - 70);
+        ctx.fillStyle = nesTheme.text;
+        ctx.fillText('Items', panelX + 16, panelY + 80);
+        // Details pane
+        ctx.fillStyle = nesTheme.panelFill;
+        ctx.fillRect(panelX + Math.floor(panelW * 0.52) + 18, panelY + 60, Math.floor(panelW * 0.48) - 26, panelH - 70);
+        ctx.strokeStyle = nesTheme.panelBorder;
+        ctx.strokeRect(panelX + Math.floor(panelW * 0.52) + 18, panelY + 60, Math.floor(panelW * 0.48) - 26, panelH - 70);
+        ctx.fillStyle = nesTheme.text;
+        ctx.fillText('Details', panelX + Math.floor(panelW * 0.52) + 26, panelY + 80);
+        // Item list
+        let y = panelY + 100;
         for (let i = 0; i < this.items.length; i++) {
             const item = this.items[i];
-            drawFantasyLine(ctx, `${item.name} x${item.count}`, panel.bodyX, y, i === this.selectedIndex);
+            ctx.fillStyle = i === this.selectedIndex ? nesTheme.panelAccent : nesTheme.text;
+            ctx.fillText(`${item.displayName} x1`, panelX + 16, y);
             y += 22;
         }
         if (!this.items.length) {
-            drawFantasyLine(ctx, 'No items in satchel.', panel.bodyX + 8, y, false, 'muted');
+            ctx.fillStyle = nesTheme.danger;
+            ctx.fillText('No items in satchel.', panelX + 24, y);
         } else {
             const selected = this.items[this.selectedIndex];
-            const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.52) + 22;
-            drawFantasyLine(ctx, selected?.name ?? '', rightX, panel.bodyY + 52, false, 'accent');
-            drawFantasyLine(ctx, `Count: ${selected?.count ?? 0}`, rightX, panel.bodyY + 76, false, 'normal');
-            drawFantasyLine(ctx, 'Type: Inventory Item', rightX, panel.bodyY + 100, false, 'muted');
-            drawFantasyLine(ctx, 'Click item to focus.', rightX, panel.bodyY + panel.bodyHeight - 16, false, 'muted');
+            const rightX = panelX + Math.floor(panelW * 0.52) + 32;
+            ctx.fillStyle = nesTheme.panelAccent;
+            ctx.fillText(selected?.displayName ?? '', rightX, panelY + 120);
+            ctx.fillStyle = nesTheme.text;
+            ctx.fillText('Count: 1', rightX, panelY + 144);
+            ctx.fillStyle = nesTheme.warning;
+            ctx.fillText('Type: Inventory Item', rightX, panelY + 168);
+            ctx.fillStyle = nesTheme.panelAccent;
+            ctx.fillText('Click item to focus.', rightX, panelY + panelH - 32);
         }
         ctx.restore();
     }
 
-    handleClick(x: number, y: number) {
+    handleClick(x: number, y: number): void {
         const panelX = 36;
         const panelY = 54;
-        const bodyY = panelY + 34 + 14 + 10;
-        if (x < panelX || x > this.game.getWidth() - 36 || y < bodyY) {
+        const itemStartY = panelY + 100;
+        const itemEndY = itemStartY + this.items.length * 22;
+        if (x < panelX + 8 || x > panelX + Math.floor((this.game.getWidth() - 72) * 0.52) || y < itemStartY || y > itemEndY) {
             return;
         }
-        const idx = Math.floor((y - bodyY) / 22);
+        const idx = Math.floor((y - itemStartY) / 22);
         if (idx >= 0 && idx < this.items.length) {
             this.selectedIndex = idx;
             const selected = this.items[this.selectedIndex];
-            this.game.setStatusMessage(`Selected item: ${selected?.name ?? ''}`);
+            this.game.setStatusMessage(`Selected item: ${selected?.displayName ?? ''}`);
         }
     }
 }

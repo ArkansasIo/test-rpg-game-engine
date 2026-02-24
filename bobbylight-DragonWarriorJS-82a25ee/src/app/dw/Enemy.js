@@ -1,0 +1,59 @@
+import { Utils } from 'gtp';
+import { BattleEntity } from './BattleEntity';
+import { RoamingEntity } from './RoamingEntity';
+import { getEnemyAi } from './EnemyAI';
+export class Enemy extends BattleEntity {
+    constructor(game, args) {
+        super(args);
+        this.name = args.name;
+        this.image = args.image;
+        this.damagedImage = args.damagedImage;
+        this.str = args.str;
+        this.agility = args.agility;
+        //this.resist = args.resist;
+        this.dodge = args.dodge;
+        this.xp = args.xp;
+        this.ai = getEnemyAi(args.ai);
+        Utils.mixin(RoamingEntity.prototype, this);
+        this.game = game;
+        // Convert arrays into a single value.
+        // These values can be an array of form [min, max], both inclusive
+        // TODO: Merge with BattleEntity and make ths a utility method since it's used there too
+        if (typeof args.gp === 'number') {
+            this.gp = args.gp;
+        }
+        else {
+            this.gp = Utils.randomInt(args.gp[0], args.gp[1] + 1);
+        }
+    }
+    computeHurtSpellDamage(hero) {
+        var _a, _b;
+        let min;
+        let max;
+        if (((_a = hero.armor) === null || _a === void 0 ? void 0 : _a.name) === 'magicArmor' || ((_b = hero.armor) === null || _b === void 0 ? void 0 : _b.name) === 'erdricksArmor') {
+            min = 2;
+            max = 6;
+        }
+        else {
+            min = 3;
+            max = 10;
+        }
+        return Utils.randomInt(min, max + 1);
+    }
+    computePhysicalAttackDamage(hero) {
+        if (hero.getDefense() >= this.str) {
+            return Utils.randomInt(0, Math.floor((this.str + 4) / 6) + 1);
+        }
+        const temp = this.str - Math.floor(hero.getDefense() / 2);
+        const min = Math.floor(temp / 4);
+        const max = Math.floor(temp / 2);
+        return Utils.randomInt(min, max + 1);
+    }
+    getImage(hit) {
+        return this.game.assets.get(hit ? this.damagedImage : this.image);
+    }
+    prepare() {
+        return this;
+    }
+}
+//# sourceMappingURL=Enemy.js.map

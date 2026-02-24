@@ -981,6 +981,12 @@ export class DwGame extends Game {
 
     override update() {
         super.update();
+        // Open Inventory with 'I' key
+        if (!this.activeMenu && this.inputManager.isKeyDown(Keys.KEY_I, true)) {
+            this.openInventory();
+            this.setStatusMessage('Opened Inventory');
+            return;
+        }
         if (this.activeMenu && this.cancelKeyPressed()) {
             this.closeMenu();
             this.setStatusMessage('Closed menu');
@@ -1015,5 +1021,6 @@ export class DwGame extends Game {
                 this.mapMenu.selectNextZone();
             }
         }
+        // Movement and other button fixes can be added here as needed
     }
 }

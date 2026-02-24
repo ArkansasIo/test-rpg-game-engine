@@ -10,17 +10,17 @@ export interface OverlayPanelLayout {
 }
 
 const THEME = {
-    bgTop: '#17110b',
-    bgBottom: '#090c14',
-    border: '#b7934f',
-    borderDark: '#4b3719',
-    text: '#f1e2bd',
-    mutedText: '#b7a27a',
-    accent: '#d2b46b',
-    selectionFill: 'rgba(177, 132, 58, 0.35)',
-    barFill: 'rgba(8, 12, 20, 0.9)',
-    paneFill: 'rgba(17, 24, 38, 0.72)',
-    paneBorder: 'rgba(194, 158, 92, 0.65)',
+    bgTop: '#000000',
+    bgBottom: '#111111',
+    border: '#ffffff',
+    borderDark: '#222222',
+    text: '#ffffff',
+    mutedText: '#cccccc',
+    accent: '#ffffff',
+    selectionFill: 'rgba(255,255,255,0.08)',
+    barFill: '#000000',
+    paneFill: '#111111',
+    paneBorder: '#ffffff',
 };
 
 export function drawFantasyBackdrop(
