@@ -14,6 +14,15 @@
     { "id": 12, "name": "Shadow Keep", "biome": "military citadel", "zoneClass": "legacyDungeon" },
     { "id": 13, "name": "Abyssal Woods", "biome": "madness forest", "zoneClass": "openField" },
     { "id": 14, "name": "Jagged Peak", "biome": "dragon mountain", "zoneClass": "openField" },
-    { "id": 15, "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" }
+    { "id": 15, "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" },
+    { "id": 16, "name": "Ironhold City", "biome": "fortified metropolis", "zoneClass": "city" },
+    { "id": 17, "name": "Riverwatch Town", "biome": "riverside township", "zoneClass": "town" },
+    { "id": 18, "name": "Oakridge Village", "biome": "highland village", "zoneClass": "village" },
+    { "id": 19, "name": "Sunken Cataclysm", "biome": "underground cavern", "zoneClass": "cave" },
+    { "id": 20, "name": "Emberfall Barrens", "biome": "ash desert", "zoneClass": "openField" },
+    { "id": 21, "name": "Frostfen Reach", "biome": "frozen marsh", "zoneClass": "openField" },
+    { "id": 22, "name": "Verdant Wildwood", "biome": "ancient forest", "zoneClass": "openField" },
+    { "id": 23, "name": "Starfall Coast", "biome": "storm coast", "zoneClass": "openField" },
+    { "id": 24, "name": "Champion's Crucible", "biome": "trial grounds", "zoneClass": "trialGrounds" }
   ]
 }

@@ -14,6 +14,11 @@
     { "id": 12, "name": "Dragon's Pit", "zoneId": 14, "dungeonType": "cave" },
     { "id": 13, "name": "Bonny Gaol", "zoneId": 11, "dungeonType": "gaol" },
     { "id": 14, "name": "Lamenter's Gaol", "zoneId": 11, "dungeonType": "gaol" },
-    { "id": 15, "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" }
+    { "id": 15, "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" },
+    { "id": 16, "name": "Citadel of Ash", "zoneId": 20, "dungeonType": "raid" },
+    { "id": 17, "name": "Trial of the Moon Sigil", "zoneId": 24, "dungeonType": "trial" },
+    { "id": 18, "name": "Deeproot Underpass", "zoneId": 19, "dungeonType": "cave" },
+    { "id": 19, "name": "Whispering Sinkhole", "zoneId": 18, "dungeonType": "cave" },
+    { "id": 20, "name": "Village Watch Tunnels", "zoneId": 18, "dungeonType": "mine" }
   ]
 }

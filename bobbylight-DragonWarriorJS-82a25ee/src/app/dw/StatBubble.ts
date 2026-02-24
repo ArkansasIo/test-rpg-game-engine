@@ -2,6 +2,7 @@ import { Bubble } from './Bubble';
 import { DwGame } from './DwGame';
 import { Party } from './Party';
 import { Hero } from './Hero';
+// ...existing code...
 
 export class StatBubble extends Bubble {
 
@@ -46,7 +47,6 @@ export class StatBubble extends Bubble {
     }
 
     override paintContent(ctx: CanvasRenderingContext2D, x: number, y: number) {
-
         const SCALE: number = this.game.scale;
         const x2: number = this.x + this.w - this.getXMargin();
         let y0: number = y;
@@ -78,6 +78,5 @@ export class StatBubble extends Bubble {
         xOffs = this.calculateX2Offs(hero.exp);
         this.game.drawString(hero.exp, x2 - xOffs, y0);
         y0 += Y_INC;
-
     }
 }

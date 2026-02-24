@@ -5,7 +5,7 @@ export interface EldenZone {
     source: EldenSource;
     name: string;
     biome: string;
-    zoneClass: 'openField' | 'legacyDungeon' | 'town' | 'catacomb' | 'cave' | 'ruins' | 'fort';
+    zoneClass: 'openField' | 'legacyDungeon' | 'town' | 'catacomb' | 'cave' | 'ruins' | 'fort' | 'city' | 'village' | 'trialGrounds';
 }
 
 export interface EldenDungeon {
@@ -13,7 +13,7 @@ export interface EldenDungeon {
     source: EldenSource;
     name: string;
     zoneId: number;
-    dungeonType: 'legacyDungeon' | 'catacomb' | 'cave' | 'gaol' | 'mine' | 'ruins' | 'fort';
+    dungeonType: 'legacyDungeon' | 'catacomb' | 'cave' | 'gaol' | 'mine' | 'ruins' | 'fort' | 'raid' | 'trial';
 }
 
 export interface EldenWeapon {
@@ -99,6 +99,15 @@ export const eldenZones: EldenZone[] = [
     { id: 13, source: 'shadowOfTheErdtree', name: 'Abyssal Woods', biome: 'madness forest', zoneClass: 'openField' },
     { id: 14, source: 'shadowOfTheErdtree', name: 'Jagged Peak', biome: 'dragon mountain', zoneClass: 'openField' },
     { id: 15, source: 'shadowOfTheErdtree', name: 'Enir-Ilim', biome: 'divine city', zoneClass: 'legacyDungeon' },
+    { id: 16, source: 'shadowOfTheErdtree', name: 'Ironhold City', biome: 'fortified metropolis', zoneClass: 'city' },
+    { id: 17, source: 'shadowOfTheErdtree', name: 'Riverwatch Town', biome: 'riverside township', zoneClass: 'town' },
+    { id: 18, source: 'shadowOfTheErdtree', name: 'Oakridge Village', biome: 'highland village', zoneClass: 'village' },
+    { id: 19, source: 'shadowOfTheErdtree', name: 'Sunken Cataclysm', biome: 'underground cavern', zoneClass: 'cave' },
+    { id: 20, source: 'shadowOfTheErdtree', name: 'Emberfall Barrens', biome: 'ash desert', zoneClass: 'openField' },
+    { id: 21, source: 'shadowOfTheErdtree', name: 'Frostfen Reach', biome: 'frozen marsh', zoneClass: 'openField' },
+    { id: 22, source: 'shadowOfTheErdtree', name: 'Verdant Wildwood', biome: 'ancient forest', zoneClass: 'openField' },
+    { id: 23, source: 'shadowOfTheErdtree', name: 'Starfall Coast', biome: 'storm coast', zoneClass: 'openField' },
+    { id: 24, source: 'shadowOfTheErdtree', name: 'Champion\'s Crucible', biome: 'trial grounds', zoneClass: 'trialGrounds' },
 ];
 
 export const eldenDungeons: EldenDungeon[] = [
@@ -117,6 +126,11 @@ export const eldenDungeons: EldenDungeon[] = [
     { id: 13, source: 'shadowOfTheErdtree', name: 'Bonny Gaol', zoneId: 11, dungeonType: 'gaol' },
     { id: 14, source: 'shadowOfTheErdtree', name: 'Lamenter\'s Gaol', zoneId: 11, dungeonType: 'gaol' },
     { id: 15, source: 'shadowOfTheErdtree', name: 'Ancient Ruins of Rauh', zoneId: 11, dungeonType: 'ruins' },
+    { id: 16, source: 'shadowOfTheErdtree', name: 'Citadel of Ash', zoneId: 20, dungeonType: 'raid' },
+    { id: 17, source: 'shadowOfTheErdtree', name: 'Trial of the Moon Sigil', zoneId: 24, dungeonType: 'trial' },
+    { id: 18, source: 'shadowOfTheErdtree', name: 'Deeproot Underpass', zoneId: 19, dungeonType: 'cave' },
+    { id: 19, source: 'shadowOfTheErdtree', name: 'Whispering Sinkhole', zoneId: 18, dungeonType: 'cave' },
+    { id: 20, source: 'shadowOfTheErdtree', name: 'Village Watch Tunnels', zoneId: 18, dungeonType: 'mine' },
 ];
 
 export const eldenWeapons: EldenWeapon[] = [

@@ -65,6 +65,12 @@ export class RoamingState extends BaseState {
             return;
         }
 
+        // OG-style in-game menu: open with Enter key
+        if (!this.showWorldMap && im.enter(true)) {
+            const { GameMenuState } = require('./GameMenuState');
+            this.game.setState(new GameMenuState(this.game));
+            return;
+        }
         // Open Elden/WoW-style overlay menus from roaming.
         if (!this.showWorldMap) {
             if (im.isKeyDown(Keys.KEY_I, true)) {

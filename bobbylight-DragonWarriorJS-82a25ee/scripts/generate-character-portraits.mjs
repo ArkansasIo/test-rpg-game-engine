@@ -89,12 +89,13 @@ const CHARACTER_RACES = [
     'Construct',
 ];
 
+// Dragon Warrior/Dragon Quest style palettes (classic NES/SNES look)
 const PALETTES = [
-    [ '#1b0f0a', '#5b2f1f', '#d89a68', '#f6dfb2' ],
-    [ '#0c1726', '#345882', '#6ba6d6', '#d7f0ff' ],
-    [ '#111a11', '#2f5a32', '#7fb06c', '#daf2cc' ],
-    [ '#1d1224', '#5b3f7a', '#9e7dc7', '#eadfff' ],
-    [ '#25150d', '#7b4e2a', '#c58a4f', '#f9ddb5' ],
+    [ '#181818', '#f8d878', '#a85838', '#f8b800', '#e8a800', '#a8a8a8', '#f8f8f8', '#3860d8' ], // Hero/warrior
+    [ '#181818', '#b8f8d8', '#38a878', '#f8f8f8', '#a8a8a8', '#f8b800', '#3860d8', '#f8d878' ], // Mage
+    [ '#181818', '#f8b800', '#a85838', '#f8d878', '#e8a800', '#a8a8a8', '#f8f8f8', '#3860d8' ], // Cleric/Paladin
+    [ '#181818', '#a8a8a8', '#f8f8f8', '#3860d8', '#f8d878', '#f8b800', '#e8a800', '#38a878' ], // Rogue
+    [ '#181818', '#f8f8f8', '#a8a8a8', '#f8d878', '#f8b800', '#e8a800', '#3860d8', '#38a878' ], // Bard/Monk
 ];
 
 const toToken = (value) =>
@@ -126,41 +127,62 @@ const drawPixelRect = (ctx, x, y, w, h, color) => {
     ctx.fillRect(x, y, w, h);
 };
 
+// Draw a Dragon Warrior/Dragon Quest style portrait
 const drawPortrait = (id, titleParts) => {
     const canvas = createCanvas(32, 32);
     const ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
     const rng = mulberry32(seedFromText(id));
-    const palette = PALETTES[Math.floor(rng() * PALETTES.length)];
+    // Pick palette based on class/race for more variety
+    let paletteIdx = Math.floor(rng() * PALETTES.length);
+    if (titleParts[0]) {
+        const key = titleParts[0].toLowerCase();
+        if (key.includes('warrior') || key.includes('paladin')) paletteIdx = 0;
+        else if (key.includes('mage') || key.includes('necromancer')) paletteIdx = 1;
+        else if (key.includes('cleric')) paletteIdx = 2;
+        else if (key.includes('rogue') || key.includes('ranger')) paletteIdx = 3;
+        else if (key.includes('bard') || key.includes('monk')) paletteIdx = 4;
+    }
+    const palette = PALETTES[paletteIdx];
 
+    // Background
     drawPixelRect(ctx, 0, 0, 32, 32, palette[0]);
-    for (let i = 0; i < 50; i++) {
-        const x = Math.floor(rng() * 32);
-        const y = Math.floor(rng() * 32);
-        drawPixelRect(ctx, x, y, 1, 1, rng() > 0.6 ? palette[2] : palette[1]);
-    }
 
-    drawPixelRect(ctx, 7, 6, 18, 22, palette[1]);
-    drawPixelRect(ctx, 9, 8, 14, 10, palette[3]);
-    drawPixelRect(ctx, 11, 11, 2, 2, '#000');
-    drawPixelRect(ctx, 19, 11, 2, 2, '#000');
-    drawPixelRect(ctx, 13, 15, 6, 1, '#000');
-    drawPixelRect(ctx, 6, 26, 20, 3, palette[2]);
+    // Head/face (Dragon Quest style: round, centered, with helmet/hair)
+    drawPixelRect(ctx, 8, 8, 16, 16, palette[1]); // face base
+    // Cheeks
+    drawPixelRect(ctx, 10, 20, 4, 2, palette[3]);
+    drawPixelRect(ctx, 18, 20, 4, 2, palette[3]);
+    // Hair/helmet (top)
+    drawPixelRect(ctx, 8, 6, 16, 4, palette[2]);
+    // Hair/helmet (sides)
+    drawPixelRect(ctx, 6, 12, 4, 8, palette[2]);
+    drawPixelRect(ctx, 22, 12, 4, 8, palette[2]);
+    // Eyes (big, DQ style)
+    drawPixelRect(ctx, 12, 16, 2, 2, '#181818');
+    drawPixelRect(ctx, 18, 16, 2, 2, '#181818');
+    drawPixelRect(ctx, 12, 17, 1, 1, '#f8f8f8');
+    drawPixelRect(ctx, 18, 17, 1, 1, '#f8f8f8');
+    // Mouth (simple line)
+    drawPixelRect(ctx, 15, 22, 2, 1, '#a85838');
+    // Nose
+    drawPixelRect(ctx, 16, 19, 1, 2, palette[2]);
 
-    const sig = titleParts.join('').toUpperCase();
-    const glyphCount = Math.min(5, sig.length);
-    for (let i = 0; i < glyphCount; i++) {
-        const c = sig.charCodeAt(i);
-        const gx = 2 + i * 6;
-        const gh = 3 + c % 6;
-        drawPixelRect(ctx, gx, 31 - gh, 3, gh, palette[3]);
-    }
+    // Shoulders/armor
+    drawPixelRect(ctx, 6, 24, 20, 4, palette[4]);
+    // Accent/gem on helmet (randomized)
+    if (rng() > 0.5) drawPixelRect(ctx, 15, 8, 2, 2, palette[5]);
 
-    drawPixelRect(ctx, 0, 0, 32, 1, '#f7e6bc');
-    drawPixelRect(ctx, 0, 31, 32, 1, '#2a1a10');
-    drawPixelRect(ctx, 0, 0, 1, 32, '#f7e6bc');
-    drawPixelRect(ctx, 31, 0, 1, 32, '#2a1a10');
+    // Border (Dragon Quest style)
+    drawPixelRect(ctx, 0, 0, 32, 1, palette[6]);
+    drawPixelRect(ctx, 0, 31, 32, 1, palette[0]);
+    drawPixelRect(ctx, 0, 0, 1, 32, palette[6]);
+    drawPixelRect(ctx, 31, 0, 1, 32, palette[0]);
+
+    // Optionally, add a blue accent (DQ hero scarf/cape)
+    if (rng() > 0.7) drawPixelRect(ctx, 4, 28, 24, 2, palette[7]);
+
     return canvas;
 };
 

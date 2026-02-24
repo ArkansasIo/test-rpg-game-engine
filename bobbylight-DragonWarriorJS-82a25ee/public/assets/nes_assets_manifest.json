@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-02-24T07:44:16.106Z",
+  "outputs": {
+    "font": "font_8x8_ascii.png",
+    "uiKit": "ui_kit.png",
+    "tileset": "nes_tileset.png",
+    "monsters": "nes_monsters.png",
+    "classes": "nes_class_sprites.png"
+  },
+  "notes": [
+    "NES-style generated assets for HUD, tiles, monsters, and class sheet",
+    "Palette-limited sprites with transparent background where applicable"
+  ]
+}

@@ -14,7 +14,16 @@
     { "id": 12, "source": "shadowOfTheErdtree", "name": "Shadow Keep", "biome": "military citadel", "zoneClass": "legacyDungeon" },
     { "id": 13, "source": "shadowOfTheErdtree", "name": "Abyssal Woods", "biome": "madness forest", "zoneClass": "openField" },
     { "id": 14, "source": "shadowOfTheErdtree", "name": "Jagged Peak", "biome": "dragon mountain", "zoneClass": "openField" },
-    { "id": 15, "source": "shadowOfTheErdtree", "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" }
+    { "id": 15, "source": "shadowOfTheErdtree", "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" },
+    { "id": 16, "source": "shadowOfTheErdtree", "name": "Ironhold City", "biome": "fortified metropolis", "zoneClass": "city" },
+    { "id": 17, "source": "shadowOfTheErdtree", "name": "Riverwatch Town", "biome": "riverside township", "zoneClass": "town" },
+    { "id": 18, "source": "shadowOfTheErdtree", "name": "Oakridge Village", "biome": "highland village", "zoneClass": "village" },
+    { "id": 19, "source": "shadowOfTheErdtree", "name": "Sunken Cataclysm", "biome": "underground cavern", "zoneClass": "cave" },
+    { "id": 20, "source": "shadowOfTheErdtree", "name": "Emberfall Barrens", "biome": "ash desert", "zoneClass": "openField" },
+    { "id": 21, "source": "shadowOfTheErdtree", "name": "Frostfen Reach", "biome": "frozen marsh", "zoneClass": "openField" },
+    { "id": 22, "source": "shadowOfTheErdtree", "name": "Verdant Wildwood", "biome": "ancient forest", "zoneClass": "openField" },
+    { "id": 23, "source": "shadowOfTheErdtree", "name": "Starfall Coast", "biome": "storm coast", "zoneClass": "openField" },
+    { "id": 24, "source": "shadowOfTheErdtree", "name": "Champion's Crucible", "biome": "trial grounds", "zoneClass": "trialGrounds" }
   ],
   "eldenDungeons": [
     { "id": 1, "source": "eldenRing", "name": "Stormveil Castle", "zoneId": 1, "dungeonType": "legacyDungeon" },
@@ -31,10 +40,15 @@
     { "id": 12, "source": "shadowOfTheErdtree", "name": "Dragon's Pit", "zoneId": 14, "dungeonType": "cave" },
     { "id": 13, "source": "shadowOfTheErdtree", "name": "Bonny Gaol", "zoneId": 11, "dungeonType": "gaol" },
     { "id": 14, "source": "shadowOfTheErdtree", "name": "Lamenter's Gaol", "zoneId": 11, "dungeonType": "gaol" },
-    { "id": 15, "source": "shadowOfTheErdtree", "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" }
+    { "id": 15, "source": "shadowOfTheErdtree", "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" },
+    { "id": 16, "source": "shadowOfTheErdtree", "name": "Citadel of Ash", "zoneId": 20, "dungeonType": "raid" },
+    { "id": 17, "source": "shadowOfTheErdtree", "name": "Trial of the Moon Sigil", "zoneId": 24, "dungeonType": "trial" },
+    { "id": 18, "source": "shadowOfTheErdtree", "name": "Deeproot Underpass", "zoneId": 19, "dungeonType": "cave" },
+    { "id": 19, "source": "shadowOfTheErdtree", "name": "Whispering Sinkhole", "zoneId": 18, "dungeonType": "cave" },
+    { "id": 20, "source": "shadowOfTheErdtree", "name": "Village Watch Tunnels", "zoneId": 18, "dungeonType": "mine" }
   ],
   "eldenBiomes": [
-    "temperate plains", "wetlands", "scarlet wasteland", "golden plateau", "capital city", "volcanic slopes", "glacial peaks", "floating ruins", "sacred tree city", "ashen grasslands", "shadowed plateau", "military citadel", "madness forest", "dragon mountain", "divine city"
+    "temperate plains", "wetlands", "scarlet wasteland", "golden plateau", "capital city", "volcanic slopes", "glacial peaks", "floating ruins", "sacred tree city", "ashen grasslands", "shadowed plateau", "military citadel", "madness forest", "dragon mountain", "divine city", "fortified metropolis", "riverside township", "highland village", "underground cavern", "ash desert", "frozen marsh", "ancient forest", "storm coast", "trial grounds"
   ],
   "eldenTileTypes": [
     "grass", "forest", "road", "water", "swamp", "ruins", "red_swamp", "scarlet_rot", "golden_grass", "mountain", "snow", "ice", "city", "castle", "cave", "roots", "blood_swamp", "palace"
@@ -49,7 +63,16 @@
     { "zone": "Siofra River", "tiles": [ { "type": "cave", "x": 0, "y": 6 }, { "type": "ruins", "x": 1, "y": 6 }, { "type": "water", "x": 2, "y": 6 } ] },
     { "zone": "Ainsel River", "tiles": [ { "type": "cave", "x": 0, "y": 7 }, { "type": "ruins", "x": 1, "y": 7 }, { "type": "water", "x": 2, "y": 7 } ] },
     { "zone": "Deeproot Depths", "tiles": [ { "type": "roots", "x": 0, "y": 8 }, { "type": "ruins", "x": 1, "y": 8 }, { "type": "water", "x": 2, "y": 8 } ] },
-    { "zone": "Mohgwyn Palace", "tiles": [ { "type": "blood_swamp", "x": 0, "y": 9 }, { "type": "ruins", "x": 1, "y": 9 }, { "type": "palace", "x": 2, "y": 9 } ] }
+    { "zone": "Mohgwyn Palace", "tiles": [ { "type": "blood_swamp", "x": 0, "y": 9 }, { "type": "ruins", "x": 1, "y": 9 }, { "type": "palace", "x": 2, "y": 9 } ] },
+    { "zone": "Ironhold City", "tiles": [ { "type": "city", "x": 0, "y": 10 }, { "type": "road", "x": 1, "y": 10 }, { "type": "castle", "x": 2, "y": 10 } ] },
+    { "zone": "Riverwatch Town", "tiles": [ { "type": "road", "x": 0, "y": 11 }, { "type": "water", "x": 1, "y": 11 }, { "type": "forest", "x": 2, "y": 11 } ] },
+    { "zone": "Oakridge Village", "tiles": [ { "type": "forest", "x": 0, "y": 12 }, { "type": "road", "x": 1, "y": 12 }, { "type": "grass", "x": 2, "y": 12 } ] },
+    { "zone": "Sunken Cataclysm", "tiles": [ { "type": "cave", "x": 0, "y": 13 }, { "type": "ruins", "x": 1, "y": 13 }, { "type": "water", "x": 2, "y": 13 } ] },
+    { "zone": "Emberfall Barrens", "tiles": [ { "type": "red_swamp", "x": 0, "y": 14 }, { "type": "ruins", "x": 1, "y": 14 }, { "type": "road", "x": 2, "y": 14 } ] },
+    { "zone": "Frostfen Reach", "tiles": [ { "type": "snow", "x": 0, "y": 15 }, { "type": "water", "x": 1, "y": 15 }, { "type": "ice", "x": 2, "y": 15 } ] },
+    { "zone": "Verdant Wildwood", "tiles": [ { "type": "forest", "x": 0, "y": 16 }, { "type": "grass", "x": 1, "y": 16 }, { "type": "ruins", "x": 2, "y": 16 } ] },
+    { "zone": "Starfall Coast", "tiles": [ { "type": "water", "x": 0, "y": 17 }, { "type": "road", "x": 1, "y": 17 }, { "type": "ruins", "x": 2, "y": 17 } ] },
+    { "zone": "Champion's Crucible", "tiles": [ { "type": "castle", "x": 0, "y": 18 }, { "type": "road", "x": 1, "y": 18 }, { "type": "ruins", "x": 2, "y": 18 } ] }
   ],
   "eldenMapMenu": {
     "title": "Elden Ring World Map",
