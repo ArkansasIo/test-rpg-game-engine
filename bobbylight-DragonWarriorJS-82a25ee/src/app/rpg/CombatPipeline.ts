@@ -14,20 +14,20 @@ export interface CombatContext {
 }
 
 export function calculateDamage(ctx: CombatContext): number {
-  // Raw damage
-  let raw = (ctx.attacker.STR * ctx.skillCoef + ctx.flatBonus) * randomVariance();
-  // Mitigation
-  const dr = ctx.armor / (ctx.armor + ctx.kArmor);
-  let afterMit = raw * (1 - dr);
-  // Multipliers
-  let final = afterMit * ctx.damageDoneMult * ctx.damageTakenMult;
-  // Crit
-  if (Math.random() < ctx.critChance) final *= ctx.critMult;
-  return Math.max(0, Math.round(final));
+    // Raw damage
+    const raw = (ctx.attacker.STR * ctx.skillCoef + ctx.flatBonus) * randomVariance();
+    // Mitigation
+    const dr = ctx.armor / (ctx.armor + ctx.kArmor);
+    const afterMit = raw * (1 - dr);
+    // Multipliers
+    let final = afterMit * ctx.damageDoneMult * ctx.damageTakenMult;
+    // Crit
+    if (Math.random() < ctx.critChance) final *= ctx.critMult;
+    return Math.max(0, Math.round(final));
 }
 
 function randomVariance(): number {
-  return 0.95 + Math.random() * 0.1; // 0.95–1.05
+    return 0.95 + Math.random() * 0.1; // 0.95–1.05
 }
 
 /**

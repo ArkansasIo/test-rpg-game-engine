@@ -86,25 +86,25 @@ export class PartyMember extends RoamingEntity {
         // Could trigger UI refresh, recalculate derived stats, etc.
     }
 
-    hp: number = 0;
-    maxHp: number = 0;
-    mp: number = 0;
-    maxMp: number = 0;
-    level: number = 1;
-    exp: number = 0;
-    strength: number = 0;
-    agility: number = 0;
+    hp = 0;
+    maxHp = 0;
+    mp = 0;
+    maxMp = 0;
+    level = 1;
+    exp = 0;
+    strength = 0;
+    agility = 0;
     weapon?: Weapon;
     armor?: Armor;
     shield?: Shield;
     readonly spells: Spell[] = [];
 
     // --- Talent Tree and Level System ---
-    talentPoints: number = 0;
+    talentPoints = 0;
     talentTree?: import('./entities').TalentTree;
     talents: Record<string, number> = {};
     levelProgression: import('./entities').LevelProgression[] = [];
-    maxLevel: number = 150;
+    maxLevel = 150;
 
     constructor(game: DwGame, args: PartyMemberArgs) {
 
@@ -113,28 +113,28 @@ export class PartyMember extends RoamingEntity {
         this.exp = 12345;
 
         // Example: initialize level progression (should be loaded from data)
-        this.levelProgression = Array.from({length: this.maxLevel}, (_, i) => ({
-            level: i+1,
-            expRequired: 100 + i*50,
+        this.levelProgression = Array.from({ length: this.maxLevel }, (unusedValue, i) => ({
+            level: i + 1,
+            expRequired: 100 + i * 50,
             statGains: {
-                hp: 5 + Math.floor(i/2),
+                hp: 5 + Math.floor(i / 2),
                 mp: i % 2 === 0 ? 2 : 1,
-                strength: 1 + Math.floor(i/5),
-                agility: 1 + Math.floor(i/7)
-            }
+                strength: 1 + Math.floor(i / 5),
+                agility: 1 + Math.floor(i / 7),
+            },
         }));
 
         // Example: initialize empty talent tree (should be loaded from data)
         this.talentTree = {
             id: 'default',
             name: 'Default Talent Tree',
-            nodes: {}
+            nodes: {},
         };
     }
 
     gainExp(amount: number) {
         this.exp += amount;
-        while (this.level < this.maxLevel && this.exp >= this.levelProgression[this.level-1].expRequired) {
+        while (this.level < this.maxLevel && this.exp >= this.levelProgression[this.level - 1].expRequired) {
             this.levelUp();
         }
     }
@@ -142,7 +142,7 @@ export class PartyMember extends RoamingEntity {
     levelUp() {
         if (this.level >= this.maxLevel) return;
         this.level++;
-        const gains = this.levelProgression[this.level-1].statGains;
+        const gains = this.levelProgression[this.level - 1].statGains;
         if (gains.hp) this.maxHp += gains.hp;
         if (gains.mp) this.maxMp += gains.mp;
         if (gains.strength) this.strength += gains.strength;
@@ -151,16 +151,8 @@ export class PartyMember extends RoamingEntity {
         this.mp = this.maxMp;
         this.talentPoints++;
 
-        // Show level-up notification if in RoamingState
-        if (typeof window !== 'undefined' && (window as any).dwRoamingState && typeof (window as any).dwRoamingState.showConversation === 'function') {
-            const heroName = this.name || 'Hero';
-            const msg = `${heroName} reached level ${this.level}!`;
-            import('./Conversation').then(({ Conversation }) => {
-                const conv = new Conversation((window as any).dwGame || this.game, false);
-                conv.addSegment(msg);
-                (window as any).dwRoamingState.showConversation(conv);
-            });
-        }
+        const heroName = this.name.length > 0 ? this.name : 'Hero';
+        this.game.setStatusMessage(`${heroName} reached level ${this.level}!`);
     }
 
     learnTalent(nodeId: string) {
@@ -170,7 +162,7 @@ export class PartyMember extends RoamingEntity {
         if (this.talentPoints <= 0) return false;
         if (this.talents[nodeId] === node.maxRank) return false;
         // Prerequisite check (simple)
-        if (node.prerequisites && !node.prerequisites.every(pid => (this.talents[pid] ?? 0) === (this.talentTree!.nodes[pid]?.maxRank ?? 0))) return false;
+        if (node.prerequisites && !node.prerequisites.every((pid) => (this.talents[pid] ?? 0) === (this.talentTree!.nodes[pid]?.maxRank ?? 0))) return false;
         this.talents[nodeId] = (this.talents[nodeId] ?? 0) + 1;
         this.talentPoints--;
         // TODO: Apply talent effects

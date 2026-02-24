@@ -1,5 +1,6 @@
 // Data structure for zones, biomes, and sub-biomes
 // This is a scalable, data-driven approach for 72+ zones, biomes, and subtypes
+import { eldenZones } from './eldenRingContent';
 
 export interface SubBiome {
     name: string;
@@ -33,13 +34,13 @@ export const ZONES: Zone[] = [
             class: 'land',
             subBiomes: [
                 { name: 'Rolling Hills', type: 'grassland' },
-                { name: 'Wildflower Meadow', type: 'meadow', subTypes: ['flowers', 'bees'] }
-            ]
+                { name: 'Wildflower Meadow', type: 'meadow', subTypes: [ 'flowers', 'bees' ] },
+            ],
         },
         regionType: 'overworld',
         class: 'starter',
         subClass: 'safe',
-        subTypes: ['open', 'sunny']
+        subTypes: [ 'open', 'sunny' ],
     },
     {
         id: 2,
@@ -49,13 +50,31 @@ export const ZONES: Zone[] = [
             class: 'land',
             subBiomes: [
                 { name: 'Bog', type: 'wetland' },
-                { name: 'Haunted Fen', type: 'marsh', subTypes: ['ghosts', 'fog'] }
-            ]
+                { name: 'Haunted Fen', type: 'marsh', subTypes: [ 'ghosts', 'fog' ] },
+            ],
         },
         regionType: 'overworld',
         class: 'advanced',
         subClass: 'dangerous',
-        subTypes: ['dark', 'wet']
-    }
+        subTypes: [ 'dark', 'wet' ],
+    },
     // ... Add up to 72+ zones here
 ];
+
+export const ELDEN_ZONES: Zone[] = eldenZones.map((zone) => {
+    return {
+        id: 10000 + zone.id,
+        name: zone.name,
+        biome: {
+            name: zone.biome,
+            class: zone.zoneClass,
+            subBiomes: [
+                { name: `${zone.name} Subregion`, type: zone.biome },
+            ],
+        },
+        regionType: zone.source,
+        class: zone.zoneClass,
+        subClass: zone.source,
+        subTypes: [ zone.biome ],
+    };
+});

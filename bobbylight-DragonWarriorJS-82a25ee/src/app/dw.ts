@@ -3,7 +3,6 @@
  */
 import { DwGame } from './dw/DwGame';
 import { LoadingState } from './dw/LoadingState';
-import { GameStudioAdvertState } from './dw/GameStudioAdvertState';
 
 
 function getScaleAndSize() {
@@ -18,18 +17,17 @@ function getScaleAndSize() {
     return {
         scale,
         width: tileW * 16 * scale,
-        height: tileH * 16 * scale
+        height: tileH * 16 * scale,
     };
 }
 
 function startGame() {
     const { scale, width, height } = getScaleAndSize();
     const game = new DwGame({ parent: 'parent', scale, width, height, keyRefreshMillis: 300, targetFps: 60 });
-    game.setState(new GameStudioAdvertState(game));
+    game.setState(new LoadingState(game));
     game.start();
     window.addEventListener('resize', () => {
-        const { scale, width, height } = getScaleAndSize();
-        game.scale = scale;
+        const { width, height } = getScaleAndSize();
         game.canvas.width = width;
         game.canvas.height = height;
         game.render();

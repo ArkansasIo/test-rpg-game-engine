@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 // RPG Core Data Structures
 
 export type PrimaryStat = 'STR' | 'DEX' | 'CON' | 'INT' | 'WIS' | 'CHA' | 'LUK';

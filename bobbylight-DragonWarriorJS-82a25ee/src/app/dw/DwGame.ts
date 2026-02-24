@@ -13,31 +13,36 @@ import {
     TiledObject,
     Utils,
 } from 'gtp';
-import { createNewAdventureLog } from './AdventureLog';
-import { loadAdventureLog } from './AdventureLog';
+import { AdventureLog, createNewAdventureLog, loadAdventureLog, saveAdventureLog } from './AdventureLog';
 import { Hero } from './Hero';
 import { Shield } from './Shield';
 import { Npc } from './Npc';
 import { Armor } from './Armor';
 import { Weapon } from './Weapon';
-import { HERB } from './Item';
-import { getItemByName } from './Item';
+import { getItemByName, HERB, Item } from './Item';
 import { Direction } from './Direction';
 import { NpcType, getNpcType } from './NpcType';
 import { Door } from './Door';
 import { Party } from './Party';
+import { BaseState } from './BaseState';
 import { MapChangeState } from './MapChangeState';
 import { RoamingState } from './RoamingState';
 import { DwMap } from './DwMap';
 import { BattleState } from './BattleState';
 import { BattleTransitionState } from './BattleTransitionState';
+import { Chest, ChestContentType } from './Chest';
+import { EnemyData } from './Enemy';
+import { HiddenItem, HiddenItemType } from './HiddenItem';
+import { LocationString, toLocationString } from './LocationString';
+import { EquipmentMap } from './dw';
 import { Brecconary } from './mapLogic/brecconary';
 import { ErdricksCave1 } from './mapLogic/erdricksCave1';
 import { ErdricksCave2 } from './mapLogic/erdricksCave2';
 import { Garinham } from './mapLogic/garinham';
+import { MapLogic } from './mapLogic/MapLogic';
 import { Overworld } from './mapLogic/overworld';
+import { RoamingEntityRange } from './RoamingEntity';
 import { TantegelCastle } from './mapLogic/tantegelCastle';
-import { toLocationString } from './LocationString';
 
 export type TiledMapMap = Record<string, DwMap>;
 

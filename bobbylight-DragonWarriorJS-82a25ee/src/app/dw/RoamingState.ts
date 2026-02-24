@@ -7,7 +7,6 @@ import { TextBubble } from './TextBubble';
 import { Conversation } from './Conversation';
 import { StatusBubble } from './StatusBubble';
 import { ItemBubble } from './ItemBubble';
-import { Item } from './Item';
 import { Npc } from './Npc';
 import { Hero } from './Hero';
 import { MapLogic } from './mapLogic/MapLogic';
@@ -33,38 +32,18 @@ export class RoamingState extends BaseState {
         this.game.setStatusMessage('Equipment menu coming soon!');
     }
 
-    private showMinimap: boolean = true;
+    private showMinimap = true;
 
     override handleDefaultKeys() {
         super.handleDefaultKeys();
         const im = this.game.inputManager;
         // Toggle minimap with 'M'
-        if (im.isKeyDown && im.isKeyDown('m', true)) {
+        if (im.isKeyDown(Keys.KEY_M, true)) {
             this.showMinimap = !this.showMinimap;
         }
         // Open spell/attack menu with 'S'
-        if (im.isKeyDown && im.isKeyDown('s', true)) {
-            if (!this.spellBubble) {
-                // Open spell/attack menu (reuse spellBubble for now)
-                // You can expand this to a full action bar later
-                // @ts-ignore
-                this.spellBubble = new (require('./SpellBubble').SpellBubble)(this.game, 40, 40, 200, 300, this.game.hero.spells);
-            }
-        }
-        // Quick spell/skill slots 1-9,0
-        for (let i = 1; i <= 10; i++) {
-            const key = i % 10 === 0 ? '0' : String(i);
-            if (im.isKeyDown && im.isKeyDown(key, true)) {
-                // Cast/use spell/skill in slot i (if available)
-                const spell = this.game.hero.spells?.[i - 1];
-                if (spell) {
-                    // @ts-ignore
-                    spell.cast(this.game.hero, undefined);
-                    this.game.audio.playSound('castSpell');
-                    // Show feedback (could use a bubble or message)
-                    this.game.setStatusMessage(`Used ${spell.name}`);
-                }
-            }
+        if (im.isKeyDown(Keys.KEY_S, true) && !this.spellBubble) {
+            this.showSpellList();
         }
     }
 
@@ -103,8 +82,7 @@ export class RoamingState extends BaseState {
         this.updateMethods.set('TALKING', this.updateTalking.bind(this));
         this.updateMethods.set('OVERNIGHT', this.updateOvernight.bind(this));
         this.updateMethods.set('WARP_SELECTION', this.updateWarpSelection.bind(this));
-           (window as any).dwRoamingState = this;
-           (window as any).dwGame = game;
+        this.updateMethods.set('CHEAT_SELECTION', this.updateCheatSelection.bind(this));
 
         this.textBubble = new TextBubble(this.game);
         this.showTextBubble = false;
@@ -262,18 +240,9 @@ export class RoamingState extends BaseState {
                 let success = false;
                 const selected = this.itemBubble.getSelectedItem();
                 if (selected) {
-                    // Use new equip/use logic
-                    if (typeof (this.itemBubble as any).handleEquipOrUse === 'function') {
-                        success = (this.itemBubble as any).handleEquipOrUse(selected, this);
-                        // Remove from inventory if equipped or used
-                        if (success && ('name' in selected)) {
-                            this.game.getParty().getInventory().remove(selected.name);
-                        }
-                    } else if ('use' in selected && typeof selected.use === 'function') {
-                        success = selected.use(this);
-                        if (success && 'name' in selected) {
-                            this.game.getParty().getInventory().remove(selected.name);
-                        }
+                    success = this.itemBubble.handleEquipOrUse(selected, this);
+                    if (success && 'name' in selected) {
+                        this.game.getParty().getInventory().remove(selected.name);
                     }
                 } else {
                     success = false;
@@ -545,7 +514,6 @@ export class RoamingState extends BaseState {
     // Simple minimap: shows map layout and hero position
     private renderMinimap(ctx: CanvasRenderingContext2D) {
         const map = this.game.getMap();
-        const tileSize = this.game.getTileSize();
         const miniTile = 3; // Minimap tile size in px
         const rows = map.height;
         const cols = map.width;
@@ -554,7 +522,7 @@ export class RoamingState extends BaseState {
         // Draw map tiles (just as blocks)
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
-                const tile = map.getTile(c, r, 0);
+                const tile = map.getLayer('tileLayer').getData(r, c);
                 ctx.fillStyle = tile ? '#444' : '#222';
                 ctx.fillRect(x0 + c * miniTile, y0 + r * miniTile, miniTile, miniTile);
             }

@@ -14,7 +14,7 @@ export class TitleScreenState extends BaseState {
         this.blink = true;
     }
 
-    enter() {
+    override enter() {
         super.enter();
         this.game.canvas.addEventListener('touchstart', this.handleStart.bind(this), false);
         this.delay = new Delay({ millis: [ 600, 400 ] });
@@ -22,7 +22,7 @@ export class TitleScreenState extends BaseState {
         this.game.audio.playMusic('MUSIC_TITLE_SCREEN');
     }
 
-    leaving() {
+    override leaving() {
         this.game.canvas.removeEventListener('touchstart', this.handleStart.bind(this), false);
     }
 
@@ -31,7 +31,7 @@ export class TitleScreenState extends BaseState {
         this.loadNextState();
     }
 
-    update(delta: number) {
+    override update(delta: number) {
         this.handleDefaultKeys();
         if (this.delay?.update(delta)) {
             this.delay.reset();
@@ -43,12 +43,12 @@ export class TitleScreenState extends BaseState {
         }
     }
 
-    render(ctx: CanvasRenderingContext2D) {
+    override render(ctx: CanvasRenderingContext2D) {
         const game: DwGame = this.game;
         game.clearScreen();
         const w: number = game.getWidth();
-        let x: number = 0;
-        let y: number = 0;
+        let x = 0;
+        let y = 0;
         // Check if font asset is loaded before rendering
         let fontLoaded = true;
         try {
@@ -66,7 +66,7 @@ export class TitleScreenState extends BaseState {
         } catch (e) {
             img = undefined;
         }
-        if (img && img.width && img.height) {
+        if (img?.width && img.height) {
             x = (w - img.width) / 2;
             y = 30;
             img.draw(ctx, x, y);
@@ -86,7 +86,7 @@ export class TitleScreenState extends BaseState {
         const devNames = [
             'BY: Stephen',
             'ArkansasIo',
-            'Additional Contributors:'
+            'Additional Contributors:',
         ];
         y = 120;
         for (const name of devNames) {

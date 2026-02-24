@@ -1,0 +1,243 @@
+export type EldenSource = 'eldenRing' | 'shadowOfTheErdtree';
+
+export interface EldenZone {
+    id: number;
+    source: EldenSource;
+    name: string;
+    biome: string;
+    zoneClass: 'openField' | 'legacyDungeon' | 'town' | 'catacomb' | 'cave' | 'ruins' | 'fort';
+}
+
+export interface EldenDungeon {
+    id: number;
+    source: EldenSource;
+    name: string;
+    zoneId: number;
+    dungeonType: 'legacyDungeon' | 'catacomb' | 'cave' | 'gaol' | 'mine' | 'ruins' | 'fort';
+}
+
+export interface EldenWeapon {
+    id: number;
+    source: EldenSource;
+    name: string;
+    weaponType: string;
+    attack: number;
+    weight: number;
+    scaling: string[];
+}
+
+export interface EldenArmor {
+    id: number;
+    source: EldenSource;
+    setName: string;
+    pieceName: string;
+    slot: 'head' | 'chest' | 'arms' | 'legs';
+    poise: number;
+    weight: number;
+}
+
+export interface EldenMob {
+    id: number;
+    source: EldenSource;
+    name: string;
+    mobType: string;
+    zoneIds: number[];
+    level: number;
+    hp: number;
+    attack: number;
+    defense: number;
+}
+
+export interface EldenBoss {
+    id: number;
+    source: EldenSource;
+    name: string;
+    zoneId: number;
+    bossType: 'major' | 'legend' | 'field' | 'dungeon' | 'shardbearer' | 'dlcMajor';
+    level: number;
+    hp: number;
+    attack: number;
+    defense: number;
+    remembrance: boolean;
+}
+
+export interface EldenTalisman {
+    id: number;
+    source: EldenSource;
+    name: string;
+    effect: string;
+}
+
+export interface EldenSpell {
+    id: number;
+    source: EldenSource;
+    name: string;
+    school: 'sorcery' | 'incantation';
+    fpCost: number;
+}
+
+export interface EldenKeyItem {
+    id: number;
+    source: EldenSource;
+    name: string;
+    itemType: 'greatRune' | 'key' | 'whetblade' | 'remembrance' | 'quest';
+}
+
+export const eldenZones: EldenZone[] = [
+    { id: 1, source: 'eldenRing', name: 'Limgrave', biome: 'temperate plains', zoneClass: 'openField' },
+    { id: 2, source: 'eldenRing', name: 'Liurnia of the Lakes', biome: 'wetlands', zoneClass: 'openField' },
+    { id: 3, source: 'eldenRing', name: 'Caelid', biome: 'scarlet wasteland', zoneClass: 'openField' },
+    { id: 4, source: 'eldenRing', name: 'Altus Plateau', biome: 'golden plateau', zoneClass: 'openField' },
+    { id: 5, source: 'eldenRing', name: 'Leyndell, Royal Capital', biome: 'capital city', zoneClass: 'legacyDungeon' },
+    { id: 6, source: 'eldenRing', name: 'Mt. Gelmir', biome: 'volcanic slopes', zoneClass: 'openField' },
+    { id: 7, source: 'eldenRing', name: 'Mountaintops of the Giants', biome: 'glacial peaks', zoneClass: 'openField' },
+    { id: 8, source: 'eldenRing', name: 'Crumbling Farum Azula', biome: 'floating ruins', zoneClass: 'legacyDungeon' },
+    { id: 9, source: 'eldenRing', name: 'Miquella\'s Haligtree', biome: 'sacred tree city', zoneClass: 'legacyDungeon' },
+    { id: 10, source: 'shadowOfTheErdtree', name: 'Gravesite Plain', biome: 'ashen grasslands', zoneClass: 'openField' },
+    { id: 11, source: 'shadowOfTheErdtree', name: 'Scadu Altus', biome: 'shadowed plateau', zoneClass: 'openField' },
+    { id: 12, source: 'shadowOfTheErdtree', name: 'Shadow Keep', biome: 'military citadel', zoneClass: 'legacyDungeon' },
+    { id: 13, source: 'shadowOfTheErdtree', name: 'Abyssal Woods', biome: 'madness forest', zoneClass: 'openField' },
+    { id: 14, source: 'shadowOfTheErdtree', name: 'Jagged Peak', biome: 'dragon mountain', zoneClass: 'openField' },
+    { id: 15, source: 'shadowOfTheErdtree', name: 'Enir-Ilim', biome: 'divine city', zoneClass: 'legacyDungeon' },
+];
+
+export const eldenDungeons: EldenDungeon[] = [
+    { id: 1, source: 'eldenRing', name: 'Stormveil Castle', zoneId: 1, dungeonType: 'legacyDungeon' },
+    { id: 2, source: 'eldenRing', name: 'Raya Lucaria Academy', zoneId: 2, dungeonType: 'legacyDungeon' },
+    { id: 3, source: 'eldenRing', name: 'Volcano Manor', zoneId: 6, dungeonType: 'legacyDungeon' },
+    { id: 4, source: 'eldenRing', name: 'Mohgwyn Palace', zoneId: 7, dungeonType: 'legacyDungeon' },
+    { id: 5, source: 'eldenRing', name: 'Auriza Hero\'s Grave', zoneId: 4, dungeonType: 'catacomb' },
+    { id: 6, source: 'eldenRing', name: 'Gael Tunnel', zoneId: 3, dungeonType: 'mine' },
+    { id: 7, source: 'eldenRing', name: 'Murkwater Cave', zoneId: 1, dungeonType: 'cave' },
+    { id: 8, source: 'eldenRing', name: 'Yelough Anix Tunnel', zoneId: 7, dungeonType: 'mine' },
+    { id: 9, source: 'shadowOfTheErdtree', name: 'Belurat, Tower Settlement', zoneId: 10, dungeonType: 'legacyDungeon' },
+    { id: 10, source: 'shadowOfTheErdtree', name: 'Fog Rift Catacombs', zoneId: 11, dungeonType: 'catacomb' },
+    { id: 11, source: 'shadowOfTheErdtree', name: 'Darklight Catacombs', zoneId: 13, dungeonType: 'catacomb' },
+    { id: 12, source: 'shadowOfTheErdtree', name: 'Dragon\'s Pit', zoneId: 14, dungeonType: 'cave' },
+    { id: 13, source: 'shadowOfTheErdtree', name: 'Bonny Gaol', zoneId: 11, dungeonType: 'gaol' },
+    { id: 14, source: 'shadowOfTheErdtree', name: 'Lamenter\'s Gaol', zoneId: 11, dungeonType: 'gaol' },
+    { id: 15, source: 'shadowOfTheErdtree', name: 'Ancient Ruins of Rauh', zoneId: 11, dungeonType: 'ruins' },
+];
+
+export const eldenWeapons: EldenWeapon[] = [
+    { id: 1, source: 'eldenRing', name: 'Claymore', weaponType: 'greatsword', attack: 138, weight: 9.0, scaling: [ 'STR D', 'DEX D' ] },
+    { id: 2, source: 'eldenRing', name: 'Greatsword', weaponType: 'colossal sword', attack: 164, weight: 23.0, scaling: [ 'STR C', 'DEX E' ] },
+    { id: 3, source: 'eldenRing', name: 'Uchigatana', weaponType: 'katana', attack: 115, weight: 5.5, scaling: [ 'STR E', 'DEX D' ] },
+    { id: 4, source: 'eldenRing', name: 'Moonveil', weaponType: 'katana', attack: 73, weight: 6.5, scaling: [ 'STR E', 'DEX D', 'INT C' ] },
+    { id: 5, source: 'eldenRing', name: 'Rivers of Blood', weaponType: 'katana', attack: 76, weight: 6.5, scaling: [ 'STR E', 'DEX D', 'ARC D' ] },
+    { id: 6, source: 'eldenRing', name: 'Bloodhound\'s Fang', weaponType: 'curved greatsword', attack: 141, weight: 11.5, scaling: [ 'STR C', 'DEX C' ] },
+    { id: 7, source: 'eldenRing', name: 'Blasphemous Blade', weaponType: 'greatsword', attack: 121, weight: 13.5, scaling: [ 'STR D', 'DEX D', 'FTH C' ] },
+    { id: 8, source: 'eldenRing', name: 'Dark Moon Greatsword', weaponType: 'greatsword', attack: 82, weight: 10.0, scaling: [ 'STR D', 'DEX D', 'INT C' ] },
+    { id: 9, source: 'eldenRing', name: 'Hand of Malenia', weaponType: 'katana', attack: 117, weight: 7.0, scaling: [ 'STR E', 'DEX B' ] },
+    { id: 10, source: 'eldenRing', name: 'Bolt of Gransax', weaponType: 'great spear', attack: 98, weight: 8.5, scaling: [ 'STR E', 'DEX C' ] },
+    { id: 11, source: 'shadowOfTheErdtree', name: 'Great Katana', weaponType: 'great katana', attack: 141, weight: 9.0, scaling: [ 'STR D', 'DEX D' ] },
+    { id: 12, source: 'shadowOfTheErdtree', name: 'Dryleaf Arts', weaponType: 'hand-to-hand', attack: 89, weight: 1.0, scaling: [ 'STR E', 'DEX C' ] },
+    { id: 13, source: 'shadowOfTheErdtree', name: 'Backhand Blade', weaponType: 'backhand blade', attack: 105, weight: 2.0, scaling: [ 'STR E', 'DEX C' ] },
+    { id: 14, source: 'shadowOfTheErdtree', name: 'Smithscript Spear', weaponType: 'spear', attack: 122, weight: 7.0, scaling: [ 'STR D', 'DEX D' ] },
+    { id: 15, source: 'shadowOfTheErdtree', name: 'Rellana\'s Twin Blades', weaponType: 'light greatsword', attack: 95, weight: 8.0, scaling: [ 'STR E', 'DEX C', 'INT D', 'FTH D' ] },
+];
+
+export const eldenArmor: EldenArmor[] = [
+    { id: 1, source: 'eldenRing', setName: 'Vagabond Set', pieceName: 'Vagabond Knight Helm', slot: 'head', poise: 6, weight: 5.1 },
+    { id: 2, source: 'eldenRing', setName: 'Vagabond Set', pieceName: 'Vagabond Knight Armor', slot: 'chest', poise: 17, weight: 10.6 },
+    { id: 3, source: 'eldenRing', setName: 'Vagabond Set', pieceName: 'Vagabond Knight Gauntlets', slot: 'arms', poise: 5, weight: 3.5 },
+    { id: 4, source: 'eldenRing', setName: 'Vagabond Set', pieceName: 'Vagabond Knight Greaves', slot: 'legs', poise: 10, weight: 6.6 },
+    { id: 5, source: 'eldenRing', setName: 'Bull-Goat Set', pieceName: 'Bull-Goat Helm', slot: 'head', poise: 15, weight: 11.3 },
+    { id: 6, source: 'eldenRing', setName: 'Bull-Goat Set', pieceName: 'Bull-Goat Armor', slot: 'chest', poise: 38, weight: 26.5 },
+    { id: 7, source: 'eldenRing', setName: 'Bull-Goat Set', pieceName: 'Bull-Goat Gauntlets', slot: 'arms', poise: 12, weight: 8.8 },
+    { id: 8, source: 'eldenRing', setName: 'Bull-Goat Set', pieceName: 'Bull-Goat Greaves', slot: 'legs', poise: 22, weight: 16.4 },
+    { id: 9, source: 'shadowOfTheErdtree', setName: 'Rellana Set', pieceName: 'Rellana\'s Helm', slot: 'head', poise: 7, weight: 5.2 },
+    { id: 10, source: 'shadowOfTheErdtree', setName: 'Rellana Set', pieceName: 'Rellana\'s Armor', slot: 'chest', poise: 20, weight: 13.4 },
+    { id: 11, source: 'shadowOfTheErdtree', setName: 'Messmer Set', pieceName: 'Messmer Helm', slot: 'head', poise: 8, weight: 5.9 },
+    { id: 12, source: 'shadowOfTheErdtree', setName: 'Messmer Set', pieceName: 'Messmer Armor', slot: 'chest', poise: 21, weight: 14.2 },
+];
+
+export const eldenMobs: EldenMob[] = [
+    { id: 1, source: 'eldenRing', name: 'Godrick Soldier', mobType: 'humanoid', zoneIds: [ 1 ], level: 12, hp: 220, attack: 40, defense: 22 },
+    { id: 2, source: 'eldenRing', name: 'Godrick Knight', mobType: 'elite humanoid', zoneIds: [ 1 ], level: 22, hp: 500, attack: 70, defense: 45 },
+    { id: 3, source: 'eldenRing', name: 'Demi-Human', mobType: 'beast humanoid', zoneIds: [ 1 ], level: 14, hp: 220, attack: 40, defense: 20 },
+    { id: 4, source: 'eldenRing', name: 'Land Octopus', mobType: 'beast', zoneIds: [ 1, 2 ], level: 24, hp: 750, attack: 82, defense: 48 },
+    { id: 5, source: 'eldenRing', name: 'Marionette Soldier', mobType: 'construct', zoneIds: [ 2 ], level: 28, hp: 570, attack: 96, defense: 44 },
+    { id: 6, source: 'eldenRing', name: 'Kindred of Rot', mobType: 'insectoid', zoneIds: [ 3 ], level: 45, hp: 980, attack: 128, defense: 60 },
+    { id: 7, source: 'eldenRing', name: 'Leyndell Knight', mobType: 'elite humanoid', zoneIds: [ 4, 5 ], level: 60, hp: 1800, attack: 182, defense: 110 },
+    { id: 8, source: 'eldenRing', name: 'Fire Monk', mobType: 'caster humanoid', zoneIds: [ 6, 7 ], level: 62, hp: 1600, attack: 190, defense: 100 },
+    { id: 9, source: 'eldenRing', name: 'Beastman of Farum Azula', mobType: 'beast humanoid', zoneIds: [ 8 ], level: 90, hp: 2600, attack: 280, defense: 150 },
+    { id: 10, source: 'eldenRing', name: 'Haligtree Knight', mobType: 'elite humanoid', zoneIds: [ 9 ], level: 95, hp: 3000, attack: 300, defense: 180 },
+    { id: 11, source: 'shadowOfTheErdtree', name: 'Messmer Soldier', mobType: 'humanoid', zoneIds: [ 10, 11, 12 ], level: 105, hp: 3200, attack: 320, defense: 185 },
+    { id: 12, source: 'shadowOfTheErdtree', name: 'Black Knight', mobType: 'elite humanoid', zoneIds: [ 11, 12 ], level: 112, hp: 4100, attack: 360, defense: 230 },
+    { id: 13, source: 'shadowOfTheErdtree', name: 'Curseblade', mobType: 'assassin humanoid', zoneIds: [ 10 ], level: 118, hp: 3600, attack: 400, defense: 170 },
+    { id: 14, source: 'shadowOfTheErdtree', name: 'Horned Warrior', mobType: 'elite humanoid', zoneIds: [ 10, 15 ], level: 125, hp: 4700, attack: 430, defense: 260 },
+    { id: 15, source: 'shadowOfTheErdtree', name: 'Aging Untouchable', mobType: 'madness horror', zoneIds: [ 13 ], level: 130, hp: 6000, attack: 500, defense: 300 },
+];
+
+export const eldenBosses: EldenBoss[] = [
+    { id: 1, source: 'eldenRing', name: 'Margit, the Fell Omen', zoneId: 1, bossType: 'major', level: 30, hp: 4200, attack: 170, defense: 90, remembrance: false },
+    { id: 2, source: 'eldenRing', name: 'Godrick the Grafted', zoneId: 1, bossType: 'shardbearer', level: 40, hp: 6000, attack: 220, defense: 130, remembrance: true },
+    { id: 3, source: 'eldenRing', name: 'Rennala, Queen of the Full Moon', zoneId: 2, bossType: 'shardbearer', level: 55, hp: 7300, attack: 260, defense: 120, remembrance: true },
+    { id: 4, source: 'eldenRing', name: 'Starscourge Radahn', zoneId: 3, bossType: 'shardbearer', level: 70, hp: 9600, attack: 340, defense: 180, remembrance: true },
+    { id: 5, source: 'eldenRing', name: 'Morgott, the Omen King', zoneId: 5, bossType: 'major', level: 80, hp: 11000, attack: 390, defense: 210, remembrance: true },
+    { id: 6, source: 'eldenRing', name: 'Rykard, Lord of Blasphemy', zoneId: 6, bossType: 'shardbearer', level: 95, hp: 15000, attack: 430, defense: 260, remembrance: true },
+    { id: 7, source: 'eldenRing', name: 'Fire Giant', zoneId: 7, bossType: 'major', level: 105, hp: 22000, attack: 500, defense: 300, remembrance: true },
+    { id: 8, source: 'eldenRing', name: 'Maliketh, the Black Blade', zoneId: 8, bossType: 'major', level: 120, hp: 14000, attack: 620, defense: 280, remembrance: true },
+    { id: 9, source: 'eldenRing', name: 'Godfrey, First Elden Lord', zoneId: 5, bossType: 'major', level: 125, hp: 17500, attack: 670, defense: 320, remembrance: true },
+    { id: 10, source: 'eldenRing', name: 'Radagon of the Golden Order', zoneId: 5, bossType: 'major', level: 130, hp: 19000, attack: 700, defense: 340, remembrance: false },
+    { id: 11, source: 'eldenRing', name: 'Elden Beast', zoneId: 5, bossType: 'major', level: 132, hp: 22000, attack: 740, defense: 360, remembrance: true },
+    { id: 12, source: 'eldenRing', name: 'Malenia, Blade of Miquella', zoneId: 9, bossType: 'legend', level: 135, hp: 18500, attack: 760, defense: 350, remembrance: true },
+    { id: 13, source: 'shadowOfTheErdtree', name: 'Divine Beast Dancing Lion', zoneId: 10, bossType: 'dlcMajor', level: 150, hp: 24000, attack: 820, defense: 390, remembrance: true },
+    { id: 14, source: 'shadowOfTheErdtree', name: 'Rellana, Twin Moon Knight', zoneId: 12, bossType: 'dlcMajor', level: 155, hp: 25000, attack: 860, defense: 410, remembrance: true },
+    { id: 15, source: 'shadowOfTheErdtree', name: 'Messmer the Impaler', zoneId: 12, bossType: 'dlcMajor', level: 165, hp: 29000, attack: 940, defense: 450, remembrance: true },
+    { id: 16, source: 'shadowOfTheErdtree', name: 'Midra, Lord of Frenzied Flame', zoneId: 13, bossType: 'dlcMajor', level: 168, hp: 30000, attack: 980, defense: 470, remembrance: true },
+    { id: 17, source: 'shadowOfTheErdtree', name: 'Bayle the Dread', zoneId: 14, bossType: 'dlcMajor', level: 172, hp: 33000, attack: 1040, defense: 500, remembrance: true },
+    { id: 18, source: 'shadowOfTheErdtree', name: 'Promised Consort Radahn', zoneId: 15, bossType: 'dlcMajor', level: 180, hp: 40000, attack: 1200, defense: 580, remembrance: true },
+];
+
+export const eldenTalismans: EldenTalisman[] = [
+    { id: 1, source: 'eldenRing', name: 'Erdtree\'s Favor +2', effect: 'raises HP, stamina, and equip load' },
+    { id: 2, source: 'eldenRing', name: 'Great-Jar\'s Arsenal', effect: 'greatly raises equip load' },
+    { id: 3, source: 'eldenRing', name: 'Dragoncrest Greatshield Talisman', effect: 'greatly boosts physical damage negation' },
+    { id: 4, source: 'eldenRing', name: 'Shard of Alexander', effect: 'greatly boosts skill damage' },
+    { id: 5, source: 'shadowOfTheErdtree', name: 'Two-Handed Sword Talisman', effect: 'boosts two-handed attack power' },
+    { id: 6, source: 'shadowOfTheErdtree', name: 'Blade of Mercy', effect: 'increases attack power after critical hits' },
+];
+
+export const eldenSpells: EldenSpell[] = [
+    { id: 1, source: 'eldenRing', name: 'Comet Azur', school: 'sorcery', fpCost: 40 },
+    { id: 2, source: 'eldenRing', name: 'Rock Sling', school: 'sorcery', fpCost: 18 },
+    { id: 3, source: 'eldenRing', name: 'Golden Vow', school: 'incantation', fpCost: 47 },
+    { id: 4, source: 'eldenRing', name: 'Flame, Grant Me Strength', school: 'incantation', fpCost: 28 },
+    { id: 5, source: 'shadowOfTheErdtree', name: 'Knight\'s Lightning Spear', school: 'incantation', fpCost: 22 },
+    { id: 6, source: 'shadowOfTheErdtree', name: 'Messmer\'s Orb', school: 'incantation', fpCost: 31 },
+];
+
+export const eldenKeyItems: EldenKeyItem[] = [
+    { id: 1, source: 'eldenRing', name: 'Godrick\'s Great Rune', itemType: 'greatRune' },
+    { id: 2, source: 'eldenRing', name: 'Radahn\'s Great Rune', itemType: 'greatRune' },
+    { id: 3, source: 'eldenRing', name: 'Malenia\'s Great Rune', itemType: 'greatRune' },
+    { id: 4, source: 'eldenRing', name: 'Red-Hot Whetblade', itemType: 'whetblade' },
+    { id: 5, source: 'shadowOfTheErdtree', name: 'Storehouse Key', itemType: 'key' },
+    { id: 6, source: 'shadowOfTheErdtree', name: 'Iris of Grace', itemType: 'quest' },
+];
+
+export const eldenContentIndex = {
+    zoneCount: eldenZones.length,
+    dungeonCount: eldenDungeons.length,
+    weaponCount: eldenWeapons.length,
+    armorPieceCount: eldenArmor.length,
+    mobCount: eldenMobs.length,
+    bossCount: eldenBosses.length,
+    talismanCount: eldenTalismans.length,
+    spellCount: eldenSpells.length,
+    keyItemCount: eldenKeyItems.length,
+};
+
+const createNameMap = <T extends { name: string }>(items: T[]): Record<string, T> => {
+    const map: Record<string, T> = {};
+    items.forEach((item) => {
+        map[item.name.toLowerCase()] = item;
+    });
+    return map;
+};
+
+export const eldenWeaponByName = createNameMap(eldenWeapons);
+export const eldenBossByName = createNameMap(eldenBosses);
+export const eldenMobByName = createNameMap(eldenMobs);

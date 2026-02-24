@@ -79,5 +79,5 @@ export interface TalentTree {
 export interface LevelProgression {
     level: number;
     expRequired: number;
-    statGains: Partial<Record<'hp'|'mp'|'strength'|'agility', number>>;
+    statGains: Partial<Record<'hp' | 'mp' | 'strength' | 'agility', number>>;
 }

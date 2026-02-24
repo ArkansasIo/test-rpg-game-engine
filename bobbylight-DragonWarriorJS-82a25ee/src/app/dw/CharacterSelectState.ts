@@ -2,6 +2,7 @@ import { BaseState } from './BaseState';
 import { DwGame } from './DwGame';
 import { getAdventureLogSummaries } from './AdventureLog';
 import { ChoiceBubble } from './ChoiceBubble';
+import { InitialMenuState } from './InitialMenuState';
 
 /**
  * Character loading/select screen, inspired by WoW.
@@ -26,7 +27,7 @@ export class CharacterSelectState extends BaseState {
         const choices = this.summaries.map((summary, idx) => {
             return {
                 id: summary.id,
-                label: `LOG ${idx + 1}: ${summary.heroName} (Lv ${summary.level}) - ${new Date(summary.modifiedAt).toLocaleString()}`
+                label: `LOG ${idx + 1}: ${summary.heroName} (Lv ${summary.level}) - ${new Date(summary.modifiedAt).toLocaleString()}`,
             };
         });
         return new ChoiceBubble(game, x, y, w, h, choices, (c) => c.label, true, 'Select Your Character');
@@ -43,13 +44,11 @@ export class CharacterSelectState extends BaseState {
             const idx = this.selectBubble.getSelectedIndex();
             if (idx === -1) {
                 // Cancel: return to main menu
-                // @ts-ignore
-                const { InitialMenuState } = require('./InitialMenuState');
                 this.game.setState(new InitialMenuState(this.game));
                 return;
             }
             const chosen = this.summaries[idx];
-            if (chosen && chosen.id) {
+            if (chosen?.id) {
                 this.game.continueGame(chosen.id);
             }
         }

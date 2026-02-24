@@ -47,7 +47,7 @@ export const SPELLS: Spell[] = [
         manaCost: 5,
         basePower: 20,
         unlockLevel: 1,
-        effects: ['Burn']
+        effects: [ 'Burn' ],
     },
     {
         id: 2,
@@ -61,7 +61,7 @@ export const SPELLS: Spell[] = [
         manaCost: 12,
         basePower: 30,
         unlockLevel: 5,
-        effects: ['Freeze']
+        effects: [ 'Freeze' ],
     },
     {
         id: 3,
@@ -75,7 +75,7 @@ export const SPELLS: Spell[] = [
         manaCost: 6,
         basePower: 18,
         unlockLevel: 1,
-        effects: ['Restore HP']
+        effects: [ 'Restore HP' ],
     },
     {
         id: 4,
@@ -89,7 +89,7 @@ export const SPELLS: Spell[] = [
         manaCost: 10,
         basePower: 28,
         unlockLevel: 4,
-        effects: ['Shock']
+        effects: [ 'Shock' ],
     },
     {
         id: 5,
@@ -103,7 +103,7 @@ export const SPELLS: Spell[] = [
         manaCost: 20,
         basePower: 0,
         unlockLevel: 12,
-        effects: ['Revive']
-    }
+        effects: [ 'Revive' ],
+    },
     // ...add more spells as needed
 ];

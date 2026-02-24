@@ -1,21 +1,21 @@
 import { InputManager } from 'gtp';
 import { BaseState } from './BaseState';
 import { DwGame } from './DwGame';
-import { CHARACTER_CLASSES, CHARACTER_RACES, CharacterClassOption, CharacterRaceOption } from './characterCreationData';
-import { CharacterType } from './characterCreationData';
+import { CHARACTER_CLASSES, CHARACTER_RACES, CharacterClassOption, CharacterRaceOption, CharacterType } from './characterCreationData';
+
 import { createNewAdventureLog, saveAdventureLog } from './AdventureLog';
 import { ChoiceBubble } from './ChoiceBubble';
 
 export class CharacterCreationState extends BaseState {
-    private selectedName: string = '';
+    private selectedName = '';
     private selectedRace: CharacterRaceOption | null = null;
     private selectedClass: CharacterClassOption | null = null;
     private selectedType: string | null = null;
     private selectedSubClass: string | null = null;
     private selectedSubType: string | null = null;
-    private step: number = 0; // 0: name, 1: race, 2: class, 3: type, 4: subclass, 5: subtype, 6: confirm
-    private raceBubble: ChoiceBubble<CharacterRaceOption>;
-    private classBubble: ChoiceBubble<CharacterClassOption>;
+    private step = 0; // 0: name, 1: race, 2: class, 3: type, 4: subclass, 5: subtype, 6: confirm
+    private readonly raceBubble: ChoiceBubble<CharacterRaceOption>;
+    private readonly classBubble: ChoiceBubble<CharacterClassOption>;
     private typeBubble: ChoiceBubble<CharacterType>;
     private subClassBubble: ChoiceBubble<string>;
     private subTypeBubble: ChoiceBubble<string>;
@@ -45,11 +45,11 @@ export class CharacterCreationState extends BaseState {
         switch (this.step) {
             case 0: // Name input
                 for (let i = 65; i <= 90; i++) { // A-Z
-                    if (im.isKeyDown && im.isKeyDown(i, true)) {
+                    if (im.isKeyDown(i, true)) {
                         this.selectedName += String.fromCharCode(i);
                     }
                 }
-                if (im.isKeyDown && im.isKeyDown(8, true)) {
+                if (im.isKeyDown(8, true)) {
                     this.selectedName = this.selectedName.slice(0, -1);
                 }
                 if (im.enter(true) && this.selectedName.length > 0) {
@@ -75,7 +75,7 @@ export class CharacterCreationState extends BaseState {
                     this.typeBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, this.selectedClass.types, (type: CharacterType) => type.name);
                     this.typeBubble.update(delta);
                     if (this.typeBubble.handleInput()) {
-                        this.selectedType = this.typeBubble.getSelectedItem()?.name || null;
+                        this.selectedType = this.typeBubble.getSelectedItem()?.name ?? null;
                         this.step = 4;
                     }
                 }
@@ -85,19 +85,19 @@ export class CharacterCreationState extends BaseState {
                     this.subClassBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, this.selectedClass.subClasses, (sub) => sub);
                     this.subClassBubble.update(delta);
                     if (this.subClassBubble.handleInput()) {
-                        this.selectedSubClass = this.subClassBubble.getSelectedItem() || null;
+                        this.selectedSubClass = this.subClassBubble.getSelectedItem() ?? null;
                         this.step = 5;
                     }
                 }
                 break;
             case 5: // Subtype selection
                 if (this.selectedClass && this.selectedType) {
-                    const typeObj = this.selectedClass.types.find(t => t.name === this.selectedType);
+                    const typeObj = this.selectedClass.types.find((t) => t.name === this.selectedType);
                     if (typeObj) {
                         this.subTypeBubble = new ChoiceBubble(this.game, 120, 120, 400, 180, typeObj.subTypes, (sub) => sub);
                         this.subTypeBubble.update(delta);
                         if (this.subTypeBubble.handleInput()) {
-                            this.selectedSubType = this.subTypeBubble.getSelectedItem() || null;
+                            this.selectedSubType = this.subTypeBubble.getSelectedItem() ?? null;
                             this.step = 6;
                         }
                     }
@@ -106,7 +106,7 @@ export class CharacterCreationState extends BaseState {
             case 6: // Confirm and start game
                 if (im.enter(true)) {
                     const log = createNewAdventureLog();
-                    log.hero.name = this.selectedName || 'Hero';
+                    log.hero.name = this.selectedName.length > 0 ? this.selectedName : 'Hero';
                     saveAdventureLog(log);
                     if (typeof this.game.continueGame === 'function') {
                         this.game.continueGame(log.id);
@@ -125,12 +125,12 @@ export class CharacterCreationState extends BaseState {
         ctx.fillText('Character Creation', 40, y);
         y += 40;
         ctx.font = '16px monospace';
-        ctx.fillText(`Name: ${this.selectedName || '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Race: ${this.selectedRace?.name || '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Class: ${this.selectedClass?.name || '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Type: ${this.selectedType || '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Subclass: ${this.selectedSubClass || '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Subtype: ${this.selectedSubType || '[Not set]'}`, 40, y); y += 32;
+        ctx.fillText(`Name: ${this.selectedName.length > 0 ? this.selectedName : '[Not set]'}`, 40, y); y += 22;
+        ctx.fillText(`Race: ${this.selectedRace?.name ?? '[Not set]'}`, 40, y); y += 22;
+        ctx.fillText(`Class: ${this.selectedClass?.name ?? '[Not set]'}`, 40, y); y += 22;
+        ctx.fillText(`Type: ${this.selectedType ?? '[Not set]'}`, 40, y); y += 22;
+        ctx.fillText(`Subclass: ${this.selectedSubClass ?? '[Not set]'}`, 40, y); y += 22;
+        ctx.fillText(`Subtype: ${this.selectedSubType ?? '[Not set]'}`, 40, y); y += 32;
         ctx.font = '20px monospace';
         switch (this.step) {
             case 0:

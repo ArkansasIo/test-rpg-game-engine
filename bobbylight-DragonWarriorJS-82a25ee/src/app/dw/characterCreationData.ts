@@ -22,13 +22,13 @@ export interface CharacterRaceOption {
 export const CHARACTER_CLASSES: CharacterClassOption[] = [
     {
         name: 'Warrior',
-        types: [ { name: 'Tank', subTypes: ['Defender', 'Berserker'] }, { name: 'Damage', subTypes: ['Duelist', 'Warlord'] } ],
-        subClasses: ['Knight', 'Samurai', 'Barbarian']
+        types: [ { name: 'Tank', subTypes: [ 'Defender', 'Berserker' ] }, { name: 'Damage', subTypes: [ 'Duelist', 'Warlord' ] } ],
+        subClasses: [ 'Knight', 'Samurai', 'Barbarian' ],
     },
     {
         name: 'Mage',
-        types: [ { name: 'Elemental', subTypes: ['Fire', 'Ice', 'Lightning'] }, { name: 'Arcane', subTypes: ['Illusionist', 'Enchanter'] } ],
-        subClasses: ['Sorcerer', 'Wizard', 'Warlock']
+        types: [ { name: 'Elemental', subTypes: [ 'Fire', 'Ice', 'Lightning' ] }, { name: 'Arcane', subTypes: [ 'Illusionist', 'Enchanter' ] } ],
+        subClasses: [ 'Sorcerer', 'Wizard', 'Warlock' ],
     },
     // ... Add 7 more classes with types and subtypes
 ];
@@ -42,5 +42,5 @@ export const CHARACTER_RACES: CharacterRaceOption[] = [
     { name: 'Dragonkin', description: 'Descendants of dragons.' },
     { name: 'Undead', description: 'Resilient to poison and fear.' },
     { name: 'Beastfolk', description: 'Animalistic traits and senses.' },
-    { name: 'Construct', description: 'Artificial beings, immune to disease.' }
+    { name: 'Construct', description: 'Artificial beings, immune to disease.' },
 ];

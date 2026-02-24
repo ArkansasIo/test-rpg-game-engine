@@ -18,7 +18,7 @@ type Substate = 'mainMenu' | 'saveSelect';
 export class InitialMenuState extends BaseState {
 
     private readonly menuBubble: ChoiceBubble<string>;
-    private saveSelectBubble: ChoiceBubble<string> | undefined;
+    private readonly saveSelectBubble: ChoiceBubble<string> | undefined;
     private substate: Substate;
 
     constructor(game: DwGame) {
@@ -28,7 +28,7 @@ export class InitialMenuState extends BaseState {
     }
 
     /**
-     * Creates the main menu bubble.  The Unreal 5-inspired menu is simplified
+     * Creates the main menu bubble.  The Unreal 5-inspired menu is simplified
      * into four core actions: start a new game, load an existing game, open
      * the options menu and exit the game.  Additional actions can be added
      * here later.
@@ -58,7 +58,7 @@ export class InitialMenuState extends BaseState {
     /**
      * Creates a save-select bubble.  When the player chooses to load a game
      * they are presented with a list of existing adventure logs pulled from
-     * localStorage.  Each entry includes the hero’s name, level and the
+     * localStorage.  Each entry includes the hero's name, level and the
      * modified timestamp.  If there are no saved games then a single entry
      * invites the player to return.
      */
@@ -133,7 +133,7 @@ export class InitialMenuState extends BaseState {
                         } else {
                             this.game.audio.playSound('menu');
                             const chosen = summaries[selection];
-                            if (chosen && chosen.id) {
+                            if (chosen?.id) {
                                 this.game.continueGame(chosen.id);
                             } else {
                                 // Should never happen, fallback to new game
@@ -159,3 +159,5 @@ export class InitialMenuState extends BaseState {
         }
     }
 }
+
+

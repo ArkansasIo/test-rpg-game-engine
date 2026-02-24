@@ -228,33 +228,32 @@ export class LoadingState extends BaseState {
             'Gathering heroes at the tavern...',
             'Rolling dice for luck...',
             'Enchanting spells and potions...',
-            'Loading epic quests...'
+            'Loading epic quests...',
         ];
         // Animate loading dots
         const time = Date.now();
-        const dots = '.'.repeat(((Math.floor(time / 400) % 4) + 1));
+        const dots = '.'.repeat(Math.floor(time / 400) % 4 + 1);
         const textIndex = Math.floor(time / 2000) % loadingTexts.length;
         const str = loadingTexts[textIndex] + dots;
         ctx.font = 'bold 28px Serif';
 
-        if (!this.textX || !this.textY) {
-            const textMetrics: TextMetrics = ctx.measureText(str);
-            this.textX = (game.getWidth() - textMetrics.width) / 2;
-            const fontDescentGuess = 8;
-            this.textY = (game.getHeight() - fontDescentGuess) / 2;
-        }
+        const textMetrics: TextMetrics = ctx.measureText(str);
+        this.textX = (game.getWidth() - textMetrics.width) / 2;
+        const fontDescentGuess = 8;
+        this.textY = (game.getHeight() - fontDescentGuess) / 2;
 
         ctx.fillStyle = 'rgb(255, 255, 210)';
         ctx.fillText(str, this.textX, this.textY);
 
-        // Optionally, show a pixel-art hero sprite if available
-            const heroSheet = game.assets.get && game.assets.get('hero') as SpriteSheet;
-            if (heroSheet) {
-                const x = (game.getWidth() - 48) / 2;
-                const y = this.textY + 40;
-                // Draw the hero sprite (row 0, col 0)
-                heroSheet.drawSprite(ctx, x, y, 0, 0);
-            }
+        // Optionally, show a pixel-art hero sprite after that asset is ready.
+        try {
+            const heroSheet: SpriteSheet = game.assets.get('hero');
+            const x = (game.getWidth() - 48) / 2;
+            const y = this.textY + 40;
+            heroSheet.drawSprite(ctx, x, y, 0, 0);
+        } catch (e) {
+            // Hero sprite is not loaded yet; keep showing text-only loading UI.
+        }
 
         // Add RPG border or frame (simple decorative corners)
         ctx.strokeStyle = 'gold';

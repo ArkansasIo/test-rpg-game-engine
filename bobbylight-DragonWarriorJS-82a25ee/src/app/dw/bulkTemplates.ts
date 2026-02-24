@@ -5,34 +5,34 @@
 
 // Example: Generate 72 zones with placeholder data
 export function generateZones(count: number) {
-    return Array.from({ length: count }, (_, i) => ({
+    return Array.from({ length: count }, (unusedValue, i) => ({
         id: i + 1,
         name: `Zone ${i + 1}`,
         biome: {
-            name: `Biome ${((i % 10) + 1)}`,
+            name: `Biome ${i % 10 + 1}`,
             class: 'land',
             subBiomes: [
-                { name: `SubBiome ${((i % 5) + 1)}`, type: 'generic' }
-            ]
+                { name: `SubBiome ${i % 5 + 1}`, type: 'generic' },
+            ],
         },
         regionType: 'overworld',
         class: 'starter',
         subClass: 'safe',
-        subTypes: ['open']
+        subTypes: [ 'open' ],
     }));
 }
 
 // Example: Generate 350 monsters with placeholder data
 export function generateMonsters(count: number) {
-    return Array.from({ length: count }, (_, i) => ({
+    return Array.from({ length: count }, (unusedValue, i) => ({
         id: i + 1,
         name: `Monster ${i + 1}`,
         class: 'beast',
-        zoneIds: [((i % 72) + 1)],
-        level: ((i % 50) + 1),
+        zoneIds: [ i % 72 + 1 ],
+        level: i % 50 + 1,
         hp: 10 + i,
-        attack: 2 + (i % 10),
-        defense: 1 + (i % 8)
+        attack: 2 + i % 10,
+        defense: 1 + i % 8,
     }));
 }
 
