@@ -1,12 +1,12 @@
 @font-face {
-   font-family: 'Dragon Warrior 2';
+   font-family: 'Elders of the Ashen Realm';
    src: url('../res/dw-font.ttf');
 }
 
 body {
    background: black;
    color: white;
-   font-family: 'Dragon Warrior 2';
+   font-family: 'Elders of the Ashen Realm';
    font-size: 24px;
    font-style: normal;
    padding-left: 0 3em;

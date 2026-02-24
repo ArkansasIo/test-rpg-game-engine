@@ -167,7 +167,7 @@ export class LoadingState extends BaseState {
             void game.assets.addSound('castSpell', 'res/sound/43 Dragon Quest 1 - Cast A Spell (22khz mono).ogg');
             void game.assets.addSound('openChest', 'res/sound/44 Dragon Quest 1 - Open Treasure (22khz mono).ogg');
             void game.assets.addSound('door', 'res/sound/45 Dragon Quest 1 - Open Door (22khz mono).ogg');
-            void game.assets.addSound('talk', 'res/sound/Dragon Warrior [Dragon Quest] SFX (1).wav');
+            void game.assets.addSound('talk', 'res/sound/Elders of the Ashen Realm [Dragon Quest] SFX (1).wav');
             game.assets.onLoad(() => {
 
                 // TODO: This could be done much, much more cleanly
