@@ -1,0 +1,19 @@
+{
+  "zones": [
+    { "id": 1, "name": "Limgrave", "biome": "temperate plains", "zoneClass": "openField" },
+    { "id": 2, "name": "Liurnia of the Lakes", "biome": "wetlands", "zoneClass": "openField" },
+    { "id": 3, "name": "Caelid", "biome": "scarlet wasteland", "zoneClass": "openField" },
+    { "id": 4, "name": "Altus Plateau", "biome": "golden plateau", "zoneClass": "openField" },
+    { "id": 5, "name": "Leyndell, Royal Capital", "biome": "capital city", "zoneClass": "legacyDungeon" },
+    { "id": 6, "name": "Mt. Gelmir", "biome": "volcanic slopes", "zoneClass": "openField" },
+    { "id": 7, "name": "Mountaintops of the Giants", "biome": "glacial peaks", "zoneClass": "openField" },
+    { "id": 8, "name": "Crumbling Farum Azula", "biome": "floating ruins", "zoneClass": "legacyDungeon" },
+    { "id": 9, "name": "Miquella's Haligtree", "biome": "sacred tree city", "zoneClass": "legacyDungeon" },
+    { "id": 10, "name": "Gravesite Plain", "biome": "ashen grasslands", "zoneClass": "openField" },
+    { "id": 11, "name": "Scadu Altus", "biome": "shadowed plateau", "zoneClass": "openField" },
+    { "id": 12, "name": "Shadow Keep", "biome": "military citadel", "zoneClass": "legacyDungeon" },
+    { "id": 13, "name": "Abyssal Woods", "biome": "madness forest", "zoneClass": "openField" },
+    { "id": 14, "name": "Jagged Peak", "biome": "dragon mountain", "zoneClass": "openField" },
+    { "id": 15, "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" }
+  ]
+}

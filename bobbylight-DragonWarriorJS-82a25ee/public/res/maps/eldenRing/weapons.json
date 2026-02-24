@@ -1,0 +1,14 @@
+{
+  "weapons": [
+    { "id": 1, "name": "Claymore", "weaponType": "greatsword", "attack": 138, "weight": 9.0, "scaling": [ "STR D", "DEX D" ] },
+    { "id": 2, "name": "Greatsword", "weaponType": "colossal sword", "attack": 164, "weight": 23.0, "scaling": [ "STR C", "DEX E" ] },
+    { "id": 3, "name": "Uchigatana", "weaponType": "katana", "attack": 115, "weight": 5.5, "scaling": [ "STR E", "DEX D" ] },
+    { "id": 4, "name": "Moonveil", "weaponType": "katana", "attack": 73, "weight": 6.5, "scaling": [ "STR E", "DEX D", "INT C" ] },
+    { "id": 5, "name": "Rivers of Blood", "weaponType": "katana", "attack": 76, "weight": 6.5, "scaling": [ "STR E", "DEX D", "ARC D" ] },
+    { "id": 6, "name": "Bloodhound's Fang", "weaponType": "curved greatsword", "attack": 141, "weight": 11.5, "scaling": [ "STR C", "DEX C" ] },
+    { "id": 7, "name": "Blasphemous Blade", "weaponType": "greatsword", "attack": 121, "weight": 13.5, "scaling": [ "STR D", "DEX D", "FTH C" ] },
+    { "id": 8, "name": "Dark Moon Greatsword", "weaponType": "greatsword", "attack": 82, "weight": 10.0, "scaling": [ "STR D", "DEX D", "INT C" ] },
+    { "id": 9, "name": "Hand of Malenia", "weaponType": "katana", "attack": 117, "weight": 7.0, "scaling": [ "STR E", "DEX B" ] },
+    { "id": 10, "name": "Bolt of Gransax", "weaponType": "great spear", "attack": 98, "weight": 8.5, "scaling": [ "STR E", "DEX C" ] }
+  ]
+}

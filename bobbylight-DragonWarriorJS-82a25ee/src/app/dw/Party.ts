@@ -7,6 +7,7 @@ import { Inventory } from './Inventory';
 import { Item } from './Item';
 
 export class Party {
+    quests: any[] = [];
 
     static readonly INVENTORY_MAX_SIZE: number = 20;
 

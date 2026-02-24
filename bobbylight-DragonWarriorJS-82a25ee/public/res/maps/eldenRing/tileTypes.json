@@ -1,0 +1,5 @@
+{
+  "tileTypes": [
+    "grass", "forest", "road", "water", "swamp", "ruins", "red_swamp", "scarlet_rot", "golden_grass", "mountain", "snow", "ice", "city", "castle", "cave", "roots", "blood_swamp", "palace"
+  ]
+}

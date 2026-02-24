@@ -1,0 +1,12 @@
+{
+  "armor": [
+    { "id": 1, "setName": "Vagabond Set", "pieceName": "Vagabond Knight Helm", "slot": "head", "poise": 6, "weight": 5.1 },
+    { "id": 2, "setName": "Vagabond Set", "pieceName": "Vagabond Knight Armor", "slot": "chest", "poise": 17, "weight": 10.6 },
+    { "id": 3, "setName": "Vagabond Set", "pieceName": "Vagabond Knight Gauntlets", "slot": "arms", "poise": 5, "weight": 3.5 },
+    { "id": 4, "setName": "Vagabond Set", "pieceName": "Vagabond Knight Greaves", "slot": "legs", "poise": 10, "weight": 6.6 },
+    { "id": 5, "setName": "Bull-Goat Set", "pieceName": "Bull-Goat Helm", "slot": "head", "poise": 15, "weight": 11.3 },
+    { "id": 6, "setName": "Bull-Goat Set", "pieceName": "Bull-Goat Armor", "slot": "chest", "poise": 38, "weight": 26.5 },
+    { "id": 7, "setName": "Bull-Goat Set", "pieceName": "Bull-Goat Gauntlets", "slot": "arms", "poise": 12, "weight": 8.8 },
+    { "id": 8, "setName": "Bull-Goat Set", "pieceName": "Bull-Goat Greaves", "slot": "legs", "poise": 22, "weight": 16.4 }
+  ]
+}

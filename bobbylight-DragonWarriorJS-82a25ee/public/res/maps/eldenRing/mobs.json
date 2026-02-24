@@ -1,0 +1,14 @@
+{
+  "mobs": [
+    { "id": 1, "name": "Godrick Soldier", "mobType": "humanoid", "zoneIds": [ 1 ], "level": 12, "hp": 220, "attack": 40, "defense": 22 },
+    { "id": 2, "name": "Godrick Knight", "mobType": "elite humanoid", "zoneIds": [ 1 ], "level": 22, "hp": 500, "attack": 70, "defense": 45 },
+    { "id": 3, "name": "Demi-Human", "mobType": "beast humanoid", "zoneIds": [ 1 ], "level": 14, "hp": 220, "attack": 40, "defense": 20 },
+    { "id": 4, "name": "Land Octopus", "mobType": "beast", "zoneIds": [ 1, 2 ], "level": 24, "hp": 750, "attack": 82, "defense": 48 },
+    { "id": 5, "name": "Marionette Soldier", "mobType": "construct", "zoneIds": [ 2 ], "level": 28, "hp": 570, "attack": 96, "defense": 44 },
+    { "id": 6, "name": "Kindred of Rot", "mobType": "insectoid", "zoneIds": [ 3 ], "level": 45, "hp": 980, "attack": 128, "defense": 60 },
+    { "id": 7, "name": "Leyndell Knight", "mobType": "elite humanoid", "zoneIds": [ 4, 5 ], "level": 60, "hp": 1800, "attack": 182, "defense": 110 },
+    { "id": 8, "name": "Fire Monk", "mobType": "caster humanoid", "zoneIds": [ 6, 7 ], "level": 62, "hp": 1600, "attack": 190, "defense": 100 },
+    { "id": 9, "name": "Beastman of Farum Azula", "mobType": "beast humanoid", "zoneIds": [ 8 ], "level": 90, "hp": 2600, "attack": 280, "defense": 150 },
+    { "id": 10, "name": "Haligtree Knight", "mobType": "elite humanoid", "zoneIds": [ 9 ], "level": 95, "hp": 3000, "attack": 300, "defense": 180 }
+  ]
+}

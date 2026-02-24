@@ -43,11 +43,33 @@ import { MapLogic } from './mapLogic/MapLogic';
 import { Overworld } from './mapLogic/overworld';
 import { RoamingEntityRange } from './RoamingEntity';
 import { TantegelCastle } from './mapLogic/tantegelCastle';
+import { MenuBar } from './MenuBar';
+import { InventoryMenu } from './InventoryMenu';
+import { EquipmentMenu } from './EquipmentMenu';
+import { SkillsMenu } from './SkillsMenu';
+import { QuestsMenu } from './QuestsMenu';
+import { MapMenu } from './MapMenu';
+import { SettingsMenu } from './SettingsMenu';
+import { RuneKeyItem } from './RuneQuestLogic';
+import { Talisman } from './TalismanEffects';
+import { Boss } from './BossFightLogic';
 
 export type TiledMapMap = Record<string, DwMap>;
 
+export { Game };
 export class DwGame extends Game {
     // ...existing fields...
+    menuBar: MenuBar;
+    inventoryMenu?: InventoryMenu;
+    equipmentMenu?: EquipmentMenu;
+    skillsMenu?: SkillsMenu;
+    questsMenu?: QuestsMenu;
+    mapMenu?: MapMenu;
+    settingsMenu?: SettingsMenu;
+    activeMenu: string | null = null;
+    runeQuests: RuneKeyItem[] = [];
+    talismans: Talisman[] = [];
+    bossFights: Boss[] = [];
 
     /**
      * Public setter for adventure log (for use by CharacterCreationState)
@@ -73,29 +95,91 @@ export class DwGame extends Game {
 
     constructor(args?: GameArgs) {
         super(args);
-
         // Create and initialize party
         this.hero = new Hero(this, { name: 'Erdrick' });
         this.party = new Party(this);
         this.party.addMember(this.hero);
+        this.menuBar = new MenuBar(this);
+        // Example: initialize rune quests
+        this.runeQuests = [
+            { name: 'Elden Ring Fragment', questStep: 1, description: 'Find the first fragment.' },
+            { name: 'Erdtree Seal', questStep: 2, description: 'Obtain the sacred seal.' }
+        ];
+        // Example: initialize talismans
+        this.talismans = [];
+        // Example: initialize boss fights
+        this.bossFights = [
+            { name: 'Margit, the Fell Omen', hp: 1200, attack: 80, defense: 40, reward: 'Talisman Pouch' }
+        ];
+    }
+
+    openInventory() {
+        this.inventoryMenu = new InventoryMenu(this, this.party.getInventory().getItems());
+        this.activeMenu = 'inventory';
+    }
+    openEquipment() {
+        this.equipmentMenu = new EquipmentMenu(this, {
+            weapon: this.hero.weapon,
+            armor: this.hero.armor,
+            shield: this.hero.shield
+        });
+        this.activeMenu = 'equipment';
+    }
+    openSkills() {
+        this.skillsMenu = new SkillsMenu(this, this.hero.skills ?? []);
+        this.activeMenu = 'skills';
+    }
+    openQuests() {
+        // Show rune/key item quests
+        this.questsMenu = new QuestsMenu(this, this.runeQuests.map(q => ({ name: q.name, status: this.hero.questStep >= q.questStep ? 'Complete' : 'Incomplete', description: q.description })), (idx: number) => {
+            // Advance quest logic
+            const quest = this.runeQuests[idx];
+            if (quest && this.hero.questStep < quest.questStep) {
+                this.hero.questStep = quest.questStep;
+                this.setStatusMessage(`Advanced quest: ${quest.name}`);
+            }
+        });
+        this.activeMenu = 'quests';
+    }
+    openMap() {
+        this.mapMenu = new MapMenu(this, this.getMap());
+        this.activeMenu = 'map';
+    }
+    openSettings() {
+        this.settingsMenu = new SettingsMenu(this);
+        this.activeMenu = 'settings';
+    }
+    closeMenu() {
+        this.activeMenu = null;
     }
 
     override start() {
         super.start();
-
         this.npcs = [];
         this.bumpSoundDelay = 0;
         this.setCameraOffset(0, 0);
         this.inside = false;
         this.randomEncounters = true;
         this.torch = false;
-
+        this.menuBar = new MenuBar(this);
+        this.activeMenu = null;
         this.mapLogics.set('Brecconary', new Brecconary());
         this.mapLogics.set('erdricksCave1', new ErdricksCave1());
         this.mapLogics.set('erdricksCave2', new ErdricksCave2());
         this.mapLogics.set('Garinham', new Garinham());
         this.mapLogics.set('Overworld', new Overworld());
         this.mapLogics.set('TantegelCastle', new TantegelCastle());
+            // Removed duplicate menu methods
+            // openInventory, openEquipment, openSkills, openQuests, openMap, openSettings, closeMenu
+            // These methods should be defined outside of the start method
+            // Ensure they are defined in the class scope
+            // Example: this.openInventory = function() { ... }
+            // Example: this.openEquipment = function() { ... }
+            // Example: this.openSkills = function() { ... }
+            // Example: this.openQuests = function() { ... }
+            // Example: this.openMap = function() { ... }
+            // Example: this.openSettings = function() { ... }
+            // Example: this.closeMenu = function() { ... }
     }
 
     actionKeyPressed() {
@@ -694,15 +778,29 @@ export class DwGame extends Game {
     override renderStatusMessageImpl(ctx: CanvasRenderingContext2D, message: string, color: string) {
         const x = 6;
         const y = this.canvas.height - 24;
-
+        // Draw menu bar at top
+        this.menuBar.render(ctx);
         // Slightly larger rectangle for the background, just to look a little nicer
         const font = this.getFont();
         const w = font.stringWidth(message) + 4;
         const h = font.cellH + 4;
         ctx.fillStyle = 'black';
         ctx.fillRect(x - 2, y - 2, w, h);
-
         this.drawString(message, x, y);
+        // Render active menu if open
+        if (this.activeMenu === 'inventory' && this.inventoryMenu) {
+            this.inventoryMenu.render(ctx);
+        } else if (this.activeMenu === 'equipment' && this.equipmentMenu) {
+            this.equipmentMenu.render(ctx);
+        } else if (this.activeMenu === 'skills' && this.skillsMenu) {
+            this.skillsMenu.render(ctx);
+        } else if (this.activeMenu === 'quests' && this.questsMenu) {
+            this.questsMenu.render(ctx);
+        } else if (this.activeMenu === 'map' && this.mapMenu) {
+            this.mapMenu.render(ctx);
+        } else if (this.activeMenu === 'settings' && this.settingsMenu) {
+            this.settingsMenu.render(ctx);
+        }
     }
 
     setHeroStats(hp: number | null, maxHp: number | null, mp?: number, maxMp?: number) {
@@ -795,5 +893,17 @@ export class DwGame extends Game {
 
     override update() {
         super.update();
+        // Keyboard navigation for skills menu
+            if (this.activeMenu === 'skills' && this.skillsMenu) {
+                if (this.inputManager.isKeyDown(Keys.KEY_W, true)) {
+                    this.skillsMenu.selectPrevSkill();
+                }
+                if (this.inputManager.isKeyDown(Keys.KEY_S, true)) {
+                    this.skillsMenu.selectNextSkill();
+                }
+                if (this.inputManager.isKeyDown(Keys.KEY_ENTER, true)) {
+                    this.skillsMenu.activateSelectedSkill();
+                }
+        }
     }
 }

@@ -119,48 +119,76 @@ export class CharacterCreationState extends BaseState {
     override render(ctx: CanvasRenderingContext2D) {
         const game = this.game;
         game.clearScreen();
-        let y = 40;
-        ctx.font = '20px monospace';
+        let y = 30;
+        ctx.font = '18px monospace';
         ctx.fillStyle = '#fff';
-        ctx.fillText('Character Creation', 40, y);
-        y += 40;
-        ctx.font = '16px monospace';
-        ctx.fillText(`Name: ${this.selectedName.length > 0 ? this.selectedName : '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Race: ${this.selectedRace?.name ?? '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Class: ${this.selectedClass?.name ?? '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Type: ${this.selectedType ?? '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Subclass: ${this.selectedSubClass ?? '[Not set]'}`, 40, y); y += 22;
-        ctx.fillText(`Subtype: ${this.selectedSubType ?? '[Not set]'}`, 40, y); y += 32;
-        ctx.font = '20px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText('Character Creation', 20, y);
+        y += 32;
+        ctx.font = '14px monospace';
+        const infoFields = [
+            `Name: ${this.selectedName.length > 0 ? this.selectedName : '[Not set]'}`,
+            `Race: ${this.selectedRace?.name ?? '[Not set]'}`,
+            `Class: ${this.selectedClass?.name ?? '[Not set]'}`,
+            `Type: ${this.selectedType ?? '[Not set]'}`,
+            `Subclass: ${this.selectedSubClass ?? '[Not set]'}`,
+            `Subtype: ${this.selectedSubType ?? '[Not set]'}`
+        ];
+        for (const field of infoFields) {
+            ctx.fillText(field, 20, y);
+            y += 18;
+        }
+        y += 18;
+        ctx.font = '15px monospace';
+        // Helper for wrapping long text
+        function wrapText(text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+            const words = text.split(' ');
+            let line = '';
+            for (let n = 0; n < words.length; n++) {
+                const testLine = line + words[n] + ' ';
+                const metrics = ctx.measureText(testLine);
+                const testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, y);
+            return y + lineHeight;
+        }
+        const maxWidth = game.getWidth() - 40;
         switch (this.step) {
             case 0:
-                ctx.fillText('Step 1: Enter your character name.', 40, y);
-                ctx.fillText('Type your desired name and press Enter.', 40, y + 30);
+                y = wrapText('Step 1: Enter your character name.', 20, y, maxWidth, 16);
+                y = wrapText('Type your desired name and press Enter.', 20, y, maxWidth, 16);
                 break;
             case 1:
-                ctx.fillText('Step 2: Select your race.', 40, y);
+                y = wrapText('Step 2: Select your race.', 20, y, maxWidth, 16);
                 this.raceBubble.paint(ctx);
                 break;
             case 2:
-                ctx.fillText('Step 3: Select your class.', 40, y);
+                y = wrapText('Step 3: Select your class.', 20, y, maxWidth, 16);
                 this.classBubble.paint(ctx);
                 break;
             case 3:
-                ctx.fillText('Step 4: Select your type.', 40, y);
+                y = wrapText('Step 4: Select your type.', 20, y, maxWidth, 16);
                 this.typeBubble.paint(ctx);
                 break;
             case 4:
-                ctx.fillText('Step 5: Select your subclass.', 40, y);
+                y = wrapText('Step 5: Select your subclass.', 20, y, maxWidth, 16);
                 this.subClassBubble.paint(ctx);
                 break;
             case 5:
-                ctx.fillText('Step 6: Select your subtype.', 40, y);
+                y = wrapText('Step 6: Select your subtype.', 20, y, maxWidth, 16);
                 this.subTypeBubble.paint(ctx);
                 break;
             case 6:
-                ctx.fillText('Step 7: Confirm your character!', 40, y);
-                ctx.fillText('Review all details above.', 40, y + 30);
-                ctx.fillText('Press Enter to start your adventure.', 40, y + 60);
+                y = wrapText('Step 7: Confirm your character!', 20, y, maxWidth, 16);
+                y = wrapText('Review all details above.', 20, y, maxWidth, 16);
+                y = wrapText('Press Enter to start your adventure.', 20, y, maxWidth, 16);
                 break;
         }
     }

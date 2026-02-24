@@ -1,0 +1,14 @@
+{
+  "bosses": [
+    { "id": 1, "name": "Margit, the Fell Omen", "zoneId": 1, "bossType": "major", "level": 30, "hp": 4200, "attack": 170, "defense": 90, "remembrance": false },
+    { "id": 2, "name": "Godrick the Grafted", "zoneId": 1, "bossType": "shardbearer", "level": 40, "hp": 6000, "attack": 220, "defense": 130, "remembrance": true },
+    { "id": 3, "name": "Rennala, Queen of the Full Moon", "zoneId": 2, "bossType": "shardbearer", "level": 55, "hp": 7300, "attack": 260, "defense": 120, "remembrance": true },
+    { "id": 4, "name": "Starscourge Radahn", "zoneId": 3, "bossType": "shardbearer", "level": 70, "hp": 9600, "attack": 340, "defense": 180, "remembrance": true },
+    { "id": 5, "name": "Morgott, the Omen King", "zoneId": 5, "bossType": "major", "level": 80, "hp": 11000, "attack": 390, "defense": 210, "remembrance": true },
+    { "id": 6, "name": "Rykard, Lord of Blasphemy", "zoneId": 6, "bossType": "shardbearer", "level": 95, "hp": 15000, "attack": 430, "defense": 260, "remembrance": true },
+    { "id": 7, "name": "Fire Giant", "zoneId": 7, "bossType": "major", "level": 105, "hp": 22000, "attack": 500, "defense": 300, "remembrance": true },
+    { "id": 8, "name": "Maliketh, the Black Blade", "zoneId": 8, "bossType": "major", "level": 120, "hp": 14000, "attack": 620, "defense": 280, "remembrance": true },
+    { "id": 9, "name": "Godfrey, First Elden Lord", "zoneId": 5, "bossType": "major", "level": 125, "hp": 17500, "attack": 670, "defense": 320, "remembrance": true },
+    { "id": 10, "name": "Radagon of the Golden Order", "zoneId": 5, "bossType": "major", "level": 130, "hp": 19000, "attack": 700, "defense": 340, "remembrance": false }
+  ]
+}

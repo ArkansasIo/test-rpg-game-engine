@@ -1,0 +1,14 @@
+{
+  "zoneTiles": [
+    { "zone": "Limgrave", "tiles": [ { "type": "grass", "x": 0, "y": 0 }, { "type": "forest", "x": 1, "y": 0 }, { "type": "road", "x": 2, "y": 0 } ] },
+    { "zone": "Liurnia of the Lakes", "tiles": [ { "type": "water", "x": 0, "y": 1 }, { "type": "swamp", "x": 1, "y": 1 }, { "type": "ruins", "x": 2, "y": 1 } ] },
+    { "zone": "Caelid", "tiles": [ { "type": "red_swamp", "x": 0, "y": 2 }, { "type": "scarlet_rot", "x": 1, "y": 2 }, { "type": "ruins", "x": 2, "y": 2 } ] },
+    { "zone": "Altus Plateau", "tiles": [ { "type": "golden_grass", "x": 0, "y": 3 }, { "type": "mountain", "x": 1, "y": 3 }, { "type": "road", "x": 2, "y": 3 } ] },
+    { "zone": "Mountaintops of the Giants", "tiles": [ { "type": "snow", "x": 0, "y": 4 }, { "type": "ice", "x": 1, "y": 4 }, { "type": "ruins", "x": 2, "y": 4 } ] },
+    { "zone": "Leyndell, Royal Capital", "tiles": [ { "type": "city", "x": 0, "y": 5 }, { "type": "road", "x": 1, "y": 5 }, { "type": "castle", "x": 2, "y": 5 } ] },
+    { "zone": "Siofra River", "tiles": [ { "type": "cave", "x": 0, "y": 6 }, { "type": "ruins", "x": 1, "y": 6 }, { "type": "water", "x": 2, "y": 6 } ] },
+    { "zone": "Ainsel River", "tiles": [ { "type": "cave", "x": 0, "y": 7 }, { "type": "ruins", "x": 1, "y": 7 }, { "type": "water", "x": 2, "y": 7 } ] },
+    { "zone": "Deeproot Depths", "tiles": [ { "type": "roots", "x": 0, "y": 8 }, { "type": "ruins", "x": 1, "y": 8 }, { "type": "water", "x": 2, "y": 8 } ] },
+    { "zone": "Mohgwyn Palace", "tiles": [ { "type": "blood_swamp", "x": 0, "y": 9 }, { "type": "ruins", "x": 1, "y": 9 }, { "type": "palace", "x": 2, "y": 9 } ] }
+  ]
+}

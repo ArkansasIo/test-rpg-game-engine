@@ -1,0 +1,19 @@
+{
+  "dungeons": [
+    { "id": 1, "name": "Stormveil Castle", "zoneId": 1, "dungeonType": "legacyDungeon" },
+    { "id": 2, "name": "Raya Lucaria Academy", "zoneId": 2, "dungeonType": "legacyDungeon" },
+    { "id": 3, "name": "Volcano Manor", "zoneId": 6, "dungeonType": "legacyDungeon" },
+    { "id": 4, "name": "Mohgwyn Palace", "zoneId": 7, "dungeonType": "legacyDungeon" },
+    { "id": 5, "name": "Auriza Hero's Grave", "zoneId": 4, "dungeonType": "catacomb" },
+    { "id": 6, "name": "Gael Tunnel", "zoneId": 3, "dungeonType": "mine" },
+    { "id": 7, "name": "Murkwater Cave", "zoneId": 1, "dungeonType": "cave" },
+    { "id": 8, "name": "Yelough Anix Tunnel", "zoneId": 7, "dungeonType": "mine" },
+    { "id": 9, "name": "Belurat, Tower Settlement", "zoneId": 10, "dungeonType": "legacyDungeon" },
+    { "id": 10, "name": "Fog Rift Catacombs", "zoneId": 11, "dungeonType": "catacomb" },
+    { "id": 11, "name": "Darklight Catacombs", "zoneId": 13, "dungeonType": "catacomb" },
+    { "id": 12, "name": "Dragon's Pit", "zoneId": 14, "dungeonType": "cave" },
+    { "id": 13, "name": "Bonny Gaol", "zoneId": 11, "dungeonType": "gaol" },
+    { "id": 14, "name": "Lamenter's Gaol", "zoneId": 11, "dungeonType": "gaol" },
+    { "id": 15, "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "eldenZones": [
+    { "id": 1, "source": "eldenRing", "name": "Limgrave", "biome": "temperate plains", "zoneClass": "openField" },
+    { "id": 2, "source": "eldenRing", "name": "Liurnia of the Lakes", "biome": "wetlands", "zoneClass": "openField" },
+    { "id": 3, "source": "eldenRing", "name": "Caelid", "biome": "scarlet wasteland", "zoneClass": "openField" },
+    { "id": 4, "source": "eldenRing", "name": "Altus Plateau", "biome": "golden plateau", "zoneClass": "openField" },
+    { "id": 5, "source": "eldenRing", "name": "Leyndell, Royal Capital", "biome": "capital city", "zoneClass": "legacyDungeon" },
+    { "id": 6, "source": "eldenRing", "name": "Mt. Gelmir", "biome": "volcanic slopes", "zoneClass": "openField" },
+    { "id": 7, "source": "eldenRing", "name": "Mountaintops of the Giants", "biome": "glacial peaks", "zoneClass": "openField" },
+    { "id": 8, "source": "eldenRing", "name": "Crumbling Farum Azula", "biome": "floating ruins", "zoneClass": "legacyDungeon" },
+    { "id": 9, "source": "eldenRing", "name": "Miquella's Haligtree", "biome": "sacred tree city", "zoneClass": "legacyDungeon" },
+    { "id": 10, "source": "shadowOfTheErdtree", "name": "Gravesite Plain", "biome": "ashen grasslands", "zoneClass": "openField" },
+    { "id": 11, "source": "shadowOfTheErdtree", "name": "Scadu Altus", "biome": "shadowed plateau", "zoneClass": "openField" },
+    { "id": 12, "source": "shadowOfTheErdtree", "name": "Shadow Keep", "biome": "military citadel", "zoneClass": "legacyDungeon" },
+    { "id": 13, "source": "shadowOfTheErdtree", "name": "Abyssal Woods", "biome": "madness forest", "zoneClass": "openField" },
+    { "id": 14, "source": "shadowOfTheErdtree", "name": "Jagged Peak", "biome": "dragon mountain", "zoneClass": "openField" },
+    { "id": 15, "source": "shadowOfTheErdtree", "name": "Enir-Ilim", "biome": "divine city", "zoneClass": "legacyDungeon" }
+  ],
+  "eldenDungeons": [
+    { "id": 1, "source": "eldenRing", "name": "Stormveil Castle", "zoneId": 1, "dungeonType": "legacyDungeon" },
+    { "id": 2, "source": "eldenRing", "name": "Raya Lucaria Academy", "zoneId": 2, "dungeonType": "legacyDungeon" },
+    { "id": 3, "source": "eldenRing", "name": "Volcano Manor", "zoneId": 6, "dungeonType": "legacyDungeon" },
+    { "id": 4, "source": "eldenRing", "name": "Mohgwyn Palace", "zoneId": 7, "dungeonType": "legacyDungeon" },
+    { "id": 5, "source": "eldenRing", "name": "Auriza Hero's Grave", "zoneId": 4, "dungeonType": "catacomb" },
+    { "id": 6, "source": "eldenRing", "name": "Gael Tunnel", "zoneId": 3, "dungeonType": "mine" },
+    { "id": 7, "source": "eldenRing", "name": "Murkwater Cave", "zoneId": 1, "dungeonType": "cave" },
+    { "id": 8, "source": "eldenRing", "name": "Yelough Anix Tunnel", "zoneId": 7, "dungeonType": "mine" },
+    { "id": 9, "source": "shadowOfTheErdtree", "name": "Belurat, Tower Settlement", "zoneId": 10, "dungeonType": "legacyDungeon" },
+    { "id": 10, "source": "shadowOfTheErdtree", "name": "Fog Rift Catacombs", "zoneId": 11, "dungeonType": "catacomb" },
+    { "id": 11, "source": "shadowOfTheErdtree", "name": "Darklight Catacombs", "zoneId": 13, "dungeonType": "catacomb" },
+    { "id": 12, "source": "shadowOfTheErdtree", "name": "Dragon's Pit", "zoneId": 14, "dungeonType": "cave" },
+    { "id": 13, "source": "shadowOfTheErdtree", "name": "Bonny Gaol", "zoneId": 11, "dungeonType": "gaol" },
+    { "id": 14, "source": "shadowOfTheErdtree", "name": "Lamenter's Gaol", "zoneId": 11, "dungeonType": "gaol" },
+    { "id": 15, "source": "shadowOfTheErdtree", "name": "Ancient Ruins of Rauh", "zoneId": 11, "dungeonType": "ruins" }
+  ],
+  "eldenBiomes": [
+    "temperate plains", "wetlands", "scarlet wasteland", "golden plateau", "capital city", "volcanic slopes", "glacial peaks", "floating ruins", "sacred tree city", "ashen grasslands", "shadowed plateau", "military citadel", "madness forest", "dragon mountain", "divine city"
+  ],
+  "eldenTileTypes": [
+    "grass", "forest", "road", "water", "swamp", "ruins", "red_swamp", "scarlet_rot", "golden_grass", "mountain", "snow", "ice", "city", "castle", "cave", "roots", "blood_swamp", "palace"
+  ],
+  "eldenZoneTiles": [
+    { "zone": "Limgrave", "tiles": [ { "type": "grass", "x": 0, "y": 0 }, { "type": "forest", "x": 1, "y": 0 }, { "type": "road", "x": 2, "y": 0 } ] },
+    { "zone": "Liurnia of the Lakes", "tiles": [ { "type": "water", "x": 0, "y": 1 }, { "type": "swamp", "x": 1, "y": 1 }, { "type": "ruins", "x": 2, "y": 1 } ] },
+    { "zone": "Caelid", "tiles": [ { "type": "red_swamp", "x": 0, "y": 2 }, { "type": "scarlet_rot", "x": 1, "y": 2 }, { "type": "ruins", "x": 2, "y": 2 } ] },
+    { "zone": "Altus Plateau", "tiles": [ { "type": "golden_grass", "x": 0, "y": 3 }, { "type": "mountain", "x": 1, "y": 3 }, { "type": "road", "x": 2, "y": 3 } ] },
+    { "zone": "Mountaintops of the Giants", "tiles": [ { "type": "snow", "x": 0, "y": 4 }, { "type": "ice", "x": 1, "y": 4 }, { "type": "ruins", "x": 2, "y": 4 } ] },
+    { "zone": "Leyndell, Royal Capital", "tiles": [ { "type": "city", "x": 0, "y": 5 }, { "type": "road", "x": 1, "y": 5 }, { "type": "castle", "x": 2, "y": 5 } ] },
+    { "zone": "Siofra River", "tiles": [ { "type": "cave", "x": 0, "y": 6 }, { "type": "ruins", "x": 1, "y": 6 }, { "type": "water", "x": 2, "y": 6 } ] },
+    { "zone": "Ainsel River", "tiles": [ { "type": "cave", "x": 0, "y": 7 }, { "type": "ruins", "x": 1, "y": 7 }, { "type": "water", "x": 2, "y": 7 } ] },
+    { "zone": "Deeproot Depths", "tiles": [ { "type": "roots", "x": 0, "y": 8 }, { "type": "ruins", "x": 1, "y": 8 }, { "type": "water", "x": 2, "y": 8 } ] },
+    { "zone": "Mohgwyn Palace", "tiles": [ { "type": "blood_swamp", "x": 0, "y": 9 }, { "type": "ruins", "x": 1, "y": 9 }, { "type": "palace", "x": 2, "y": 9 } ] }
+  ],
+  "eldenMapMenu": {
+    "title": "Elden Ring World Map",
+    "zones": "eldenZones",
+    "biomes": "eldenBiomes",
+    "tileTypes": "eldenTileTypes",
+    "zoneTiles": "eldenZoneTiles",
+    "dungeons": "eldenDungeons"
+  }
+}
