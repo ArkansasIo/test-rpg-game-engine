@@ -1,7 +1,7 @@
 // EquipmentMenu.ts
 // RPG Equipment menu system
 import { Game } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
+import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
 
 export class EquipmentMenu {
     private game: Game;
@@ -18,15 +18,23 @@ export class EquipmentMenu {
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Equipment');
+        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'Character', 'Stats', 'Loadout' ], 2);
+        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.5), panel.bodyHeight - 30, 'Slots');
+        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.5) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.5) - 10, panel.bodyHeight - 30, 'Inspect');
         ctx.font = '15px Georgia';
-        let y = panel.bodyY + 10;
+        let y = panel.bodyY + 46;
         for (let i = 0; i < this.slots.length; i++) {
             const slot = this.slots[i];
             drawFantasyLine(ctx, `${slot}: ${this.equipment[slot]?.name ?? '[Empty]'}`, panel.bodyX, y, i === this.selectedIndex);
             y += 22;
         }
         const selectedSlot = this.slots[this.selectedIndex];
-        drawFantasyLine(ctx, `Focused slot: ${selectedSlot ?? 'none'}`, panel.bodyX, panel.bodyY + panel.bodyHeight - 10, false, 'accent');
+        const selectedItem = selectedSlot ? this.equipment[selectedSlot] : null;
+        const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.5) + 22;
+        drawFantasyLine(ctx, `Slot: ${selectedSlot ?? 'none'}`, rightX, panel.bodyY + 52, false, 'accent');
+        drawFantasyLine(ctx, `Item: ${selectedItem?.name ?? '[Empty]'}`, rightX, panel.bodyY + 76, false, 'normal');
+        drawFantasyLine(ctx, 'Power: --', rightX, panel.bodyY + 100, false, 'muted');
+        drawFantasyLine(ctx, 'Defense: --', rightX, panel.bodyY + 122, false, 'muted');
         ctx.restore();
     }
 

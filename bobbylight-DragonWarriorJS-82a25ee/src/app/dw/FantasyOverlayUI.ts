@@ -19,6 +19,8 @@ const THEME = {
     accent: '#d2b46b',
     selectionFill: 'rgba(177, 132, 58, 0.35)',
     barFill: 'rgba(8, 12, 20, 0.9)',
+    paneFill: 'rgba(17, 24, 38, 0.72)',
+    paneBorder: 'rgba(194, 158, 92, 0.65)',
 };
 
 export function drawFantasyBackdrop(
@@ -83,6 +85,53 @@ export function drawFantasyPanel(
     };
 }
 
+export function drawPane(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    title?: string,
+) {
+    ctx.fillStyle = THEME.paneFill;
+    ctx.fillRect(x, y, width, height);
+    ctx.strokeStyle = THEME.paneBorder;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, width, height);
+    if (title) {
+        ctx.font = 'bold 12px Georgia';
+        ctx.fillStyle = THEME.accent;
+        ctx.fillText(title, x + 8, y + 14);
+        ctx.strokeStyle = 'rgba(194, 158, 92, 0.45)';
+        ctx.beginPath();
+        ctx.moveTo(x + 8, y + 18);
+        ctx.lineTo(x + width - 8, y + 18);
+        ctx.stroke();
+    }
+}
+
+export function drawTabStrip(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    labels: string[],
+    selected: number,
+) {
+    let ox = x;
+    ctx.font = 'bold 12px Georgia';
+    for (let i = 0; i < labels.length; i++) {
+        const w = Math.max(68, ctx.measureText(labels[i]).width + 20);
+        const active = i === selected;
+        ctx.fillStyle = active ? 'rgba(188, 145, 75, 0.35)' : 'rgba(24, 30, 44, 0.88)';
+        ctx.fillRect(ox, y, w, 22);
+        ctx.strokeStyle = active ? '#c39a59' : 'rgba(137, 113, 74, 0.75)';
+        ctx.strokeRect(ox, y, w, 22);
+        ctx.fillStyle = active ? '#f6e5c0' : '#bea57a';
+        ctx.fillText(labels[i], ox + 10, y + 15);
+        ox += w + 6;
+    }
+}
+
 export function drawMenuChrome(
     ctx: CanvasRenderingContext2D,
     labels: string[],
@@ -141,4 +190,3 @@ export function drawFantasyLine(
     }
     ctx.fillText(text, x, y);
 }
-

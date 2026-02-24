@@ -2,7 +2,7 @@
 // RPG Settings menu system
 
 import { DwGame } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
+import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
 
 type SettingOption = 'audio' | 'controls' | 'graphics' | 'theme';
 
@@ -31,13 +31,21 @@ export class SettingsMenu {
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Settings');
+        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'System', 'Controls', 'Visual' ], 0);
+        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.56), panel.bodyHeight - 30, 'Options');
+        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.56) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.44) - 10, panel.bodyHeight - 30, 'Description');
         ctx.font = '15px Georgia';
-        let y = panel.bodyY + 10;
+        let y = panel.bodyY + 46;
         this.options.forEach((opt, i) => {
             let label = `${opt.label}: [${opt.values[opt.valueIdx]}]`;
             drawFantasyLine(ctx, label, panel.bodyX + (this.selected === i ? 16 : 0), y, this.selected === i, this.selected === i ? 'accent' : undefined);
             y += 28;
         });
+        const active = this.options[this.selected];
+        const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.56) + 20;
+        drawFantasyLine(ctx, active.label, rightX, panel.bodyY + 52, false, 'accent');
+        drawFantasyLine(ctx, `Current: ${active.values[active.valueIdx]}`, rightX, panel.bodyY + 76, false, 'normal');
+        drawFantasyLine(ctx, 'Use arrows to change value.', rightX, panel.bodyY + 102, false, 'muted');
         ctx.restore();
     }
 

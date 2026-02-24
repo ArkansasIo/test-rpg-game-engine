@@ -1,7 +1,7 @@
 // InventoryMenu.ts
 // RPG Inventory menu system
 import { Game } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
+import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
 
 export class InventoryMenu {
     private game: Game;
@@ -16,18 +16,25 @@ export class InventoryMenu {
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Inventory');
+        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'Bag', 'Consumables', 'Quest' ], 0);
+        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.52), panel.bodyHeight - 30, 'Items');
+        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.52) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.48) - 10, panel.bodyHeight - 30, 'Details');
         ctx.font = '15px Georgia';
-        let y = panel.bodyY + 10;
+        let y = panel.bodyY + 46;
         for (let i = 0; i < this.items.length; i++) {
             const item = this.items[i];
             drawFantasyLine(ctx, `${item.name} x${item.count}`, panel.bodyX, y, i === this.selectedIndex);
             y += 22;
         }
         if (!this.items.length) {
-            drawFantasyLine(ctx, 'No items in satchel.', panel.bodyX, y, false, 'muted');
+            drawFantasyLine(ctx, 'No items in satchel.', panel.bodyX + 8, y, false, 'muted');
         } else {
             const selected = this.items[this.selectedIndex];
-            drawFantasyLine(ctx, `Selected: ${selected?.name ?? ''}`, panel.bodyX, panel.bodyY + panel.bodyHeight - 10, false, 'accent');
+            const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.52) + 22;
+            drawFantasyLine(ctx, selected?.name ?? '', rightX, panel.bodyY + 52, false, 'accent');
+            drawFantasyLine(ctx, `Count: ${selected?.count ?? 0}`, rightX, panel.bodyY + 76, false, 'normal');
+            drawFantasyLine(ctx, 'Type: Inventory Item', rightX, panel.bodyY + 100, false, 'muted');
+            drawFantasyLine(ctx, 'Click item to focus.', rightX, panel.bodyY + panel.bodyHeight - 16, false, 'muted');
         }
         ctx.restore();
     }

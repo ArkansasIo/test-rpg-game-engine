@@ -1,7 +1,7 @@
 // MapMenu.ts
 // RPG Map menu system
 import { Game } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
+import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
 
 export class MapMenu {
     private game: Game;
@@ -16,14 +16,17 @@ export class MapMenu {
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Elden World Atlas');
+        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'World', 'Regions', 'Fast Travel' ], 0);
+        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.58), panel.bodyHeight - 30, 'Regions');
+        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.58) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.42) - 10, panel.bodyHeight - 30, 'Zone Notes');
         ctx.font = '15px Georgia';
-        let y = panel.bodyY + 10;
+        let y = panel.bodyY + 46;
         const zones = this.mapData.eldenZones || [];
         // const biomes = this.mapData.eldenBiomes || [];
         const zoneTiles = this.mapData.eldenZoneTiles || [];
         if (!zones.length) {
-            drawFantasyLine(ctx, `Current map: ${this.mapData.name ?? 'Unknown'}`, panel.bodyX, y, false, 'accent');
-            drawFantasyLine(ctx, 'No zone index available for this map.', panel.bodyX, y + 24, false, 'muted');
+            drawFantasyLine(ctx, `Current map: ${this.mapData.name ?? 'Unknown'}`, panel.bodyX + 8, y, false, 'accent');
+            drawFantasyLine(ctx, 'No zone index available for this map.', panel.bodyX + 8, y + 24, false, 'muted');
             ctx.restore();
             return;
         }
@@ -43,6 +46,13 @@ export class MapMenu {
                 }
             }
             y += 24;
+        }
+        const zone = zones[this.selectedZone];
+        if (zone) {
+            const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.58) + 20;
+            drawFantasyLine(ctx, zone.name, rightX, panel.bodyY + 52, false, 'accent');
+            drawFantasyLine(ctx, `Biome: ${zone.biome}`, rightX, panel.bodyY + 76, false, 'normal');
+            drawFantasyLine(ctx, 'Select with click or arrows.', rightX, panel.bodyY + panel.bodyHeight - 16, false, 'muted');
         }
         ctx.restore();
     }

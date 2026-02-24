@@ -1,7 +1,7 @@
 // QuestsMenu.ts
 // RPG Quests menu system
 import { Game } from './DwGame';
-import { drawFantasyLine, drawFantasyPanel } from './FantasyOverlayUI';
+import { drawFantasyLine, drawFantasyPanel, drawPane, drawTabStrip } from './FantasyOverlayUI';
 
 export class QuestsMenu {
     private game: Game;
@@ -18,15 +18,22 @@ export class QuestsMenu {
     render(ctx: CanvasRenderingContext2D) {
         ctx.save();
         const panel = drawFantasyPanel(ctx, 36, 54, this.game.getWidth() - 72, this.game.getHeight() - 104, 'Quests');
+        drawTabStrip(ctx, panel.bodyX, panel.bodyY - 2, [ 'Main', 'Side', 'Completed' ], 0);
+        drawPane(ctx, panel.bodyX, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.56), panel.bodyHeight - 30, 'Quest Log');
+        drawPane(ctx, panel.bodyX + Math.floor(panel.bodyWidth * 0.56) + 10, panel.bodyY + 24, Math.floor(panel.bodyWidth * 0.44) - 10, panel.bodyHeight - 30, 'Quest Detail');
         ctx.font = '15px Georgia';
-        let y = panel.bodyY + 10;
+        let y = panel.bodyY + 46;
         for (let i = 0; i < this.quests.length; i++) {
             const quest = this.quests[i];
             drawFantasyLine(ctx, `${quest.name} - ${quest.status}`, panel.bodyX, y, i === this.selectedIndex, quest.status === 'Complete' ? 'accent' : 'normal');
             y += 22;
         }
         if (this.quests[this.selectedIndex]) {
-            drawFantasyLine(ctx, this.quests[this.selectedIndex].description ?? '', panel.bodyX, panel.bodyY + panel.bodyHeight - 10, false, 'muted');
+            const rightX = panel.bodyX + Math.floor(panel.bodyWidth * 0.56) + 20;
+            const quest = this.quests[this.selectedIndex];
+            drawFantasyLine(ctx, quest.name ?? '', rightX, panel.bodyY + 52, false, 'accent');
+            drawFantasyLine(ctx, `Status: ${quest.status ?? 'Unknown'}`, rightX, panel.bodyY + 76, false, 'normal');
+            drawFantasyLine(ctx, quest.description ?? '', rightX, panel.bodyY + 102, false, 'muted');
         }
         ctx.restore();
     }
