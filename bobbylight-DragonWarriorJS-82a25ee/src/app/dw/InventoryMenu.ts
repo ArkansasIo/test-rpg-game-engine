@@ -1,5 +1,5 @@
 // InventoryMenu.ts
-import { drawNesPanel, nesTheme } from '../../gfx/Theme';
+import { drawNesPanel, nesTheme } from '../../gfx';
 import { Game } from './DwGame';
 import { Item } from './Item';
 import { Inventory, InventoryEntry } from './Inventory';
