@@ -33,8 +33,9 @@ export class RoamingState extends BaseState {
     // ...existing fields...
 
     showEquipmentMenu() {
-        // TODO: Implement equipment menu bubble and logic
-        this.game.setStatusMessage('Equipment menu coming soon!');
+        this.game.openEquipment();
+        this.game.setStatusMessage('Equipment');
+        this.setSubstate('ROAMING');
     }
 
     private showMinimap = true;
@@ -46,6 +47,58 @@ export class RoamingState extends BaseState {
     override handleDefaultKeys() {
         super.handleDefaultKeys();
         const im = this.game.inputManager;
+
+        // Settings menu: handle keyboard input
+        if (this.game.activeMenu === 'settings' && this.game.settingsMenu) {
+            if (im.up(true)) this.game.settingsMenu.handleKey('ArrowUp');
+            if (im.down(true)) this.game.settingsMenu.handleKey('ArrowDown');
+            if (im.left(true)) this.game.settingsMenu.handleKey('ArrowLeft');
+            if (im.right(true)) this.game.settingsMenu.handleKey('ArrowRight');
+            if (im.enter(true)) this.game.settingsMenu.handleKey('Enter');
+            if (this.game.cancelKeyPressed()) this.game.settingsMenu.handleKey('Escape');
+            return;
+        }
+        // Close any overlay menu quickly.
+        if (this.game.activeMenu && this.game.cancelKeyPressed()) {
+            this.game.closeMenu();
+            this.game.setStatusMessage('Closed menu');
+            return;
+        }
+
+        // Open Elden/WoW-style overlay menus from roaming.
+        if (!this.showWorldMap) {
+            if (im.isKeyDown(Keys.KEY_I, true)) {
+                this.game.openInventory();
+                this.game.setStatusMessage('Inventory');
+                return;
+            }
+            if (im.isKeyDown(Keys.KEY_E, true)) {
+                this.game.openEquipment();
+                this.game.setStatusMessage('Equipment');
+                return;
+            }
+            if (im.isKeyDown(Keys.KEY_K, true)) {
+                this.game.openSkills();
+                this.game.setStatusMessage('Skills');
+                return;
+            }
+            if (im.isKeyDown(Keys.KEY_Q, true)) {
+                this.game.openQuests();
+                this.game.setStatusMessage('Quests');
+                return;
+            }
+            if (im.isKeyDown(Keys.KEY_J, true)) {
+                this.game.openMap();
+                this.game.setStatusMessage('Map');
+                return;
+            }
+            if (im.isKeyDown(Keys.KEY_0, true)) {
+                this.game.openSettings();
+                this.game.setStatusMessage('Settings');
+                return;
+            }
+        }
+
         // Toggle minimap with 'M'
         if (im.isKeyDown(Keys.KEY_M, true)) {
             this.showMinimap = !this.showMinimap;
@@ -58,6 +111,34 @@ export class RoamingState extends BaseState {
         if (!this.showWorldMap && im.isKeyDown(Keys.KEY_S, true) && !this.spellBubble) {
             this.showSpellList();
         }
+    }
+
+    handleClick(x: number, y: number) {
+        if (this.game.activeMenu === 'inventory' && this.game.inventoryMenu) {
+            this.game.inventoryMenu.handleClick(x, y);
+            return;
+        }
+        if (this.game.activeMenu === 'equipment' && this.game.equipmentMenu) {
+            this.game.equipmentMenu.handleClick(x, y);
+            return;
+        }
+        if (this.game.activeMenu === 'skills' && this.game.skillsMenu) {
+            this.game.skillsMenu.handleClick(x, y);
+            return;
+        }
+        if (this.game.activeMenu === 'quests' && this.game.questsMenu) {
+            this.game.questsMenu.handleClick(x, y);
+            return;
+        }
+        if (this.game.activeMenu === 'map' && this.game.mapMenu) {
+            this.game.mapMenu.handleClick(x, y);
+            return;
+        }
+        if (this.game.activeMenu === 'settings' && this.game.settingsMenu) {
+            this.game.settingsMenu.handleClick(x, y);
+            return;
+        }
+        this.game.menuBar.handleClick(x, y);
     }
 
     private readonly commandBubble: CommandBubble;
@@ -283,6 +364,11 @@ export class RoamingState extends BaseState {
 
         if (this.showStats) {
             this.statBubble.update(delta);
+        }
+
+        if (this.game.activeMenu) {
+            // Pause movement while a top-level UI panel is open.
+            return;
         }
 
         if (this.game.getMap().name === 'overworld') {

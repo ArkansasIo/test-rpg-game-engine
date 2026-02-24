@@ -981,17 +981,39 @@ export class DwGame extends Game {
 
     override update() {
         super.update();
+        if (this.activeMenu && this.cancelKeyPressed()) {
+            this.closeMenu();
+            this.setStatusMessage('Closed menu');
+            return;
+        }
         // Keyboard navigation for skills menu
-            if (this.activeMenu === 'skills' && this.skillsMenu) {
-                if (this.inputManager.isKeyDown(Keys.KEY_W, true)) {
-                    this.skillsMenu.selectPrevSkill();
-                }
-                if (this.inputManager.isKeyDown(Keys.KEY_S, true)) {
-                    this.skillsMenu.selectNextSkill();
-                }
-                if (this.inputManager.isKeyDown(Keys.KEY_ENTER, true)) {
-                    this.skillsMenu.activateSelectedSkill();
-                }
+        if (this.activeMenu === 'skills' && this.skillsMenu) {
+            if (this.inputManager.up(true)) {
+                this.skillsMenu.selectPrevSkill();
+            }
+            if (this.inputManager.down(true)) {
+                this.skillsMenu.selectNextSkill();
+            }
+            if (this.inputManager.enter(true)) {
+                this.skillsMenu.activateSelectedSkill();
+            }
+        } else if (this.activeMenu === 'quests' && this.questsMenu) {
+            if (this.inputManager.up(true)) {
+                this.questsMenu.selectPrevQuest();
+            }
+            if (this.inputManager.down(true)) {
+                this.questsMenu.selectNextQuest();
+            }
+            if (this.inputManager.enter(true)) {
+                this.questsMenu.activateSelectedQuest();
+            }
+        } else if (this.activeMenu === 'map' && this.mapMenu) {
+            if (this.inputManager.up(true)) {
+                this.mapMenu.selectPrevZone();
+            }
+            if (this.inputManager.down(true)) {
+                this.mapMenu.selectNextZone();
+            }
         }
     }
 }

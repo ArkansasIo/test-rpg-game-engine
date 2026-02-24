@@ -38,7 +38,7 @@ export class MenuBar {
         // You must pass the CanvasRenderingContext2D to handleClick for width calculation
         // Example usage: menuBar.handleClick(x, y, ctx)
         // Here, fallback width calculation if ctx is not available
-        if (y < 32) {
+        if (y < 42) {
             let curX = 10;
             for (const menu of this.menus) {
                 // Fallback width: assume average label width

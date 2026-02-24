@@ -8,7 +8,6 @@ import { addArchetypeGalleryButton } from './dw/ProceduralRpgAssetSystem';
 function registerStaticAssets(game: DwGame) {
     game.assets.addImage('title', 'res/title.png');
 }
-import { addArchetypeGalleryButton } from './dw/ProceduralRpgAssetSystem';
 
 
 function getScaleAndSize() {
