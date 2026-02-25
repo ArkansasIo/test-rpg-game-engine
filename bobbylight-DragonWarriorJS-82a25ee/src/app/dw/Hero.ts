@@ -87,17 +87,17 @@ export class Hero extends PartyMember {
         background: string;
         title: string;
         faction: string;
-    } = {
-        class: 'Warrior',
-        subClass: 'Knight',
-        race: 'Human',
-        gender: 'Male',
-        origin: 'Limgrave',
-        alignment: 'Neutral',
-        background: '',
-        title: '',
-        faction: '',
-    };
+        } = {
+                class: 'Warrior',
+                subClass: 'Knight',
+                race: 'Human',
+                gender: 'Male',
+                origin: 'Limgrave',
+                alignment: 'Neutral',
+                background: '',
+                title: '',
+                faction: '',
+            };
 
     // --- Buffs and Debuffs ---
     buffs: { name: string; effect: string; duration: number }[] = [];
